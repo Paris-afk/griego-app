@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+/*
+ * Tokens de diseño — dirección «Ánfora» (SCREENS.md §4.2, elegida 2026-08-23).
+ * Traducción a Tailwind v4 (config CSS-first con @theme), como indica
+ * design/tailwind.tokens.ts y la nota de design/tokens.css.
+ *
+ * Fuentes (cargadas en el layout vía next/font):
+ *   Newsreader → --font-newsreader (títulos, texto del profesor, opciones)
+ *   Noto Sans  → --font-noto-sans (contenido griego — restricción pedagógica)
+ *   sistema    → UI, etiquetas, botones (-apple-system, sin cargar nada)
+ *
+ * Modo oscuro: los valores de .dark están TOKENIZADOS, NO DISEÑADOS
+ * (SCREENS.md §4.2). Usar como punto de partida, no como diseño terminado.
+ */
+
+@theme {
+  /* Color — Ánfora, modo claro */
+  --color-primary: #b4532a;
+  --color-primary-strong: #a0431f; /* texto/ícono sobre fondo claro con más contraste */
+  --color-secondary: #5a6a3c; /* oliva */
+  --color-background: #faf6f0;
+  --color-surface: #ffffff;
+  --color-border: #dcc9b4;
+  --color-border-soft: #e0d6c8;
+  --color-text: #2b2622;
+  --color-text-soft: #6e6155;
+  --color-success: #48702e;
+  --color-error: #b03a22;
+  --color-streak: #8a5d18; /* racha / puntos */
+
+  /* Tipografía */
+  --font-display: var(--font-newsreader), Georgia, serif;
+  --font-ui: -apple-system, BlinkMacSystemFont, "Helvetica Neue", system-ui,
+    sans-serif;
+  --font-greek: var(--font-noto-sans), system-ui, sans-serif;
+
+  /* Espaciado y radios observados en los mockups aprobados */
+  --radius-card: 10px;
+  --radius-button: 8px;
+  --radius-pill: 999px;
+}
+
+:root {
+  color-scheme: light;
+
+  /* Alias que esperan los componentes de shadcn/ui → tokens de Ánfora.
+     NUNCA duplicar valores: mapear a los tokens de arriba (design/tokens.css). */
+  --background: var(--color-background);
+  --foreground: var(--color-text);
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text);
+  --primary: var(--color-primary);
+  --primary-foreground: #ffffff;
+  --secondary: var(--color-secondary);
+  --secondary-foreground: #ffffff;
+  --muted: var(--color-border-soft);
+  --muted-foreground: var(--color-text-soft);
+  --accent: var(--color-border-soft);
+  --accent-foreground: var(--color-text);
+  --destructive: var(--color-error);
+  --destructive-foreground: #ffffff;
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-primary);
+  --radius: var(--radius-button);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  /* Griego suelto en prosa usa Noto Sans, no el stack de UI (SCREENS.md §4.1) */
+  -webkit-tap-highlight-color: transparent;
+  text-rendering: optimizeLegibility;
+}
+
+/* Modo oscuro — TOKENIZADO, NO DISEÑADO (SCREENS.md §4.2). */
+.dark {
+  color-scheme: dark;
+
+  --color-primary: #e07a4f;
+  --color-secondary: #93a86b;
+  --color-background: #1a1613;
+  --color-surface: #241f1b;
+  --color-border: #3a322b;
+  --color-border-soft: #2e2822;
+  --color-text: #f0eae2;
+  --color-text-soft: #b3a695;
+  --color-success: #7fb356;
+  --color-error: #e8674c;
+  --color-streak: #e3b341;
+}

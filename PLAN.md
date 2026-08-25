@@ -1,7 +1,7 @@
 # Plan — Roadmap por fases — Griego App
 
 > Ver [README.md](./README.md) para la visión, [ARCHITECTURE.md](./ARCHITECTURE.md) para el stack técnico y [SCREENS.md](./SCREENS.md) para pantallas y diseño.
-> **Estado:** v3 — arquitectura revisada y confirmada (Next.js full-stack, **DeepSeek como único proveedor de IA**). Pendiente iniciar Fase 0.
+> **Estado:** v3 — arquitectura revisada y confirmada (Next.js full-stack, **DeepSeek como único proveedor de IA**). ~~Pendiente iniciar Fase 0~~ → **Fase 0 completada (2026-08-25).**
 
 ---
 
@@ -27,6 +27,8 @@
 | 2026-08-24 | Añadidos [`AGENTS.md`](./AGENTS.md) (convenciones que leen OpenCode/Claude Code automáticamente) y [`.env.example`](./.env.example). **El proyecto queda listo para arrancar la Fase 0** |
 | 2026-08-25 | **Patrones de diseño explicitados** en [ARCHITECTURE.md](./ARCHITECTURE.md) §3.2: cuatro patrones localizados (módulo por tipo de ejercicio · alcance en tres capas · contenido como proyección · puerto aislado). Hueco corregido: no estaba dicho que schema+renderer+validator de un tipo deben vivir juntos, lo que habría dispersado cada tipo en tres carpetas |
 | 2026-08-25 | **Arquitectura formal adoptada: modular por features** ([ARCHITECTURE.md](./ARCHITECTURE.md) §3.1) — código organizado por capacidad del producto, tres capas (`app → features → shared`) con regla de dependencias unidireccional impuesta por ESLint, y cada feature con `index.ts` como única API pública. Reemplaza la organización por tipo técnico de archivo, que dispersaba cada capacidad en cinco carpetas |
+| 2026-08-25 | **Corrección de arquitectura (patrón 1).** Un tipo de ejercicio pasa de "un archivo `.tsx`" a **una carpeta con `schema.ts` + `renderer.tsx` + `validate.ts` + `index.ts`**. Motivo detectado al ejecutar la Fase 0: el seed valida los CSV con los mismos schemas Zod y corre en Node — si el schema viviera dentro del `.tsx` del renderer, importarlo arrastraría React al seed. La co-locación se mantiene (una carpeta = un tipo) y además se respeta la frontera servidor/cliente |
+| 2026-08-25 | **Fase 0 ejecutada.** Stack confirmado: Next.js 15.5 (App Router), React 19, TS 5, Tailwind v4 (`@theme` en `globals.css`), Prisma 6.19 (SQLite), Zod v4, Serwist 9.5 (PWA), shadcn/ui (components.json + alias listos; componentes al aparecer la UI). Schemas Zod de ejercicios en `src/features/exercises/schemas.ts` (contrato) — los renderers/validators se moverán a `types/<tipo>.tsx` en la Fase 3 según el patrón 1 de §3.2. Fronteras impuestas con `import/no-restricted-paths` (shared↛features/app · features↛app · cross-feature solo por `index.ts`). `prisma migrate dev` corre, `next build` pasa, lint pasa, y la regla rechaza un import prohibido de prueba. Pendiente de tareas del usuario: instalar la PWA en el iPhone y configurar Tailscale/IP local |
 
 ---
 
@@ -77,15 +79,20 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 > Estimaciones para 1 persona a tiempo parcial, aprendiendo Next.js sobre la marcha.
 
 ### Fase 0 — Fundación (2-3 días)
-- [ ] Crear proyecto **Next.js** (App Router, TypeScript) + Tailwind + shadcn/ui.
-- [ ] Montar la estructura de **arquitectura modular por features** (ARCHITECTURE.md §3.1): `src/app`, `src/features`, `src/shared`, con las carpetas de features vacías y su `index.ts`.
-- [ ] Configurar la **regla de dependencias en ESLint** (`import/no-restricted-paths` o `eslint-plugin-boundaries`) para que las fronteras se impongan solas. Hacerlo ahora cuesta 5 minutos; con 40 archivos ya no.
-- [ ] Configurar **Prisma** + SQLite. El esquema completo ya está preparado en [`prisma/schema.prisma`](./prisma/schema.prisma) — copiarlo dentro del proyecto y correr `npx prisma migrate dev`.
-- [ ] Cargar el sistema de diseño «Ánfora»: [`design/tokens.css`](./design/tokens.css) → `app/globals.css`, [`design/tailwind.tokens.ts`](./design/tailwind.tokens.ts) → `theme.extend` de Tailwind.
-- [ ] Definir los **schemas Zod** de ejercicios (§5.1 de ARCHITECTURE) — el contrato antes que el contenido.
-- [ ] Configurar PWA: manifest + Serwist + íconos; instalarla en el iPhone desde Safari.
-- [ ] Acceso desde el iPhone: **Tailscale** (o IP de red local).
-- [ ] **Listo cuando:** `npx prisma migrate dev` corre, una página lista cursos desde la BD local con los estilos de Ánfora aplicados, y la PWA se instala en tu iPhone.
+- [x] Crear proyecto **Next.js** (App Router, TypeScript) + Tailwind + shadcn/ui.
+- [x] Montar la estructura de **arquitectura modular por features** (ARCHITECTURE.md §3.1): `src/app`, `src/features`, `src/shared`, con las carpetas de features vacías y su `index.ts`.
+- [x] Configurar la **regla de dependencias en ESLint** (`import/no-restricted-paths` o `eslint-plugin-boundaries`) para que las fronteras se impongan solas. Hacerlo ahora cuesta 5 minutos; con 40 archivos ya no.
+- [x] Configurar **Prisma** + SQLite. El esquema completo ya está preparado en [`prisma/schema.prisma`](./prisma/schema.prisma) — copiarlo dentro del proyecto y correr `npx prisma migrate dev`.
+- [x] Cargar el sistema de diseño «Ánfora»: [`design/tokens.css`](./design/tokens.css) → `app/globals.css`, [`design/tailwind.tokens.ts`](./design/tailwind.tokens.ts) → `theme.extend` de Tailwind.
+- [x] Definir los **schemas Zod** de ejercicios (§5.1 de ARCHITECTURE) — el contrato antes que el contenido.
+- [x] Configurar PWA: manifest (Metadata API) + Serwist + íconos.
+- [x] **Listo cuando** (verificable por el agente): `npx prisma migrate dev` corre sin error; `npm run dev` levanta; una página consulta `Course` con Prisma y renderiza con los estilos de Ánfora — **la BD está vacía en esta fase, así que mostrar el estado vacío es el resultado correcto** (el seed es Fase 1, no inventes datos); `npm run lint` pasa y la regla de fronteras rechaza un import prohibido de prueba.
+
+> **Tareas de esta fase que hace el usuario, no el agente** (requieren su teléfono y su red):
+> - Instalar la PWA en el iPhone desde Safari y confirmar que abre.
+> - Configurar **Tailscale** (o anotar la IP de red local) para llegar al servidor desde el teléfono.
+>
+> El agente deja el manifest y el service worker listos y **avisa** que estos dos pasos quedan pendientes; no los marca como hechos.
 
 ### Fase 1 — Datos y contenido base (3-5 días)
 - [ ] Completar esquema Prisma: `VocabularyEntry`, `MediaAsset`, `UserProgress`, `UserAnswer`, `ReviewQueue`, `LearnerSnapshot`, `AiFeedbackCache`.
@@ -99,7 +106,8 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 - [ ] **Listo cuando:** el flujo completo es navegable con datos reales desde el iPhone.
 
 ### Fase 3 — Motor de ejercicios (5-7 días)
-- [ ] `ExerciseRenderer` que despacha por `type`; renderers de `multiple_choice`, `fill_blank`, `order_words`, `translation`.
+- [ ] **Migrar `features/exercises/schemas.ts` a la estructura del patrón 1** (ARCHITECTURE.md §3.2): una carpeta por tipo en `types/<tipo>/` con `schema.ts` + `renderer.tsx` + `validate.ts` + `index.ts`, y `registry.ts` como único índice. Se dejó como archivo único en la Fase 0 porque aún no existían renderers ni validadores.
+- [ ] `ExerciseRenderer` que despacha por `type` leyendo del `registry`; renderers de `multiple_choice`, `fill_blank`, `order_words`, `translation`.
 - [ ] **Validación determinista** en servidor: normalización NFD, `accept[]`, distancia de edición, y generación de `errorTags[]`.
 - [ ] Feedback inmediato, puntos, barra de progreso, guardado de `UserAnswer`.
 - [ ] **Listo cuando:** una lección completa se juega de principio a fin y el progreso persiste al recargar.

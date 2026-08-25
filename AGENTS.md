@@ -1,57 +1,42 @@
 # Instrucciones para agentes de código
 
-Proyecto: **Griego App** — PWA personal para aprender griego moderno desde español.
-Este archivo lo leen automáticamente OpenCode, Claude Code y herramientas similares. Léelo completo antes de escribir código.
+**Griego App** — PWA personal para aprender griego moderno desde español, con un profesor de IA que explica los errores.
+Este archivo lo leen automáticamente OpenCode, Claude Code y similares. **Léelo completo antes de escribir código.**
+
+Nada está construido todavía. El repo contiene **solo documentación y archivos de configuración preparados**. Empieza por la **Fase 0** de [PLAN.md](./PLAN.md) §4.
 
 ---
 
-## Lee esto primero
+## 1. Qué es este proyecto, en 30 segundos
 
-| Documento | Para qué |
-|---|---|
-| [PLAN.md](./PLAN.md) §4 | **Las fases, en orden.** Trabaja UNA fase a la vez. Cada una tiene su criterio de "Listo cuando:" |
-| [ARCHITECTURE.md](./ARCHITECTURE.md) | Stack, modelo de datos, motor de ejercicios, capa de IA. **§3.1 son los patrones de diseño a seguir** (y los que NO). **§7 explica por qué las cosas son como son** — lee ambas antes de proponer cambios |
-| [CURRICULUM.md](./CURRICULUM.md) | Qué se enseña y en qué orden; los tres ejes del contenido |
-| [SCREENS.md](./SCREENS.md) | Pantallas y sistema de diseño |
-
----
-
-## Archivos ya preparados — NO los reinventes
-
-| Archivo | Qué hacer con él |
-|---|---|
-| [`prisma/schema.prisma`](./prisma/schema.prisma) | Esquema completo, listo. Copiarlo y correr `npx prisma migrate dev`. No rediseñar los modelos |
-| [`design/tokens.css`](./design/tokens.css) | Pegar en `app/globals.css`. Es la paleta «Ánfora» ya elegida |
-| [`design/tailwind.tokens.ts`](./design/tailwind.tokens.ts) | Importar en `theme.extend` de `tailwind.config.ts` |
-| [`design/Anfora*.dc.html`](./design/) | Mockups aprobados de Hoy, Lección y Feedback. **Son la referencia visual** — replica su estructura y espaciado |
-| [`content/*.csv`](./content/) | **Currículo A1 completo** (7 módulos, 212 entradas). El seed los lee. **No inventes vocabulario griego** — si falta algo, dilo en vez de improvisarlo. Esquema y validaciones obligatorias en [`content/README.md`](./content/README.md) |
-| [`.env.example`](./.env.example) | Copiar a `.env.local` |
+- **Usuario:** una sola persona, uso personal. Corre en local (SQLite, sin nube). Costo objetivo: $0 + centavos de DeepSeek.
+- **Plataforma:** PWA instalable en iPhone, y web en escritorio. **Mobile-first**, siempre.
+- **Contenido:** griego A1 completo, ya escrito, en `content/*.csv`.
+- **IA:** DeepSeek, y **solo** DeepSeek. Es texto puro: no procesa imágenes ni audio.
+- **La idea que define la app:** la IA **nunca decide si una respuesta es correcta** — eso lo hace código determinista. DeepSeek solo *explica* un error ya detectado, con el contexto del historial del alumno.
 
 ---
 
-## Reglas del proyecto (no negociables)
+## 2. Documentación — dónde está cada cosa
 
-Estas salen de decisiones ya tomadas y documentadas. Si crees que alguna está mal, **dilo antes de romperla**, no después.
-
-1. **La IA nunca decide si una respuesta es correcta.** La corrección es código determinista (normalización NFD, `accept[]`, distancia de edición). DeepSeek solo *explica* un error ya detectado. Ver ARCHITECTURE.md §6.1.
-2. **Todo lo que sale de DeepSeek se valida con Zod** antes de usarse. `response_format: json_object` garantiza JSON válido, no los campos correctos. Si falla la validación: un reintento, luego caer al feedback fijo del contenido.
-3. **La validación vive en el servidor.** El cliente nunca calcula puntaje ni decide si algo está bien.
-4. **Las claves de API solo en el servidor.** Nunca `NEXT_PUBLIC_*` para secretos.
-5. **El contenido es archivos versionados**, la BD es una proyección. El seed debe ser idempotente: borrar `dev.db`, correr seed, y tener todo de vuelta.
-6. **Nada de griego ni español hardcodeado en componentes.** Los textos de contenido vienen de la BD; los de UI, de archivos de traducción.
-7. **Solo los colores de [`design/tokens.css`](./design/tokens.css).** Nada de inventar un gris intermedio. Contraste mínimo 4.5:1 (3:1 si el texto es ≥24px).
-8. **Áreas táctiles:** 44px mínimo para cualquier cosa tocable, 56px para opciones de ejercicio y CTA principal.
-9. **El griego siempre en la fuente `--font-greek`** (Noto Sans), incluido el griego suelto dentro de un párrafo. Es restricción pedagógica: distingue ο/σ y ξ/ζ.
-10. **Sin barra de estado de iOS falsa** ni teclado falso en la UI.
+| Documento | Qué contiene | Cuándo lo necesitas |
+|---|---|---|
+| [PLAN.md](./PLAN.md) **§4** | **Las 9 fases, en orden**, con checkboxes y criterio de "Listo cuando:" | Siempre. Trabaja UNA fase a la vez |
+| [PLAN.md](./PLAN.md) §0 | Historial de decisiones y por qué se tomaron | Antes de proponer cambiar algo |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) **§3.1** | **La arquitectura: modular por features** + regla de dependencias | Antes de crear cualquier carpeta |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) §3.2 | Los 4 patrones internos | Al tocar el motor de ejercicios o la IA |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) §4-5 | Modelo de datos y motor de ejercicios | Fases 0-3 |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) §6 | Capa de tutoría (prompts, caché, LearnerSnapshot) | Fase 5 |
+| [ARCHITECTURE.md](./ARCHITECTURE.md) §7 | **Por qué las cosas son como son** | Antes de proponer cambios |
+| [SCREENS.md](./SCREENS.md) | Pantallas, anatomía, sistema de diseño | Al construir UI |
+| [CURRICULUM.md](./CURRICULUM.md) | Qué se enseña y en qué orden | Fases 1 y 4 |
+| [content/README.md](./content/README.md) | Esquema de los CSV y validaciones obligatorias | Al escribir el seed |
 
 ---
 
-## Convenciones técnicas
+## 3. Arquitectura: modular por features
 
-- **Next.js App Router + TypeScript.** Server Components por defecto; `"use client"` solo donde hace falta interactividad.
-- **Server Actions** para mutaciones; Route Handlers solo si hace falta un endpoint HTTP real.
-- **Prisma** para todo acceso a datos. Nada de SQL crudo sin una razón explicada.
-### Arquitectura: modular por features (ARCHITECTURE.md §3.1 — no la reorganices)
+Detalle completo en [ARCHITECTURE.md](./ARCHITECTURE.md) §3.1. Lo esencial:
 
 ```
 src/
@@ -62,17 +47,18 @@ src/
     ui/                      componentes del sistema «Ánfora»
     lib/db.ts                cliente Prisma singleton
 prisma/                      schema + migraciones + seed
-content/                     CSV versionados (ver content/README.md)
+content/                     CSV versionados (fuente de verdad del contenido)
+design/                      tokens y mockups (ver §4)
 ```
 
-**Regla de dependencias — en una sola dirección:** `app/ → features/ → shared/`
+**Regla de dependencias — una sola dirección:** `app/ → features/ → shared/`
 
 1. `shared/` **nunca** importa de `features/` ni de `app/`.
-2. Un feature importa de otro **solo por su `index.ts`**. Nunca alcances archivos internos de otro feature.
+2. Un feature importa de otro **solo por su `index.ts`**. Nunca alcances archivos internos ajenos.
 3. `app/` compone features; no contiene lógica.
 4. Sin ciclos entre features.
 
-**Cada feature tiene la misma anatomía:**
+**Anatomía idéntica en todos los features:**
 ```
 features/<nombre>/
   index.ts        ← API pública: lo único importable desde fuera
@@ -82,25 +68,75 @@ features/<nombre>/
   lib/            ← lógica interna
 ```
 
-**El motor de ejercicios** (`features/exercises/`) sigue el patrón de módulo por tipo: `types/<tipo>.tsx` lleva **schema Zod + renderer + validator juntos**, y `registry.ts` es el único índice.
+**El motor de ejercicios** (`features/exercises/`): cada tipo lleva **schema Zod + renderer + validator juntos** en `types/<tipo>.tsx`, y `registry.ts` es el único índice.
 
-- **Al agregar un tipo de ejercicio:** un archivo en `features/exercises/types/` + una línea en `registry.ts`. Nada más. Si acabas tocando el reproductor de lecciones o el motor de corrección, algo se salió del patrón.
-- **Al agregar una capacidad nueva:** una carpeta nueva en `features/`. No toques las existentes.
-- **Idioma del código:** identificadores y comentarios en inglés; texto de cara al usuario en español.
-- **Commits:** mensajes en español, imperativo, una unidad de trabajo por commit.
+- **Agregar un tipo de ejercicio:** un archivo + una línea en `registry.ts`. Si acabas tocando el reproductor de lecciones o el motor de corrección, algo se salió del patrón.
+- **Agregar una capacidad nueva:** una carpeta nueva en `features/`. No toques las existentes.
 
 ---
 
-## Cómo trabajar
+## 4. Sistema de diseño — dónde está todo
+
+**Dirección elegida: «Ánfora»** (cálida, editorial: papiro, terracota y oliva). Definida en [SCREENS.md](./SCREENS.md) §4.2, que es la **fuente de verdad**.
+
+| Qué | Dónde | Qué hacer |
+|---|---|---|
+| Tokens de color | [`design/tokens.css`](./design/tokens.css) | Pegar en `app/globals.css` |
+| Tema de Tailwind | [`design/tailwind.tokens.ts`](./design/tailwind.tokens.ts) | Importar en `theme.extend` |
+| **Mockups aprobados** | `design/AnforaHoy.dc.html`<br>`design/AnforaLeccion.dc.html`<br>`design/AnforaFeedback.dc.html` | **Léelos.** Son HTML con estilos en línea: la referencia exacta de estructura, espaciado y jerarquía |
+
+> ⚠️ **No abras `design/griego-app-direcciones.html`** — pesa 2.2 MB (es el visor del canvas) y te llenará el contexto sin aportar nada. Los tres mockups de arriba tienen todo lo que necesitas.
+> Los archivos `Egeo*` y `Nocturno*` son las direcciones **descartadas**. Ignóralos.
+
+**Tipografía:**
+
+| Rol | Fuente |
+|---|---|
+| Títulos, texto del profesor, opciones de ejercicio | **Newsreader** (serif editorial, Google Fonts) |
+| UI, etiquetas, botones, metadatos | Stack del sistema (`-apple-system`) |
+| **Todo el texto griego** | **Noto Sans** — incluido el griego suelto dentro de un párrafo |
+
+**Mockups existentes: solo 3 de 14 pantallas** (Hoy, Lección, Feedback) — justo las de las Fases 0-3. Las demás (Curso, Módulo, Alfabeto, Fin de lección, Perfil…) **no están diseñadas**. Cuando llegues a ellas, sigue el sistema de diseño y **avisa** que estás inventando la composición; no la des por aprobada.
+
+**Modo oscuro:** los tokens existen pero **no está diseñado**. No lo construyas todavía.
+
+---
+
+## 5. Reglas no negociables
+
+Salen de decisiones ya tomadas y documentadas. Si crees que alguna está mal, **dilo antes de romperla**, no después.
+
+1. **La IA nunca decide si una respuesta es correcta.** La corrección es código determinista (normalización NFD, `accept[]`, distancia de edición). DeepSeek solo *explica* un error ya detectado. Ver ARCHITECTURE.md §6.1.
+2. **Todo lo que sale de DeepSeek se valida con Zod** antes de usarse. `response_format: json_object` garantiza JSON válido, no los campos correctos. Si falla: un reintento, luego caer al feedback fijo del contenido.
+3. **La validación vive en el servidor.** El cliente nunca calcula puntaje ni decide si algo está bien.
+4. **Claves de API solo en el servidor.** Nunca `NEXT_PUBLIC_*` para secretos.
+5. **El contenido es archivos versionados**, la BD es una proyección. El seed debe ser idempotente: borrar `dev.db`, sembrar, y tener todo de vuelta.
+6. **Nada de griego ni español hardcodeado en componentes.** El contenido viene de la BD; los textos de UI, de archivos de traducción.
+7. **Solo los colores de [`design/tokens.css`](./design/tokens.css).** Nada de inventar un gris intermedio. Contraste mínimo 4.5:1 (3:1 si el texto es ≥24px).
+8. **Áreas táctiles:** 44px mínimo para cualquier cosa tocable; 56px para opciones de ejercicio y CTA principal.
+9. **Sin barra de estado de iOS falsa** ni teclado falso dibujado en la UI.
+10. **No inventes griego.** El contenido está en `content/`. Si falta algo, dilo; no lo improvises. Un error de griego enseña algo incorrecto.
+
+---
+
+## 6. Convenciones técnicas
+
+- **Next.js App Router + TypeScript.** Server Components por defecto; `"use client"` solo donde hace falta interactividad.
+- **Server Actions** para mutaciones; Route Handlers solo si se necesita un endpoint HTTP real.
+- **Prisma** para todo acceso a datos. Nada de SQL crudo sin explicar por qué.
+- **Zod** para todo dato que cruce una frontera: `schemaJson` de ejercicios, filas del CSV al sembrar, y respuestas de DeepSeek.
+- **Idioma:** identificadores y comentarios en inglés; texto de cara al usuario en español.
+- **Commits:** en español, imperativo, una unidad de trabajo por commit.
+- **Dependencias:** no instales nada pesado sin decir para qué. Esto corre en una laptop.
+
+---
+
+## 7. Cómo trabajar
 
 - **Una fase a la vez.** No adelantes trabajo de fases posteriores aunque parezca fácil.
-- **Al terminar una fase**, verifica su criterio de "Listo cuando:" y márcala `[x]` en PLAN.md.
+- **Antes de escribir código en una fase nueva**, resume en pocas líneas qué vas a hacer.
+- **Al terminar**, verifica el criterio de "Listo cuando:" de esa fase y márcala `[x]` en PLAN.md.
+- **Distingue lo que puedes verificar de lo que no.** Algunas tareas requieren el teléfono del usuario o su red (instalar la PWA, Tailscale). Déjalas listas, **avisa que quedan pendientes** y no las marques como hechas.
 - **Si tomas una decisión técnica no documentada**, agrégala al changelog de PLAN.md §0.
-- **Si algo de la documentación resulta estar mal o incompleto**, corrige el documento en el mismo commit. Los documentos son la fuente de verdad; no los dejes desactualizados.
-- **No instales dependencias pesadas** sin decir para qué. El proyecto corre local en una laptop.
-
----
-
-## Estado actual
-
-Nada construido todavía. **Empieza por la Fase 0** de [PLAN.md](./PLAN.md) §4.
+- **Si la documentación resulta estar mal o incompleta**, corrige el documento en el mismo commit. Los documentos son la fuente de verdad; no los dejes desactualizados.
+- **Reporta con honestidad.** Si algo no compila, si saltaste un paso, o si no pudiste verificar algo, dilo con la salida real. No declares terminado lo que no comprobaste.

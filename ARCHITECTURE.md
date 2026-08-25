@@ -169,36 +169,41 @@ Cuatro patrones puntuales resuelven los ejes de cambio previsibles. Cada uno viv
 
 ### Patrón 1 — Un tipo de ejercicio = un módulo autocontenido *(el central)*
 
-Cada tipo de ejercicio tiene tres piezas: su **schema Zod**, su **renderer React** y su **validador determinista**. La regla es que las tres viven **juntas en un solo archivo por tipo**, y se registran en un único índice:
+Cada tipo de ejercicio tiene tres piezas: su **schema Zod**, su **renderer React** y su **validador determinista**. Las tres viven **juntas en una carpeta por tipo**, en archivos separados, y se registran en un único índice:
 
 ```
-lib/exercises/
+src/features/exercises/
   types/
-    multiple-choice.tsx     ← schema + renderer + validator, los tres juntos
-    fill-blank.tsx
-    order-words.tsx
-    translation.tsx
-    free-writing.tsx
-    alphabet-drill.tsx
+    multiple-choice/
+      schema.ts             ← Zod. TS PURO — el seed lo importa desde Node
+      renderer.tsx          ← React. Solo cliente
+      validate.ts           ← corrección determinista. Solo servidor
+      index.ts              ← ensambla el ExerciseModule
+    fill-blank/
+    order-words/
+    translation/
+    free-writing/
+    alphabet-drill/
   registry.ts               ← el ÚNICO lugar que conoce la lista completa
   normalize.ts              ← normalización NFD compartida (§5.3)
 ```
 
-Cada módulo exporta la misma forma:
+El `index.ts` de cada tipo ensambla la misma forma:
 
 ```ts
 export const multipleChoice: ExerciseModule<'multiple_choice'> = {
   type: 'multiple_choice',
   schema: MultipleChoiceSchema,           // Zod, valida el schemaJson
   Renderer: MultipleChoiceRenderer,        // componente React
-  validate: (exercise, input) => ({        // corrección determinista
-    isCorrect: boolean,
-    errorTags: string[],                   // alimenta LearnerSnapshot (§6.3)
-  }),
+  validate,                                // (exercise, input) => { isCorrect, errorTags[] }
 };
 ```
 
-**Por qué así:** agregar un tipo de ejercicio nuevo es **crear un archivo y añadir una línea al registro**. No se toca el reproductor de lecciones, ni el motor de corrección, ni el modelo de datos. Es la operación que más veces se va a repetir en la vida del proyecto (el roadmap ya contempla 8 tipos, y la Fase 8 agrega otro), así que es la que merece la abstracción.
+> **Por qué carpeta con archivos separados y no un solo `.tsx`** — corregido el 2026-08-25, tras detectarlo al ejecutar la Fase 0:
+> el **seed** valida los CSV con los mismos schemas Zod y corre en Node, sin React. Si el schema viviera dentro del `.tsx` del renderer, importarlo desde el seed arrastraría React al proceso: frágil y lento sin ganar nada.
+> La separación mantiene la co-locación real (**una carpeta = un tipo, un solo lugar donde mirar**) y además respeta las fronteras servidor/cliente: `validate.ts` nunca llega al bundle del navegador y `renderer.tsx` nunca llega al seed.
+
+**Por qué así:** agregar un tipo de ejercicio nuevo es **crear una carpeta y añadir una línea al registro**. No se toca el reproductor de lecciones, ni el motor de corrección, ni el modelo de datos. Es la operación que más veces se va a repetir en la vida del proyecto (el roadmap ya contempla 8 tipos, y la Fase 8 agrega otro), así que es la que merece la abstracción.
 
 **La alternativa que se descartó:** schemas en `lib/schemas.ts`, renderers en `components/exercises/`, validadores en `lib/validation.ts`. Es lo que sale "natural" si nadie lo decide, y significa que agregar un tipo toca tres carpetas y es fácil olvidar una — típicamente el validador, que es justo el que no falla ruidosamente.
 

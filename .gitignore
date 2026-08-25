@@ -39,3 +39,7 @@ next-env.d.ts
 # prisma / sqlite local
 prisma/dev.db
 prisma/dev.db-journal
+
+# serwist / service worker (generados en build)
+public/sw.js
+public/swe-worker*
