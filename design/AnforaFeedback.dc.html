@@ -1,0 +1,80 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=Noto+Sans:wght@400;500;600&display=swap">
+  <style>
+    body { margin: 0; }
+    a { color: #B4532A; } a:hover { color: #8E3F1F; }
+  </style>
+</helmet>
+<div style="width: 390px; height: 844px; box-sizing: border-box; background: #FAF6F0; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Noto Sans', system-ui, sans-serif; color: #2B2622; display: flex; flex-direction: column; overflow: hidden;">
+
+  <div style="padding: 30px 22px 0 22px; display: flex; flex-direction: column; opacity: 0.3;">
+    <div style="display: flex; align-items: center; gap: 8px;">
+      <div style="width: 44px; height: 44px; margin: -11px -11px -11px -11px; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#6E6155" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg>
+      </div>
+      <div style="flex-grow: 1; height: 4px; background: #E8DFD2; overflow: hidden; margin-left: 6px;">
+        <div style="width: 66%; height: 100%; background: #B4532A;"></div>
+      </div>
+      <span style="font-size: 12px; color: #6E6155; font-variant-numeric: tabular-nums; letter-spacing: 0.4px;">8/12</span>
+    </div>
+    <div style="height: 48px;"></div>
+    <div style="font-family: 'Newsreader', Georgia, serif; font-size: 19px; font-style: italic; color: #6E6155;">Escribe la palabra en griego</div>
+    <div style="height: 30px;"></div>
+    <div style="display: flex; justify-content: center;">
+      <div style="font-family: 'Newsreader', Georgia, serif; font-size: 42px; font-weight: 500;">árbol</div>
+    </div>
+  </div>
+
+  <div style="flex-grow: 1;"></div>
+
+  <div style="background: #FFFFFF; border-top: 2px solid #B4532A; padding: 24px 22px 26px 22px; display: flex; flex-direction: column; gap: 18px; flex-shrink: 0;">
+
+    <div style="display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #E8DFD2; padding-bottom: 12px;">
+      <span style="font-family: 'Newsreader', Georgia, serif; font-size: 26px; font-weight: 500; color: #B03A22; letter-spacing: -0.2px;">Casi</span>
+      <span style="font-size: 10px; font-weight: 600; letter-spacing: 1.2px; color: #6E6155;">ACENTO FALTANTE</span>
+    </div>
+
+    <div style="display: flex; flex-direction: column; gap: 12px;">
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <span style="font-size: 10px; font-weight: 600; letter-spacing: 1.2px; color: #6E6155; width: 76px; flex-shrink: 0;">ESCRIBISTE</span>
+        <span style="font-family: 'Noto Sans', system-ui, sans-serif; font-size: 25px; font-weight: 400; color: #7E7266; text-decoration: line-through; text-decoration-color: #C9897A;">δεντρο</span>
+      </div>
+      <div style="display: flex; align-items: baseline; gap: 14px;">
+        <span style="font-size: 10px; font-weight: 600; letter-spacing: 1.2px; color: #6E6155; width: 76px; flex-shrink: 0;">CORRECTO</span>
+        <span style="font-family: 'Noto Sans', system-ui, sans-serif; font-size: 25px; font-weight: 500;">δ<span style="color: #48702E; border-bottom: 2px solid #48702E;">έ</span>ντρο</span>
+      </div>
+    </div>
+
+    <div style="background: #F4F1E9; border-left: 2px solid #5A6A3C; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-size: 10px; font-weight: 600; letter-spacing: 1.4px; color: #4E5C33;">TU PROFESOR</div>
+      <div style="font-family: 'Newsreader', Georgia, serif; font-size: 17px; line-height: 1.5; color: #2B2622; text-wrap: pretty;">Te faltó el <em style="font-style: normal; font-weight: 600;">acento agudo</em> en la έ. En griego el acento no es opcional: marca qué sílaba suena más fuerte y forma parte de la ortografía.</div>
+    </div>
+
+    <div style="display: flex; gap: 10px; align-items: flex-start;">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#9A6A1E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink: 0; margin-top: 2px;"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg>
+      <div style="font-size: 13px; line-height: 1.45; color: #6E6155;">Es la <strong style="font-weight: 600;">3ª vez esta semana</strong> que omites un acento. Lo agregué a tu repaso de mañana.</div>
+    </div>
+
+    <div style="height: 56px; border-radius: 8px; background: #B4532A; display: flex; align-items: center; justify-content: center;">
+      <span style="font-size: 16px; font-weight: 600; color: #FFFFFF; letter-spacing: 0.3px;">Entendido</span>
+    </div>
+
+  </div>
+
+</div>
+</x-dc>
+<script data-dc-script data-props='{"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  renderVals() { return {}; }
+}
+</script>
+</body>
+</html>

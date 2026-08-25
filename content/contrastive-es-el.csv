@@ -1,0 +1,23 @@
+# Notas contrastivas del par español → griego moderno
+# Alimenta la tabla ContrastiveNote (ARCHITECTURE.md §4, CURRICULUM.md §4).
+#
+# `bridge_language` es texto que se INYECTA LITERALMENTE en el prompt de DeepSeek cuando el
+# errorTag correspondiente aparece en el turno (ARCHITECTURE.md §6.2). Escribirlo como se lo
+# dirías a un alumno, no como una regla gramatical.
+#
+# Este archivo es ESPECÍFICO DEL PAR. Un curso en→el necesita su propio archivo, con notas
+# distintas (y a veces opuestas): el género es fácil aquí y difícil allá.
+feature,error_tag,transfer_type,note,bridge_language
+vocales,vocal_incorrecta,POSITIVA,"El griego tiene exactamente las mismas 5 vocales puras del español. Transferencia total: no requiere drill extenso, solo mapeo de letra a sonido.","Las vocales griegas son las mismas cinco del español. Si ya sabes decir 'a e i o u', ya sabes pronunciarlas: solo cambian las letras."
+beta_labiodental,confusion_b_v,NEGATIVA,"Interferencia activa: en español b y v son el mismo fonema. El hispanohablante tiende a leer β como /b/.","En español la b y la v suenan igual, por eso cuesta. En griego la β es SIEMPRE /v/, como en 'vaca'. El sonido /b/ se escribe con μπ."
+theta,sonido_theta,NEUTRA,"/θ/ no existe en español latinoamericano. Sí existe en el español peninsular (z de 'zapato').","La θ es como la z de España en 'zapato': la lengua entre los dientes. Si no usas ese sonido en tu español, practícalo aparte."
+iotacismo,confusion_i,NEUTRA,"η, ι, υ (y los dígrafos ει, οι) suenan todos /i/. La dificultad es ortográfica, no fonética.","Tres letras griegas suenan /i/: η, ι, υ. Pronunciarlas es fácil; lo difícil es recordar cuál lleva cada palabra. Se aprende con la palabra entera, no con reglas."
+omicron_omega,confusion_omicron_omega,NEUTRA,"ο y ω suenan ambas /o/. Error ortográfico frecuente, sin base fonética.","ο y ω suenan igual, las dos /o/. No hay forma de oírlo: hay que memorizar cuál lleva cada palabra."
+acento_escrito,acento_faltante,POSITIVA,"El español también marca el acento con tilde. El concepto transfiere 1:1; solo hay que aplicarlo de forma más sistemática.","En griego el acento se escribe siempre, igual que la tilde en español, y no es opcional: forma parte de la ortografía de la palabra."
+sigma_final,sigma_final,NEUTRA,"Regla puramente ortográfica sin equivalente en español.","La sigma tiene dos formas: ς solo al final de palabra, σ en cualquier otra posición."
+genero_gramatical,genero_incorrecto,POSITIVA,"El español ya tiene concordancia de género. Solo falta el neutro: es una extensión, no un concepto nuevo.","Ya sabes concordar género porque el español lo hace. La única novedad es que el griego tiene un tercer género, el neutro (το), además de masculino y femenino."
+genero_neutro,genero_neutro,NEUTRA,"El neutro es el único de los tres géneros sin equivalente en español.","El neutro (το) no existe en español. Ojo: la terminación no siempre ayuda — το πρόβλημα termina en -α pero es neutro, no femenino."
+casos,caso_incorrecto,NEUTRA,"El español no declina sustantivos. Único apoyo: los pronombres (yo/me/mí), que dan la intuición de que la forma cambia según la función.","El español no declina los sustantivos, así que esto es nuevo. Lo más parecido que ya conoces son los pronombres: 'yo / me / mí' cambian según su función en la frase. En griego eso le pasa a todos los sustantivos."
+aspecto_verbal,aspecto_incorrecto,POSITIVA,"El español ya opone pretérito/imperfecto obligatoriamente. La categoría cognitiva ya existe; solo se extiende a más tiempos.","Ya distingues 'leí' de 'leía' en español sin pensarlo: eso es aspecto. El griego usa la misma idea, pero además la marca en el futuro y en el subjuntivo."
+sin_infinitivo,uso_infinitivo,POSITIVA,"El español usa subjuntivo tras verbos volitivos ('quiero que leas'), que es estructuralmente el patrón griego να + subjuntivo.","El griego no tiene infinitivo: no se dice 'quiero leer' sino θέλω να διαβάσω, literalmente 'quiero que lea'. Ya haces esto en español cuando dices 'quiero que leas'."
+orden_palabras,orden_incorrecto,POSITIVA,"El español también tolera orden flexible mediante clíticos. No requiere enseñanza explícita temprana.","El orden de palabras en griego es flexible, como en español: puedes decir 'el libro lo compró Juan' sin que suene raro. El caso te dice quién hace qué, no la posición."

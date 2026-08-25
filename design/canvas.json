@@ -1,0 +1,46 @@
+{
+  "artboards": [
+    { "file": "Main.dc.html",          "title": "A · Egeo — Hoy",              "x": 0,    "y": 0,    "w": 390, "h": 844 },
+    { "file": "EgeoLeccion.dc.html",   "title": "A · Egeo — Lección",          "x": 470,  "y": 0,    "w": 390, "h": 844 },
+    { "file": "EgeoFeedback.dc.html",  "title": "A · Egeo — Feedback",         "x": 940,  "y": 0,    "w": 390, "h": 844 },
+
+    { "file": "AnforaHoy.dc.html",      "title": "B · Ánfora — Hoy",            "x": 0,    "y": 1020, "w": 390, "h": 844 },
+    { "file": "AnforaLeccion.dc.html",  "title": "B · Ánfora — Lección",        "x": 470,  "y": 1020, "w": 390, "h": 844 },
+    { "file": "AnforaFeedback.dc.html", "title": "B · Ánfora — Feedback",       "x": 940,  "y": 1020, "w": 390, "h": 844 },
+
+    { "file": "NocturnoHoy.dc.html",      "title": "C · Nocturno — Hoy",        "x": 0,    "y": 2040, "w": 390, "h": 844 },
+    { "file": "NocturnoLeccion.dc.html",  "title": "C · Nocturno — Lección",    "x": 470,  "y": 2040, "w": 390, "h": 844 },
+    { "file": "NocturnoFeedback.dc.html", "title": "C · Nocturno — Feedback",   "x": 940,  "y": 2040, "w": 390, "h": 844 }
+  ],
+  "annotations": [
+    {
+      "id": "como-leer",
+      "x": -420,
+      "y": 0,
+      "w": 360,
+      "text": "CÓMO LEER ESTO\n\nCada fila es una dirección visual completa.\nCada columna es la misma pantalla:\nHoy · Lección (ejercicio 7) · Feedback (ejercicio 8).\n\nElige una FILA, no piezas sueltas — la idea\nes decidir el carácter de la app, no el detalle.\nUna vez elegida, los detalles se afinan encima.\n\nLo que NO cambia entre las tres, a propósito:\nla estructura, la jerarquía, los datos mostrados\ny la fuente del griego (Noto Sans). Esa última es\nuna restricción pedagógica, no estética: distingue\nbien ο/σ y ξ/ζ, que es justo lo que un\nprincipiante confunde.\n\nLa palabra de ejemplo es δέντρο (déntro, árbol),\nla forma estándar del griego moderno. El error\nque se muestra —δεντρο— se diferencia SOLO en\nel acento, que es exactamente lo que el profesor\nexplica."
+    },
+    {
+      "id": "dir-a",
+      "x": -420,
+      "y": 380,
+      "w": 360,
+      "text": "A · EGEO\n\nLa app se hace pasar por nativa de iOS: tipografía\ndel sistema, azul egeo, tarjetas blancas flotando\nsobre gris claro, sombras suaves. La jerarquía la\nhace el espacio, no el color.\n\nA favor: es la que menos fricción tiene en un\niPhone, la más rápida de construir con shadcn/ui\ny la que mejor envejece.\n\nEn contra: es la menos memorable. Se parece a\nmuchas apps buenas — y a ninguna en particular."
+    },
+    {
+      "id": "dir-b",
+      "x": -420,
+      "y": 1020,
+      "w": 360,
+      "text": "B · ÁNFORA\n\nCuaderno de estudio, no app de productividad.\nFondo papiro, terracota y oliva, serif editorial\n(Newsreader), líneas finas en vez de sombras,\nesquinas casi rectas.\n\nA favor: tiene carácter y no se parece a Duolingo\nni a nada del montón. El serif hace que leer se\nsienta como estudiar, que es literalmente el punto.\n\nEn contra: es la más lejana al lenguaje de iOS —\nse verá deliberadamente distinta al resto del\nteléfono. Y el serif exige más cuidado con los\ntamaños pequeños."
+    },
+    {
+      "id": "dir-c",
+      "x": -420,
+      "y": 2040,
+      "w": 360,
+      "text": "C · MÁRMOL NOCTURNO\n\nOscuro por defecto, acentos cian y oro,\nSpace Grotesk para los números y títulos.\nEl griego en blanco puro sobre casi negro:\nes lo que más resalta de las tres.\n\nA favor: máxima concentración y el mejor\ncontraste para el contenido griego. Ideal si\nvas a estudiar de noche.\n\nEn contra: menos acogedora de día, y el modo\nclaro pasa a ser el caso secundario — hay que\ndiseñarlo con el mismo cuidado o se siente\ncomo un parche."
+    }
+  ],
+  "launch": { "view": "canvas" }
+}

@@ -1,0 +1,42 @@
+# Módulo 1 — Saludos y presentarse (curso es→el, nivel A1)
+# Fusiona lo que antes eran dos módulos: los 5 manuales de referencia lo tratan como una sola unidad (CURRICULUM.md §3).
+#
+# IMPORTANTE sobre `transliteracion`: está escrita PARA UN HISPANOHABLANTE.
+#   χ → "j" (jamón), no "ch"      δ → "d" (cada)      β → "v"      θ → "th"
+# Si algún día se agrega el par en→el, esta columna NO se reutiliza: se reescribe.
+# Es la demostración concreta de por qué la transliteración pertenece al par y no al idioma (CURRICULUM.md §4).
+#
+# `categoria`: saludo | cortesia | identidad | numero
+# `nota` alimenta el feedback del profesor IA cuando el alumno falla esta entrada.
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,nota
+Γεια σου,,,ya su,hola (informal),saludo,expresión,Literalmente 'salud a ti'. Se usa igual para saludar y despedirse.
+Γεια σας,,,ya sas,hola (formal o a varios),saludo,expresión,Misma expresión con el 'usted' griego. Úsala con desconocidos y gente mayor.
+Καλημέρα,,,kaliméra,buenos días,saludo,expresión,Hasta el mediodía. De καλή (buena) + μέρα (día).
+Καλησπέρα,,,kalispéra,buenas tardes,saludo,expresión,Desde la tarde hasta la noche.
+Καληνύχτα,,,kaliníjta,buenas noches (al despedirse),saludo,expresión,"Solo para despedirse antes de dormir, nunca para saludar al llegar."
+Καλώς ήρθες,,,kalós írthes,bienvenido,saludo,expresión,
+Αντίο,,,andío,adiós,saludo,expresión,Fácil de recordar: es prácticamente la palabra española.
+Ευχαριστώ,,,efjaristó,gracias,cortesia,verbo,La χ suena como la j de jamón. De aquí viene 'eucaristía' en español.
+Παρακαλώ,,,parakaló,por favor / de nada,cortesia,verbo,Sirve para las dos cosas: al pedir algo y al responder a un 'gracias'.
+Συγγνώμη,η,,signómi,perdón / disculpe,cortesia,sustantivo,Sirve tanto para disculparse como para llamar la atención de alguien.
+Ναι,,,ne,sí,cortesia,adverbio,"TRAMPA: suena casi como 'no' en español, pero significa lo contrario. Es el error más común del primer día."
+Όχι,,,óji,no,cortesia,adverbio,"La χ es la j de jamón: 'óji', no 'óchi'."
+Τι κάνεις;,,,ti kánis,¿cómo estás?,identidad,expresión,Literalmente '¿qué haces?'. Ojo: el signo de interrogación griego es el punto y coma (;).
+Καλά,,,kalá,bien,identidad,adverbio,Respuesta estándar a Τι κάνεις;
+Πώς σε λένε;,,,pos se léne,¿cómo te llamas?,identidad,expresión,Literalmente '¿cómo te llaman?'.
+Με λένε,,,me léne,me llamo,identidad,expresión,Literalmente 'me llaman'. El griego no dice 'mi nombre es'.
+Είμαι,,,íme,soy / estoy,identidad,verbo,El verbo más importante del A1. El griego no distingue ser de estar.
+Από πού είσαι;,,,apó pu íse,¿de dónde eres?,identidad,expresión,
+Χαίρω πολύ,,,jéro polí,mucho gusto,identidad,expresión,Literalmente 'me alegro mucho'.
+Κύριος,ο,,kírios,señor,identidad,sustantivo,
+Κυρία,η,,kiría,señora,identidad,sustantivo,
+ένα,,,éna,uno,numero,numeral,También significa 'un/una'. Es el artículo indefinido neutro.
+δύο,,,dío,dos,numero,numeral,La δ suena como la d de cada.
+τρία,,,tría,tres,numero,numeral,Parecida al español: tría / tres.
+τέσσερα,,,tésera,cuatro,numero,numeral,
+πέντε,,,pénde,cinco,numero,numeral,El grupo ντ suena /nd/. De aquí viene 'pentágono'.
+έξι,,,éksi,seis,numero,numeral,La ξ es la x de taxi.
+εφτά,,,eftá,siete,numero,numeral,"También se escribe επτά, forma más culta. Ambas son correctas."
+οχτώ,,,ojtó,ocho,numero,numeral,También se escribe οκτώ. De aquí viene 'octógono'.
+εννιά,,,eniá,nueve,numero,numeral,También se escribe εννέα.
+δέκα,,,déka,diez,numero,numeral,De aquí vienen 'década' y 'decálogo'.

@@ -1,0 +1,74 @@
+/*
+ * Tokens de diseño — dirección «Ánfora» (SCREENS.md §4.2, elegida 2026-08-23)
+ *
+ * Copiar dentro de app/globals.css en la Fase 0. No editar valores aquí sin
+ * editar primero la tabla de SCREENS.md §4.2 — ese documento es la fuente de
+ * verdad; este archivo es su traducción mecánica a CSS.
+ *
+ * Modo oscuro: los valores de .dark existen en SCREENS.md pero AÚN NO ESTÁN
+ * DISEÑADOS (solo tokenizados) — ver la nota en SCREENS.md §4.2. Úsalos como
+ * punto de partida, no como diseño terminado.
+ *
+ * Fuentes (cargar en el <head> del layout, vía next/font o Google Fonts):
+ *   Newsreader  → títulos, texto del profesor, opciones de ejercicio
+ *   Noto Sans   → contenido griego (restricción pedagógica, SCREENS.md §4.1)
+ *   sistema     → UI, etiquetas, botones (-apple-system, sin cargar nada)
+ */
+
+:root {
+  /* Color — Ánfora, modo claro */
+  --color-primary: #B4532A;
+  --color-primary-strong: #A0431F; /* texto/ícono sobre fondo claro que necesite más contraste que --color-primary */
+  --color-secondary: #5A6A3C; /* oliva */
+  --color-background: #FAF6F0;
+  --color-surface: #FFFFFF;
+  --color-border: #DCC9B4;
+  --color-border-soft: #E0D6C8;
+  --color-text: #2B2622;
+  --color-text-soft: #6E6155;
+  --color-success: #48702E;
+  --color-error: #B03A22;
+  --color-streak: #8A5D18; /* racha / puntos */
+
+  /* Tipografía */
+  --font-display: 'Newsreader', Georgia, serif; /* títulos, texto del profesor, opciones */
+  --font-ui: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', system-ui, sans-serif; /* UI, etiquetas */
+  --font-greek: 'Noto Sans', system-ui, sans-serif; /* SIEMPRE para texto griego, incluido el suelto en prosa (ARCHITECTURE.md nota en §7 sobre esto) */
+
+  /* Espaciado y radios observados en los mockups aprobados (design/Anfora*.dc.html) */
+  --radius-card: 10px;
+  --radius-button: 8px;
+  --radius-pill: 999px;
+}
+
+.dark {
+  /* Color — Ánfora, modo oscuro — TOKENIZADO, NO DISEÑADO. Verificar contraste
+     (SCREENS.md §4.3: mínimo 4.5:1, o 3:1 si el texto es ≥24px) antes de dar
+     esto por bueno para producción. */
+  --color-primary: #E07A4F;
+  --color-secondary: #93A86B;
+  --color-background: #1A1613;
+  --color-surface: #241F1B;
+  --color-border: #3A322B;
+  --color-border-soft: #2E2822;
+  --color-text: #F0EAE2;
+  --color-text-soft: #B3A695;
+  --color-success: #7FB356;
+  --color-error: #E8674C;
+  --color-streak: #E3B341;
+}
+
+/*
+ * Mapeo de referencia si en algún momento se instalan componentes de shadcn/ui
+ * (que esperan sus propios nombres de variable). No crear ambos juegos de
+ * variables — mapear estos alias A los tokens de arriba, nunca duplicar valores:
+ *
+ *   --background        → var(--color-background)
+ *   --foreground         → var(--color-text)
+ *   --card                → var(--color-surface)
+ *   --primary            → var(--color-primary)
+ *   --secondary          → var(--color-secondary)
+ *   --muted-foreground   → var(--color-text-soft)
+ *   --border             → var(--color-border)
+ *   --destructive        → var(--color-error)
+ */

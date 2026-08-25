@@ -1,0 +1,58 @@
+# Módulo 4 — Números, fechas y compras (curso es→el, nivel A1)
+# Gramática que ancla: GENITIVO (posesión) — segunda declinación del curso.
+# Nota contrastiva fuerte: los MESES son casi idénticos al español (transferencia positiva casi total),
+# los DÍAS no lo son pero tienen una lógica transparente (son ordinales: segundo, tercero, cuarto...).
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,nota
+έντεκα,,,éndeka,once,numero,numeral,El grupo ντ suena /nd/.
+δώδεκα,,,dódeka,doce,numero,numeral,De aquí viene 'dodecágono'.
+δεκατρία,,,dekatría,trece,numero,numeral,Literalmente 'diez-tres'. A partir del 13 se componen así.
+δεκατέσσερα,,,dekatésera,catorce,numero,numeral,
+δεκαπέντε,,,dekapénde,quince,numero,numeral,
+δεκαέξι,,,dekaéksi,dieciséis,numero,numeral,
+δεκαεφτά,,,dekaeftá,diecisiete,numero,numeral,
+δεκαοχτώ,,,dekaojtó,dieciocho,numero,numeral,
+δεκαεννιά,,,dekaeniá,diecinueve,numero,numeral,
+είκοσι,,,íkosi,veinte,numero,numeral,El grupo ει suena /i/.
+τριάντα,,,triánda,treinta,numero,numeral,
+σαράντα,,,saránda,cuarenta,numero,numeral,
+πενήντα,,,penínda,cincuenta,numero,numeral,
+εξήντα,,,eksínda,sesenta,numero,numeral,
+εβδομήντα,,,evdomínda,setenta,numero,numeral,
+ογδόντα,,,ogdónda,ochenta,numero,numeral,
+ενενήντα,,,enenínda,noventa,numero,numeral,
+εκατό,,,ekató,cien,numero,numeral,"De aquí viene 'hectárea', 'hecatombe'."
+Δευτέρα,η,,Deftéra,lunes,dia,sustantivo,Literalmente 'el segundo'. El grupo ευ suena /ef/ ante consonante sorda.
+Τρίτη,η,,Tríti,martes,dia,sustantivo,Literalmente 'el tercero'.
+Τετάρτη,η,,Tetárti,miércoles,dia,sustantivo,Literalmente 'el cuarto'.
+Πέμπτη,η,,Pémpti,jueves,dia,sustantivo,Literalmente 'el quinto'.
+Παρασκευή,η,,Paraskeví,viernes,dia,sustantivo,Literalmente 'preparación'.
+Σάββατο,το,,Sávato,sábado,dia,sustantivo,NEUTRO. Misma raíz que el 'sábado' español.
+Κυριακή,η,,Kiriakí,domingo,dia,sustantivo,"Literalmente 'del Señor', igual que 'domingo' (dies dominicus)."
+Ιανουάριος,ο,,Ianuários,enero,mes,sustantivo,Los meses griegos y españoles comparten origen latino: se reconocen casi todos.
+Φεβρουάριος,ο,,Fevruários,febrero,mes,sustantivo,La β es /v/: 'Fevruários'.
+Μάρτιος,ο,,Mártios,marzo,mes,sustantivo,
+Απρίλιος,ο,,Aprílios,abril,mes,sustantivo,
+Μάιος,ο,,Máios,mayo,mes,sustantivo,
+Ιούνιος,ο,,Iúnios,junio,mes,sustantivo,
+Ιούλιος,ο,,Iúlios,julio,mes,sustantivo,
+Αύγουστος,ο,,Ávgustos,agosto,mes,sustantivo,
+Σεπτέμβριος,ο,,Septémvrios,septiembre,mes,sustantivo,
+Οκτώβριος,ο,,Októvrios,octubre,mes,sustantivo,
+Νοέμβριος,ο,,Noémvrios,noviembre,mes,sustantivo,
+Δεκέμβριος,ο,,Dekémvrios,diciembre,mes,sustantivo,
+εβδομάδα,η,,evdomáda,semana,fecha,sustantivo,
+μήνας,ο,,mínas,mes,fecha,sustantivo,
+χρόνος,ο,,jrónos,año / tiempo,fecha,sustantivo,De aquí viene 'cronómetro'. Plural irregular: τα χρόνια.
+μέρα,η,,méra,día,fecha,sustantivo,"También ημέρα, forma más culta."
+μαγαζί,το,,magazí,tienda,compras,sustantivo,NEUTRO.
+αγορά,η,,agorá,mercado,compras,sustantivo,La ágora griega. De aquí viene 'agorafobia'.
+τιμή,η,,timí,precio,compras,sustantivo,También significa 'honor'.
+λεφτά,τα,,leftá,dinero,compras,sustantivo,Plural. Más formal: τα χρήματα.
+ευρώ,το,,evró,euro,compras,sustantivo,NEUTRO e invariable: no cambia en plural.
+ακριβός,,,akrivós,caro,compras,adjetivo,"Femenino ακριβή, neutro ακριβό."
+φτηνός,,,ftinós,barato,compras,adjetivo,"Femenino φτηνή, neutro φτηνό."
+ψωνίζω,,,psonízo,ir de compras,compras,verbo,Tipo A.
+πληρώνω,,,pliróno,pagar,compras,verbo,Tipo A.
+κοστίζω,,,kostízo,costar,compras,verbo,Tipo A. Πόσο κοστίζει; = ¿cuánto cuesta?

@@ -1,0 +1,34 @@
+# Módulo 0 — Alfabeto griego, para hispanohablantes (curso es→el)
+# Fuente de verdad del contenido: este archivo, versionado en git. La BD es una proyección (ARCHITECTURE.md §3).
+#
+# Columna `transferencia`: POSITIVA = el sonido ya existe en español, solo hay que aprender la letra.
+#                          NEGATIVA = hay interferencia activa del español, requiere corrección explícita.
+#                          NEUTRA   = sonido nuevo, sin ayuda ni estorbo del español.
+# Esta columna alimenta ContrastiveNote (CURRICULUM.md §4) y cambia si el idioma de origen cambia.
+#
+# `equivalente_es` es lo que el profesor IA usa para explicar. Mantenerlo concreto: una palabra española real.
+orden,mayuscula,minuscula,nombre_gr,nombre_translit,sonido_ipa,equivalente_es,transferencia,nota
+1,Α,α,άλφα,álfa,a,"la a de casa",POSITIVA,
+2,Β,β,βήτα,víta,v,"la v de vaca, pero labiodental",NEGATIVA,"Trampa clásica: en español b y v suenan igual. En griego β es SIEMPRE /v/, nunca /b/. El sonido /b/ se escribe μπ."
+3,Γ,γ,γάμα,gáma,ɣ ~ ʝ,"la g de lago",POSITIVA,"Ante α/ο/ου suena como la g de lago; ante ε/ι suena como la y de yo."
+4,Δ,δ,δέλτα,délta,ð,"la d de cada",POSITIVA,"Ventaja del español: este sonido ya lo produces sin pensarlo. El /d/ duro se escribe ντ."
+5,Ε,ε,έψιλον,épsilon,e,"la e de mesa",POSITIVA,
+6,Ζ,ζ,ζήτα,zíta,z,"la s sonora de mismo",NEUTRA,"No es un fonema propio del español. Es una s con vibración, como el zumbido de una abeja."
+7,Η,η,ήτα,íta,i,"la i de vino",POSITIVA,"Ojo ortográfico: η, ι y υ suenan las tres /i/. La dificultad no es decirlas, es saber cuál se escribe."
+8,Θ,θ,θήτα,thíta,θ,"la z de zapato en España",NEUTRA,"No existe en el español latinoamericano. Es la th de think en inglés: lengua entre los dientes."
+9,Ι,ι,ιώτα,ióta,i,"la i de vino",POSITIVA,"Segunda de las tres letras con sonido /i/."
+10,Κ,κ,κάπα,kápa,k,"la c de casa",POSITIVA,
+11,Λ,λ,λάμδα,lámda,l,"la l de luna",POSITIVA,
+12,Μ,μ,μι,mi,m,"la m de mano",POSITIVA,
+13,Ν,ν,νι,ni,n,"la n de nube",POSITIVA,
+14,Ξ,ξ,ξι,ksi,ks,"la x de taxi",POSITIVA,
+15,Ο,ο,όμικρον,ómikron,o,"la o de sol",POSITIVA,"Ojo ortográfico: ο y ω suenan las dos /o/."
+16,Π,π,πι,pi,p,"la p de pan",POSITIVA,
+17,Ρ,ρ,ρο,ro,r,"la r suave de pero",POSITIVA,"Nunca es la rr de perro."
+18,Σ,σ ς,σίγμα,sígma,s,"la s de sol",POSITIVA,"Se escribe ς SOLO al final de palabra: σοφός. En cualquier otra posición, σ."
+19,Τ,τ,ταυ,taf,t,"la t de todo",POSITIVA,
+20,Υ,υ,ύψιλον,ípsilon,i,"la i de vino",POSITIVA,"Tercera letra con sonido /i/. Se llama ípsilon pero NO suena /u/."
+21,Φ,φ,φι,fi,f,"la f de foto",POSITIVA,
+22,Χ,χ,χι,ji,x ~ ç,"la j de jamón",POSITIVA,"Otra ventaja del español: los angloparlantes sufren con este sonido, tú no."
+23,Ψ,ψ,ψι,psi,ps,"la ps de psicología",POSITIVA,"En griego SÍ se pronuncia la p, a diferencia del español coloquial."
+24,Ω,ω,ωμέγα,oméga,o,"la o de sol",POSITIVA,"Segunda letra con sonido /o/. Se llama o-mega ('o grande') frente a ómicron ('o pequeña')."

@@ -1,0 +1,289 @@
+// Esquema de datos — Griego App
+// Ver ARCHITECTURE.md §4 para la descripción y el razonamiento de cada modelo,
+// y CURRICULUM.md §1 y §4 para los tres ejes de contenido y ContrastiveNote.
+//
+// Listo para copiar dentro del proyecto Next.js en la Fase 0 (`npx prisma migrate dev`).
+// Los enums son válidos en SQLite desde Prisma 6.2+, pero SQLite no los impone a
+// nivel de base de datos — Zod (lib/exercises/schemas.ts, ARCHITECTURE.md §5.1)
+// sigue siendo la validación real.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+  // Producción: provider = "postgresql", cambiar solo esta línea + DATABASE_URL (ARCHITECTURE.md §2)
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Usuario y perfil
+// ─────────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  createdAt    DateTime @default(now())
+
+  profile         Profile?
+  userProgress    UserProgress[]
+  userAnswers     UserAnswer[]
+  reviewQueue     ReviewQueue[]
+  learnerSnapshot LearnerSnapshot?
+}
+
+model Profile {
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  nativeLanguageId String
+  nativeLanguage   Language @relation("ProfileNativeLanguage", fields: [nativeLanguageId], references: [id])
+  targetLanguageId String
+  targetLanguage   Language @relation("ProfileTargetLanguage", fields: [targetLanguageId], references: [id])
+  dailyGoalMinutes Int      @default(15)
+  streak           Int      @default(0)
+  points           Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Idioma, curso, y la jerarquía de contenido (nivel → módulo → lección → ejercicio)
+// Los tres ejes: Level = nivel MCER · Module = tema · Lesson.kind = vertiente
+// (CURRICULUM.md §1)
+// ─────────────────────────────────────────────────────────────────────────
+
+model Language {
+  id   String @id @default(cuid())
+  name String
+  code String @unique // ISO 639-1: "es", "el", "fr"…
+
+  coursesAsSource     Course[]  @relation("CourseSourceLanguage")
+  coursesAsTarget     Course[]  @relation("CourseTargetLanguage")
+  profilesAsNative    Profile[] @relation("ProfileNativeLanguage")
+  profilesAsTarget    Profile[] @relation("ProfileTargetLanguage")
+  vocabularyEntries   VocabularyEntry[]
+}
+
+model Course {
+  // El curso ES el par origen→destino — ancla de ContrastiveNote (CURRICULUM.md §4).
+  // No confundir con Language: dos cursos pueden compartir targetLanguage (el)
+  // pero tener sourceLanguage distinto (es→el vs en→el), y cada uno lleva su
+  // propia pedagogía contrastiva.
+  id               String   @id @default(cuid())
+  title            String
+  sourceLanguageId String
+  sourceLanguage   Language @relation("CourseSourceLanguage", fields: [sourceLanguageId], references: [id])
+  targetLanguageId String
+  targetLanguage   Language @relation("CourseTargetLanguage", fields: [targetLanguageId], references: [id])
+  imageUrl         String?
+  isActive         Boolean  @default(false)
+
+  levels            Level[]
+  contrastiveNotes  ContrastiveNote[]
+
+  @@unique([sourceLanguageId, targetLanguageId])
+}
+
+model Level {
+  id       String @id @default(cuid())
+  courseId String
+  course   Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  name     String // "A1", "A2", "B1"…
+  order    Int
+
+  modules Module[]
+
+  @@unique([courseId, order])
+}
+
+model Module {
+  id      String @id @default(cuid())
+  levelId String
+  level   Level  @relation(fields: [levelId], references: [id], onDelete: Cascade)
+  title   String // "Alfabeto y sonidos", "Familia", "Comida"… — eje TEMA
+  order   Int
+
+  lessons Lesson[]
+
+  @@unique([levelId, order])
+}
+
+enum LessonKind {
+  VOCABULARIO
+  GRAMATICA
+  ESCUCHA
+  LECTURA
+  CULTURA
+}
+
+model Lesson {
+  id       String     @id @default(cuid())
+  moduleId String
+  module   Module     @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  title    String
+  order    Int
+  kind     LessonKind // eje VERTIENTE (CURRICULUM.md §1)
+
+  exercises    Exercise[]
+  textReadings TextReading[]
+  userProgress UserProgress[]
+
+  @@unique([moduleId, order])
+}
+
+enum ExerciseType {
+  MULTIPLE_CHOICE
+  FILL_BLANK
+  ORDER_WORDS
+  TRANSLATION
+  FREE_WRITING
+  READING_COMPREHENSION
+  ALPHABET_DRILL
+  REPEAT_WORD // Fase 8, pendiente de proveedor de STT — ver ARCHITECTURE.md §1.1
+}
+
+model Exercise {
+  id         String       @id @default(cuid())
+  lessonId   String
+  lesson     Lesson       @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  type       ExerciseType
+  schemaJson Json // validado con Zod (ExerciseSchema, ARCHITECTURE.md §5.1) antes de guardar y al leer
+  order      Int
+
+  userAnswers UserAnswer[]
+
+  @@unique([lessonId, order])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Banco de vocabulario y lecturas
+// ─────────────────────────────────────────────────────────────────────────
+
+model VocabularyEntry {
+  id              String   @id @default(cuid())
+  languageId      String
+  language        Language @relation(fields: [languageId], references: [id])
+  term            String // griego, ej. "δέντρο"
+  translation     String // español, ej. "árbol"
+  transliteration String? // ej. "déntro" — es del PAR, no del idioma (CURRICULUM.md §4); hoy vive aquí por simplicidad de un solo curso activo
+  imageUrl        String?
+  audioUrl        String?
+  partOfSpeech    String?
+  tags            String // CSV simple ("comida,básico"); migrar a tabla de tags si hace falta filtrar en serio
+
+  reviewQueueEntries ReviewQueue[]
+}
+
+model TextReading {
+  id            String @id @default(cuid())
+  lessonId      String
+  lesson        Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  title         String
+  content       String
+  questionsJson Json // [{ pregunta, opciones[], respuesta }]
+}
+
+enum MediaType {
+  IMAGE
+  AUDIO
+}
+
+model MediaAsset {
+  id          String    @id @default(cuid())
+  url         String
+  type        MediaType
+  source      String // "commons" | "openmoji" | "tts" | "nativo"
+  license     String
+  attribution String?
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Progreso, respuestas y repetición espaciada
+// ─────────────────────────────────────────────────────────────────────────
+
+model UserProgress {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lessonId    String
+  lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  completed   Boolean   @default(false)
+  score       Int?
+  completedAt DateTime?
+
+  @@unique([userId, lessonId])
+}
+
+model UserAnswer {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exerciseId     String
+  exercise       Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  rawInput       String
+  isCorrect      Boolean
+  errorTags      String // CSV simple ("acento_faltante,sigma_final") — alimenta LearnerSnapshot
+  aiFeedbackJson Json? // salida de DeepSeek, ya validada — null si no hizo falta llamar a la IA (§6.1)
+  points         Int      @default(0)
+  answeredAt     DateTime @default(now())
+}
+
+model ReviewQueue {
+  id                String          @id @default(cuid())
+  userId            String
+  user              User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocabularyEntryId String
+  vocabularyEntry   VocabularyEntry @relation(fields: [vocabularyEntryId], references: [id], onDelete: Cascade)
+  dueDate           DateTime
+  interval          Int             @default(1) // días
+  easeFactor        Float           @default(2.5) // SM-2
+  repetitions       Int             @default(0)
+
+  @@unique([userId, vocabularyEntryId])
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Capa de tutoría IA (ARCHITECTURE.md §6)
+// ─────────────────────────────────────────────────────────────────────────
+
+model LearnerSnapshot {
+  // Uno por usuario — se recalcula al cerrar cada lección (ARCHITECTURE.md §6.3)
+  id               String   @id @default(cuid())
+  userId           String   @unique
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weakLetters      String // CSV simple ("ξ,ψ,θ")
+  recurringErrors  Json // [{ tag, count }]
+  masteredCount    Int      @default(0)
+  currentModuleId  String?
+  summaryText      String // resumen en prosa (~80 tokens) listo para inyectar en el prompt
+  updatedAt        DateTime @updatedAt
+}
+
+model AiFeedbackCache {
+  id           String   @id @default(cuid())
+  inputHash    String   @unique // hash(exerciseId + rawInput normalizado)
+  responseJson Json
+  createdAt    DateTime @default(now())
+}
+
+enum TransferType {
+  POSITIVA
+  NEGATIVA
+  NEUTRA
+}
+
+model ContrastiveNote {
+  // Pedagogía específica del PAR (Course), no del idioma destino — CURRICULUM.md §4
+  id             String       @id @default(cuid())
+  courseId       String
+  course         Course       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  feature        String // ej. "aspecto_verbal", "genero_gramatical"
+  transferType   TransferType
+  note           String // nota interna, para quien edite contenido
+  bridgeLanguage String // texto listo para inyectar en el prompt del profesor (ARCHITECTURE.md §6.2)
+
+  @@unique([courseId, feature])
+}

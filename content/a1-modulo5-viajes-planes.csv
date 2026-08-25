@@ -1,0 +1,44 @@
+# Módulo 5 — Viajes y planes (curso es→el, nivel A1)
+# Gramática que ancla: SUBJUNTIVO SIMPLE con να (θέλω να..., μπορώ να..., πρέπει να...).
+# Puente contrastivo clave: el griego NO tiene infinitivo. "Quiero comer" es θέλω να φάω,
+# literalmente "quiero que coma" — que es exactamente lo que ya haces en español al decir
+# "quiero que leas". Ver contrastive-es-el.csv, feature `sin_infinitivo`.
+#
+# Este módulo también aprovecha que muchas palabras de viaje son helenismos que el español
+# ya tomó prestados: aeródromo, metrópoli, náutico.
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,nota
+ταξίδι,το,,taksídi,viaje,viaje,sustantivo,NEUTRO.
+ξενοδοχείο,το,,ksenodojío,hotel,viaje,sustantivo,NEUTRO. Literalmente 'el que recibe extranjeros': ξένος (extraño) + δέχομαι (recibir). De ahí 'xenofobia'.
+αεροδρόμιο,το,,aerodrómio,aeropuerto,viaje,sustantivo,"NEUTRO. Es literalmente 'aeródromo', palabra que el español ya tiene."
+αεροπλάνο,το,,aeropláno,avión,viaje,sustantivo,NEUTRO.
+τρένο,το,,tréno,tren,viaje,sustantivo,NEUTRO.
+λεωφορείο,το,,leoforío,autobús,viaje,sustantivo,NEUTRO.
+ταξί,το,,taksí,taxi,viaje,sustantivo,NEUTRO e invariable: no cambia en plural.
+πλοίο,το,,plío,barco,viaje,sustantivo,NEUTRO. El grupo οι suena /i/.
+εισιτήριο,το,,isitírio,boleto / billete,viaje,sustantivo,NEUTRO. El grupo ει suena /i/.
+διαβατήριο,το,,diavatírio,pasaporte,viaje,sustantivo,NEUTRO. La β es /v/.
+βαλίτσα,η,,valítsa,maleta,viaje,sustantivo,
+χάρτης,ο,,jártis,mapa,viaje,sustantivo,De aquí viene 'carta' y 'cartografía'. En griego es MASCULINO.
+δωμάτιο,το,,domátio,habitación,viaje,sustantivo,NEUTRO.
+κλειδί,το,,klidí,llave,viaje,sustantivo,NEUTRO. El grupo ει suena /i/.
+παραλία,η,,paralía,playa,viaje,sustantivo,
+θάλασσα,η,,thálasa,mar,viaje,sustantivo,La θ es como la z de España. De aquí viene 'talasoterapia'.
+νησί,το,,nisí,isla,viaje,sustantivo,NEUTRO.
+βουνό,το,,vunó,montaña,viaje,sustantivo,NEUTRO.
+πόλη,η,,póli,ciudad,viaje,sustantivo,"De aquí vienen 'metrópoli', 'política', 'policía'."
+χωριό,το,,jorió,pueblo,viaje,sustantivo,NEUTRO.
+δρόμος,ο,,drómos,calle / camino,viaje,sustantivo,"De aquí viene 'aeródromo', 'hipódromo'."
+πλατεία,η,,platía,plaza,viaje,sustantivo,Misma raíz que 'plaza'.
+εστιατόριο,το,,estiatório,restaurante,viaje,sustantivo,NEUTRO.
+θέλω,,,thélo,querer,plan,verbo,Tipo A. Se combina con να: θέλω να φάω = quiero comer.
+μπορώ,,,boró,poder,plan,verbo,Tipo B2. Se combina con να: μπορώ να πάω = puedo ir.
+πρέπει,,,prépi,haber que / deber,plan,verbo,"Impersonal, solo en 3ª persona: πρέπει να πάω = tengo que ir."
+ξέρω,,,kséro,saber,plan,verbo,Tipo A.
+πάω,,,páo,ir,plan,verbo,Irregular. Su subjuntivo es να πάω.
+μένω,,,méno,quedarse / vivir,plan,verbo,Tipo A. Πού μένεις; = ¿dónde vives?
+φεύγω,,,févgo,irse / partir,plan,verbo,Tipo A. El grupo ευ suena /ev/ ante sonora.
+φτάνω,,,ftáno,llegar,plan,verbo,Tipo A.
+κρατάω,,,kratáo,reservar / sostener,plan,verbo,Tipo B1. También κρατώ.
+να,,,na,que (partícula de subjuntivo),plan,partícula,No tiene traducción directa. Introduce el verbo donde el español pondría un infinitivo.

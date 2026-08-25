@@ -1,0 +1,45 @@
+# Módulo 3 — Rutina diaria y comida (curso es→el, nivel A1)
+# Gramática que ancla: ACUSATIVO (objeto directo) — la primera declinación real del curso.
+# Foco contrastivo: el español no declina sustantivos. Único apoyo: los pronombres
+# (yo/me/mí ya cambian según su función). Ver contrastive-es-el.csv, feature `casos`.
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,nota
+ψωμί,το,,psomí,pan,comida,sustantivo,NEUTRO. La ψ se pronuncia entera: 'pso-MÍ'.
+νερό,το,,neró,agua,comida,sustantivo,NEUTRO.
+γάλα,το,,gála,leche,comida,sustantivo,NEUTRO aunque termine en -α. De aquí viene 'galaxia' (el camino de leche).
+καφές,ο,,kafés,café,comida,sustantivo,
+τυρί,το,,tirí,queso,comida,sustantivo,NEUTRO.
+κρέας,το,,kréas,carne,comida,sustantivo,NEUTRO irregular. Plural: κρέατα.
+ψάρι,το,,psári,pescado,comida,sustantivo,NEUTRO.
+αυγό,το,,avgó,huevo,comida,sustantivo,NEUTRO. El grupo αυ suena /av/ antes de sonido sonoro.
+φρούτα,τα,,frúta,frutas,comida,sustantivo,Plural. Singular: το φρούτο.
+λαχανικά,τα,,lajaniká,verduras,comida,sustantivo,Plural. La χ es la j de 'jamón'.
+μήλο,το,,mílo,manzana,comida,sustantivo,NEUTRO. No confundir con μιλάω (hablar): suenan parecido.
+πορτοκάλι,το,,portokáli,naranja,comida,sustantivo,NEUTRO. Literalmente 'de Portugal'.
+ελιά,η,,eliá,aceituna / olivo,comida,sustantivo,
+λάδι,το,,ládi,aceite,comida,sustantivo,NEUTRO. La δ suena como la d de 'cada'.
+αλάτι,το,,aláti,sal,comida,sustantivo,NEUTRO.
+ζάχαρη,η,,zájari,azúcar,comida,sustantivo,De aquí viene 'sacarina'. En griego es FEMENINO.
+σαλάτα,η,,saláta,ensalada,comida,sustantivo,
+κρασί,το,,krasí,vino,comida,sustantivo,NEUTRO.
+μπίρα,η,,bíra,cerveza,comida,sustantivo,El grupo μπ suena /b/.
+φαγητό,το,,fayitó,comida (el plato),comida,sustantivo,NEUTRO.
+πρωινό,το,,proinó,desayuno,comida,sustantivo,NEUTRO. Literalmente 'lo de la mañana'.
+μεσημεριανό,το,,mesimerianó,almuerzo,comida,sustantivo,NEUTRO. De μεσημέρι (mediodía).
+βραδινό,το,,vradinó,cena,comida,sustantivo,NEUTRO. De βράδυ (tarde-noche).
+τρώω,,,tróo,comer,rutina,verbo,Verbo irregular muy frecuente.
+πίνω,,,píno,beber,rutina,verbo,Tipo A.
+ξυπνάω,,,ksipnáo,despertarse,rutina,verbo,Tipo B1. También ξυπνώ.
+δουλεύω,,,dulévo,trabajar,rutina,verbo,Tipo A. El grupo ου suena /u/.
+διαβάζω,,,diavázo,leer / estudiar,rutina,verbo,Tipo A. Sirve para las dos cosas.
+γράφω,,,gráfo,escribir,rutina,verbo,"Tipo A. De aquí viene 'gráfico', 'ortografía'."
+κοιμάμαι,,,kimáme,dormir,rutina,verbo,Verbo en -άμαι. El grupo οι suena /i/.
+βλέπω,,,vlépo,ver,rutina,verbo,Tipo A.
+ακούω,,,akúo,escuchar / oír,rutina,verbo,De aquí viene 'acústica'.
+αγοράζω,,,agorázo,comprar,rutina,verbo,Tipo A. De αγορά (mercado).
+μαγειρεύω,,,mayirévo,cocinar,rutina,verbo,Tipo A.
+πρωί,το,,proí,mañana (parte del día),rutina,sustantivo,NEUTRO. No confundir con αύριο (mañana = el día siguiente).
+μεσημέρι,το,,mesiméri,mediodía,rutina,sustantivo,NEUTRO.
+απόγευμα,το,,apóyevma,tarde,rutina,sustantivo,NEUTRO en -μα.
+βράδυ,το,,vrádi,tarde-noche,rutina,sustantivo,NEUTRO.
