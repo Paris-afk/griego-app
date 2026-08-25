@@ -1,7 +1,7 @@
 # Plan — Roadmap por fases — Griego App
 
 > Ver [README.md](./README.md) para la visión, [ARCHITECTURE.md](./ARCHITECTURE.md) para el stack técnico y [SCREENS.md](./SCREENS.md) para pantallas y diseño.
-> **Estado:** v3 — arquitectura revisada y confirmada (Next.js full-stack, **DeepSeek como único proveedor de IA**). ~~Pendiente iniciar Fase 0~~ → **Fase 0 completada (2026-08-25).**
+> **Estado:** v3 — arquitectura revisada y confirmada (Next.js full-stack, **DeepSeek como único proveedor de IA**). ~~Pendiente iniciar Fase 0~~ → **Fase 0 y Fase 1 completadas (2026-08-25).**
 
 ---
 
@@ -29,6 +29,7 @@
 | 2026-08-25 | **Arquitectura formal adoptada: modular por features** ([ARCHITECTURE.md](./ARCHITECTURE.md) §3.1) — código organizado por capacidad del producto, tres capas (`app → features → shared`) con regla de dependencias unidireccional impuesta por ESLint, y cada feature con `index.ts` como única API pública. Reemplaza la organización por tipo técnico de archivo, que dispersaba cada capacidad en cinco carpetas |
 | 2026-08-25 | **Corrección de arquitectura (patrón 1).** Un tipo de ejercicio pasa de "un archivo `.tsx`" a **una carpeta con `schema.ts` + `renderer.tsx` + `validate.ts` + `index.ts`**. Motivo detectado al ejecutar la Fase 0: el seed valida los CSV con los mismos schemas Zod y corre en Node — si el schema viviera dentro del `.tsx` del renderer, importarlo arrastraría React al seed. La co-locación se mantiene (una carpeta = un tipo) y además se respeta la frontera servidor/cliente |
 | 2026-08-25 | **Fase 0 ejecutada.** Stack confirmado: Next.js 15.5 (App Router), React 19, TS 5, Tailwind v4 (`@theme` en `globals.css`), Prisma 6.19 (SQLite), Zod v4, Serwist 9.5 (PWA), shadcn/ui (components.json + alias listos; componentes al aparecer la UI). Schemas Zod de ejercicios en `src/features/exercises/schemas.ts` (contrato) — los renderers/validators se moverán a `types/<tipo>.tsx` en la Fase 3 según el patrón 1 de §3.2. Fronteras impuestas con `import/no-restricted-paths` (shared↛features/app · features↛app · cross-feature solo por `index.ts`). `prisma migrate dev` corre, `next build` pasa, lint pasa, y la regla rechaza un import prohibido de prueba. Pendiente de tareas del usuario: instalar la PWA en el iPhone y configurar Tailscale/IP local |
+| 2026-08-25 | **Fase 1 ejecutada.** Seed `prisma/seed.ts` genérico, idempotente y reconstruible desde cero (borrar `dev.db` + `prisma migrate dev` = seed automático → 2 módulos, 5 lecciones, 86 ejercicios, 31 vocabulario, 24 letras, 13 notas). Decisiones tomadas y documentadas: se siembran solo los Módulos 0 y 1 (el resto se activa al definir sus lecciones); validación Zod obligatoria por fila de CSV (griego solo caracteres griegos, sustantivo→artículo obligatorio, `tipo_palabra`/`articulo`/`transferencia` en sus conjuntos); jerarquía Módulo→Lección agrupada por `categoria` (una lección por categoría); ejercicios generados por plantilla (alfabeto→`alphabet_drill`, vocabulario→`multiple_choice`+`translation`) validados contra `ExerciseSchema`. Módulo 0 con lección propia "El alfabeto". `npm run lint` y `next build` pasan. **Los renderers/validadores de esos ejercicios (`multiple_choice`, `translation`, `alphabet_drill`) se implementan en la Fase 3** |
 
 ---
 
@@ -95,10 +96,10 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 > El agente deja el manifest y el service worker listos y **avisa** que estos dos pasos quedan pendientes; no los marca como hechos.
 
 ### Fase 1 — Datos y contenido base (3-5 días)
-- [ ] Completar esquema Prisma: `VocabularyEntry`, `MediaAsset`, `UserProgress`, `UserAnswer`, `ReviewQueue`, `LearnerSnapshot`, `AiFeedbackCache`.
-- [ ] Script `npm run seed`: CSV → validación Zod → base de datos (idempotente, reconstruible desde cero).
-- [ ] Contenido semilla: Módulo 0 (alfabeto) + Módulo 1 (saludos).
-- [ ] **Listo cuando:** borrar el `.sqlite` y correr el seed reconstruye todo el contenido sin intervención.
+- [x] Completar esquema Prisma: `VocabularyEntry`, `MediaAsset`, `UserProgress`, `UserAnswer`, `ReviewQueue`, `LearnerSnapshot`, `AiFeedbackCache`.
+- [x] Script `npm run seed`: CSV → validación Zod → base de datos (idempotente, reconstruible desde cero).
+- [x] Contenido semilla: Módulo 0 (alfabeto) + Módulo 1 (saludos).
+- [x] **Listo cuando:** borrar el `.sqlite` y correr el seed reconstruye todo el contenido sin intervención.
 
 ### Fase 2 — Flujo base de la app (4-6 días)
 - [ ] Login mínimo (cookie de sesión), onboarding, layout con navegación (tabs en móvil / sidebar en escritorio).
