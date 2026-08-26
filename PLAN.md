@@ -1,7 +1,7 @@
 # Plan — Roadmap por fases — Griego App
 
 > Ver [README.md](./README.md) para la visión, [ARCHITECTURE.md](./ARCHITECTURE.md) para el stack técnico y [SCREENS.md](./SCREENS.md) para pantallas y diseño.
-> **Estado:** v3 — arquitectura revisada y confirmada (Next.js full-stack, **DeepSeek como único proveedor de IA**). ~~Pendiente iniciar Fase 0~~ → **Fase 0 y Fase 1 completadas (2026-08-25).**
+> **Estado:** v3 — arquitectura revisada y confirmada (Next.js full-stack, **DeepSeek como único proveedor de IA**). ~~Pendiente iniciar Fase 0~~ → **Fases 0, 1 y 2 completadas (2026-08-25).**
 
 ---
 
@@ -30,6 +30,8 @@
 | 2026-08-25 | **Corrección de arquitectura (patrón 1).** Un tipo de ejercicio pasa de "un archivo `.tsx`" a **una carpeta con `schema.ts` + `renderer.tsx` + `validate.ts` + `index.ts`**. Motivo detectado al ejecutar la Fase 0: el seed valida los CSV con los mismos schemas Zod y corre en Node — si el schema viviera dentro del `.tsx` del renderer, importarlo arrastraría React al seed. La co-locación se mantiene (una carpeta = un tipo) y además se respeta la frontera servidor/cliente |
 | 2026-08-25 | **Fase 0 ejecutada.** Stack confirmado: Next.js 15.5 (App Router), React 19, TS 5, Tailwind v4 (`@theme` en `globals.css`), Prisma 6.19 (SQLite), Zod v4, Serwist 9.5 (PWA), shadcn/ui (components.json + alias listos; componentes al aparecer la UI). Schemas Zod de ejercicios en `src/features/exercises/schemas.ts` (contrato) — los renderers/validators se moverán a `types/<tipo>.tsx` en la Fase 3 según el patrón 1 de §3.2. Fronteras impuestas con `import/no-restricted-paths` (shared↛features/app · features↛app · cross-feature solo por `index.ts`). `prisma migrate dev` corre, `next build` pasa, lint pasa, y la regla rechaza un import prohibido de prueba. Pendiente de tareas del usuario: instalar la PWA en el iPhone y configurar Tailscale/IP local |
 | 2026-08-25 | **Fase 1 ejecutada.** Seed `prisma/seed.ts` genérico, idempotente y reconstruible desde cero (borrar `dev.db` + `prisma migrate dev` = seed automático → 2 módulos, 5 lecciones, 86 ejercicios, 31 vocabulario, 24 letras, 13 notas). Decisiones tomadas y documentadas: se siembran solo los Módulos 0 y 1 (el resto se activa al definir sus lecciones); validación Zod obligatoria por fila de CSV (griego solo caracteres griegos, sustantivo→artículo obligatorio, `tipo_palabra`/`articulo`/`transferencia` en sus conjuntos); jerarquía Módulo→Lección agrupada por `categoria` (una lección por categoría); ejercicios generados por plantilla (alfabeto→`alphabet_drill`, vocabulario→`multiple_choice`+`translation`) validados contra `ExerciseSchema`. Módulo 0 con lección propia "El alfabeto". `npm run lint` y `next build` pasan. **Los renderers/validadores de esos ejercicios (`multiple_choice`, `translation`, `alphabet_drill`) se implementan en la Fase 3** |
+| 2026-08-25 | **Fase 2 ejecutada.** Login mínimo con cookie de sesión firmada (HMAC + `SESSION_SECRET`, token puro en `features/auth/lib/token.ts`), contraseñas con scrypt (Node nativo, sin deps), y **el primer inicio de sesión crea la cuenta** (app personal de un usuario; reemplazable por Auth.js — ARCHITECTURE.md §1). Onboarding de meta diaria (crea `Profile`). Layout con navegación: tab bar inferior en móvil y sidebar en escritorio (mockup AnforaHoy). Pantallas: **Hoy** (fiel al mockup: anillo de meta, continuar, repaso pendiente, palabra del día), **Curso (mapa)**, **Módulo**, **Lección** (modo foco, sin navegación). **Pantallas NO diseñadas que compuse yo siguiendo el sistema «Ánfora»** (SCREENS.md §5: hay que avisar): Curso (mapa), Módulo, y la Lección es un **placeholder** hasta la Fase 3 (el reproductor real es Fase 3); Repaso y Perfil son **stubs** (Fase 6). `lint` + `next build` pasan y el flujo Hoy→Curso→Módulo→Lección fue verificado con contenido real (curl con token de sesión). **La URL `/` redirige según sesión/perfil** |
+| 2026-08-25 | **⚠️ LOGIN DEMO TEMPORAL para pruebas** (`user` / `1234`). No hay fase de registro, así que dejé un perfil falso que **salta la verificación de contraseña**: si el campo "usuario o correo" vale `user`, entra directo y crea/reutiliza el usuario demo (`user@demo.app`) con perfil de 15 min/día. **Hay que QUITARLO cuando exista registro o auth real.** Localizado en `src/features/auth/actions.ts` (bloque `DEMO_LOGIN` + `ensureProfile`) y el hint en `src/app/login/page.tsx` (ambos marcados `TEMP`). Además: griego-app sirve en el **puerto 3001** porque el 3000 lo usa otro proyecto (`agregador-geopolitico`) |
 
 ---
 
@@ -102,9 +104,9 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 - [x] **Listo cuando:** borrar el `.sqlite` y correr el seed reconstruye todo el contenido sin intervención.
 
 ### Fase 2 — Flujo base de la app (4-6 días)
-- [ ] Login mínimo (cookie de sesión), onboarding, layout con navegación (tabs en móvil / sidebar en escritorio).
-- [ ] Pantallas: Hoy → Curso (mapa) → Módulo → Lección. Diseño mobile-first (ver [SCREENS.md](./SCREENS.md)).
-- [ ] **Listo cuando:** el flujo completo es navegable con datos reales desde el iPhone.
+- [x] Login mínimo (cookie de sesión), onboarding, layout con navegación (tabs en móvil / sidebar en escritorio).
+- [x] Pantallas: Hoy → Curso (mapa) → Módulo → Lección. Diseño mobile-first (ver [SCREENS.md](./SCREENS.md)).
+- [x] **Listo cuando:** el flujo completo es navegable con datos reales desde el iPhone.
 
 ### Fase 3 — Motor de ejercicios (5-7 días)
 - [ ] **Migrar `features/exercises/schemas.ts` a la estructura del patrón 1** (ARCHITECTURE.md §3.2): una carpeta por tipo en `types/<tipo>/` con `schema.ts` + `renderer.tsx` + `validate.ts` + `index.ts`, y `registry.ts` como único índice. Se dejó como archivo único en la Fase 0 porque aún no existían renderers ni validadores.
