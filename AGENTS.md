@@ -12,7 +12,8 @@ Nada está construido todavía. El repo contiene **solo documentación y archivo
 - **Usuario:** una sola persona, uso personal. Corre en local (SQLite, sin nube). Costo objetivo: $0 + centavos de DeepSeek.
 - **Plataforma:** PWA instalable en iPhone, y web en escritorio. **Mobile-first**, siempre.
 - **Contenido:** griego A1 completo, ya escrito, en `content/*.csv`.
-- **IA:** DeepSeek, y **solo** DeepSeek. Es texto puro: no procesa imágenes ni audio.
+- **IA:** DeepSeek, y **solo** DeepSeek. Texto e imagen (imagen solo con `deepseek-v4-flash-vision-exp`, ARCHITECTURE.md §1.1); **audio no**.
+- **La IA se usa poco a propósito:** solo en escritura abierta y errores de dictado. Los ejercicios normales usan la columna `nota` de los CSV, escrita a mano. Ver PLAN.md Fase 5.
 - **La idea que define la app:** la IA **nunca decide si una respuesta es correcta** — eso lo hace código determinista. DeepSeek solo *explica* un error ya detectado, con el contexto del historial del alumno.
 
 ---

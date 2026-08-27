@@ -21,7 +21,7 @@ export function ProgressBar({
       )}
     >
       <div
-        className="h-full rounded-full bg-[var(--color-primary)]"
+        className="h-full rounded-full bg-[var(--color-primary)] transition-[width] duration-500 ease-out"
         style={{ width: `${pct}%` }}
       />
     </div>

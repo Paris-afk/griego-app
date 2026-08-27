@@ -112,7 +112,7 @@ export default async function TodayPage() {
             <div className="font-greek text-[33px] font-medium leading-[1.25] tracking-[-0.2px] text-[var(--color-text)]">
               {wordOfTheDay.term}
             </div>
-            <AudioButton src={audioPathForText(wordOfTheDay.term)} />
+            <AudioButton src={audioPathForText(wordOfTheDay.term)} size="md" />
           </div>
           <div className="text-[14px] text-[var(--color-text-soft)]">
             {wordOfTheDay.transliteration} · {wordOfTheDay.translation}

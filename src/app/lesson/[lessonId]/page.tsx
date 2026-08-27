@@ -17,7 +17,7 @@ export default async function LessonPage({
   const playback = await getLessonPlayback(lessonId);
   if (!playback) notFound();
 
-  const { lesson, correctIds, initialScore } = playback;
+  const { lesson, correctIds, initialScore, streak } = playback;
 
   return (
     <LessonExperience
@@ -30,6 +30,7 @@ export default async function LessonPage({
         correct: correctIds.has(e.id),
       }))}
       initialScore={initialScore}
+      streak={streak}
     />
   );
 }

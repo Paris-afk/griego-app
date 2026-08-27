@@ -5,8 +5,13 @@ import { fileURLToPath } from "node:url";
 import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
 
-import { ExerciseSchema, type Exercise } from "../src/features/exercises/schemas";
+import { ExerciseSchema } from "../src/features/exercises/schemas";
 import { audioPathForText } from "../src/shared/lib/audio";
+import {
+  chunkSizes,
+  interleaveLessonExercises,
+  type LessonExercise,
+} from "./seed-helpers";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Seed del contenido — «contenido como datos, BD como proyección» (§3 de PLAN
@@ -77,6 +82,7 @@ const VocabRow = z.object({
     });
   }
 });
+type VocabRowOutput = z.infer<typeof VocabRow>;
 
 const TRANSFERENCIA = ["POSITIVA", "NEGATIVA", "NEUTRA"] as const;
 
@@ -168,6 +174,16 @@ const SEED_MODULES = [
   { file: "a1-modulo1-saludos.csv", number: 1, title: "Saludos y presentarse" },
 ] as const;
 
+// El alfabeto se parte en 3 lecciones de 8 (orden de la letra en el CSV), por
+// dificultad de transferencia: primero las directas, luego las que cuestan
+// (β/ζ/θ), luego las confusiones η/ι/υ y ο/ω (las que más cuestan a un
+// hispanohablante).
+const ALPHABET_GROUPS = [
+  { title: "Las letras amigas", orders: [1, 4, 5, 10, 11, 12, 13, 16] },
+  { title: "Sonidos que cuestan", orders: [2, 3, 6, 8, 14, 17, 18, 22] },
+  { title: "Vocales que suenan igual", orders: [7, 9, 15, 19, 20, 21, 23, 24] },
+] as const;
+
 // Verbo del módulo temático: alfabeto → una lección; temático → una lección
 // por categoría (cada categoría agrupa una vertiente de vocabulario afín).
 function titleCase(input: string): string {
@@ -185,6 +201,53 @@ function pickDistractors(pool: string[], correct: string, count: number): string
     out.push(unique[i]);
   }
   return out;
+}
+
+function lessonTitle(base: string, lessonOrder: number, totalParts: number): string {
+  return totalParts > 1 ? `${base} · ${lessonOrder + 1}/${totalParts}` : base;
+}
+
+// Construye los ejercicios de una lección a partir de sus entradas: MC (significado)
+// + un ejercicio secundario que rota entre TR (escribir), OW (ordenar letras, ortografía)
+// y FB (artículo — solo sustantivos). Luego intercala para no repetir palabra seguida.
+function buildLessonExercises(
+  entries: VocabRowOutput[],
+  seedKey: string,
+): LessonExercise[] {
+  const spanPool = entries.map((e) => e.espanol);
+  const items: LessonExercise[] = [];
+  entries.forEach((entry, i) => {
+    const distractors = pickDistractors(spanPool, entry.espanol, 3);
+    if (distractors.length >= 1) {
+      items.push({
+        word: entry.griego,
+        type: "MULTIPLE_CHOICE",
+        schemaJson: makeMultipleChoice(entry.griego, entry.espanol, distractors),
+      });
+    }
+
+    const rotation = i % 3;
+    if (rotation === 1 && !/\s/.test(entry.griego) && Array.from(entry.griego).length >= 2) {
+      items.push({
+        word: entry.griego,
+        type: "ORDER_WORDS",
+        schemaJson: makeOrderWords(entry.espanol, entry.griego),
+      });
+    } else if (rotation === 2 && entry.articulo) {
+      items.push({
+        word: entry.griego,
+        type: "FILL_BLANK",
+        schemaJson: makeFillBlankArticle(entry.articulo, entry.griego),
+      });
+    } else {
+      items.push({
+        word: entry.griego,
+        type: "TRANSLATION",
+        schemaJson: makeTranslation(entry.espanol, entry.griego),
+      });
+    }
+  });
+  return interleaveLessonExercises(items, seedKey);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -247,6 +310,56 @@ function assertExercise(schema: unknown) {
     );
   }
   return parsed.data;
+}
+
+// Ordenar las LETRAS de la palabra (spelling). Como el contenido es de una sola
+// palabra (no hay frases), order_words se usa a nivel de letras: entrena la
+// ortografía — justo el punto débil η/ι/υ y ο/ω.
+function makeOrderWords(spanish: string, greek: string) {
+  const letters = Array.from(greek);
+  const schema = {
+    type: "order_words",
+    instruction: "Ordena las letras:",
+    points: 10,
+    difficulty: "easy",
+    prompt: { text: `Ordena las letras de: ${spanish}` },
+    orderType: "word",
+    words: letters,
+    answer: letters,
+  } as const;
+  return assertExercise(schema);
+}
+
+// Completar con el artículo (género) — solo para sustantivos con artículo.
+function makeFillBlankArticle(articulo: string, greek: string) {
+  const schema = {
+    type: "fill_blank",
+    instruction: "Completa:",
+    points: 10,
+    difficulty: "easy",
+    prompt: { text: `Escribe el artículo de: ${greek}` },
+    answer: articulo,
+    accept: [articulo],
+  } as const;
+  return assertExercise(schema);
+}
+
+// Ver la letra y elegir su sonido (multiple_choice con la letra como prompt;
+// el audio de la letra se reproduce con el autoplay del reproductor).
+function makeAlphabetChoiceMC(letter: string, correctSound: string, distractors: string[]) {
+  const schema = {
+    type: "multiple_choice",
+    instruction: "Elige cómo suena esta letra:",
+    points: 10,
+    difficulty: "easy",
+    prompt: { text: letter, image: undefined },
+    options: [
+      { text: correctSound, image: undefined },
+      ...distractors.map((text) => ({ text, image: undefined })),
+    ],
+    answer: correctSound,
+  } as const;
+  return assertExercise(schema);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -321,67 +434,58 @@ async function main() {
     });
     stats.modules++;
 
-    // Agrupar por categoría → una lección cada una (vertiente vocabulario).
+    // VocabularyEntry + MediaAsset una vez por entrada (independiente de la
+    // partición en lecciones).
+    for (const entry of rows) {
+      await prisma.vocabularyEntry.create({
+        data: {
+          languageId: el.id,
+          term: entry.griego,
+          translation: entry.espanol,
+          transliteration: entry.transliteracion,
+          partOfSpeech: entry.tipo_palabra,
+          tags: entry.categoria,
+          audioUrl: audioPathForText(entry.griego),
+        },
+      });
+      stats.vocabulary++;
+      await prisma.mediaAsset.create({
+        data: {
+          url: audioPathForText(entry.griego),
+          type: "AUDIO",
+          source: "gtts",
+          license: "personal",
+          attribution: "gTTS (Google) · voz griega (el-GR)",
+        },
+      });
+    }
+
+    // Lecciones por categoría, partidas en 4-6 entradas (→ 8-12 ejercicios),
+    // con tipos intercalados (MC + TR/OW/FB rotando) sin repetir palabra seguida.
     const byCategory = groupBy(rows, (r) => r.categoria);
     let lessonOrder = 0;
     for (const [categoria, entries] of byCategory) {
-      const lesson = await prisma.lesson.create({
-        data: {
-          moduleId: prismaModule.id,
-          title: titleCase(categoria),
-          order: lessonOrder++,
-          kind: "VOCABULARIO",
-        },
-      });
-      stats.lessons++;
-
-      const spanishPool = entries.map((e) => e.espanol);
-
-      let exerciseOrder = 0;
-      for (let i = 0; i < entries.length; i++) {
-        const entry = entries[i];
-
-        await prisma.vocabularyEntry.create({
+      const sizes = chunkSizes(entries.length);
+      let offset = 0;
+      let partIndex = 0;
+      for (const size of sizes) {
+        const chunk = entries.slice(offset, offset + size);
+        offset += size;
+        const title = lessonTitle(titleCase(categoria), partIndex, sizes.length);
+        partIndex++;
+        const lesson = await prisma.lesson.create({
           data: {
-            languageId: el.id,
-            term: entry.griego,
-            translation: entry.espanol,
-            transliteration: entry.transliteracion,
-            partOfSpeech: entry.tipo_palabra,
-            tags: entry.categoria,
-            audioUrl: audioPathForText(entry.griego),
+            moduleId: prismaModule.id,
+            title,
+            order: lessonOrder++,
+            kind: "VOCABULARIO",
           },
         });
-        stats.vocabulary++;
+        stats.lessons++;
 
-        await prisma.mediaAsset.create({
-          data: {
-            url: audioPathForText(entry.griego),
-            type: "AUDIO",
-            source: "gtts",
-            license: "personal",
-            attribution: "gTTS (Google) · voz griega (el-GR)",
-          },
-        });
-
-        const exerciseBatch: {
-          type: "MULTIPLE_CHOICE" | "TRANSLATION";
-          schemaJson: Exercise;
-        }[] = [];
-
-        const distractors = pickDistractors(spanishPool, entry.espanol, 3);
-        if (distractors.length >= 1) {
-          exerciseBatch.push({
-            type: "MULTIPLE_CHOICE",
-            schemaJson: makeMultipleChoice(entry.griego, entry.espanol, distractors),
-          });
-        }
-        exerciseBatch.push({
-          type: "TRANSLATION",
-          schemaJson: makeTranslation(entry.espanol, entry.griego),
-        });
-
-        for (const ex of exerciseBatch) {
+        const items = buildLessonExercises(chunk, `${categoria}-${offset}`);
+        let exerciseOrder = 0;
+        for (const ex of items) {
           await prisma.exercise.create({
             data: {
               lessonId: lesson.id,
@@ -406,36 +510,8 @@ async function main() {
     });
     stats.modules++;
 
-    const lesson = await prisma.lesson.create({
-      data: {
-        moduleId: prismaModule.id,
-        title: "El alfabeto",
-        order: 0,
-        kind: "VOCABULARIO",
-      },
-    });
-    stats.lessons++;
-
-    let exerciseOrder = 0;
+    // Letra de referencia una vez por letra (pantalla del alfabeto, Fase 4).
     for (const letter of rows) {
-      const minuscules = letter.minuscula.split(/\s+/).filter(Boolean);
-      const lowercase = minuscules[0];
-      const accept = [...new Set([lowercase, letter.mayuscula, ...minuscules])];
-      const concept = `${letter.nombre_gr} (${letter.nombre_translit}): suena como "${letter.equivalente_es}"`;
-
-      const schema = makeAlphabetDrill(lowercase, concept, accept);
-      await prisma.exercise.create({
-        data: {
-          lessonId: lesson.id,
-          type: "ALPHABET_DRILL",
-          schemaJson: schema,
-          order: exerciseOrder++,
-        },
-      });
-      stats.exercises++;
-      stats.letters++;
-
-      // Letra de referencia (pantalla del alfabeto, Fase 4).
       await prisma.alphabetLetter.create({
         data: {
           languageId: el.id,
@@ -450,6 +526,73 @@ async function main() {
           note: letter.nota,
         },
       });
+    }
+
+    // 3 lecciones de 8 (partir las 24 seguidas, que aburrían). Dentro de cada
+    // una, alterno alphabet_drill (escribir) y multiple_choice (ver la letra →
+    // elegir su sonido) para que no sean 8 idénticas.
+    const soundPool = rows.map((r) => r.equivalente_es);
+    const byId = new Map(rows.map((r) => [r.orden, r]));
+    let lessonOrder = 0;
+    for (const group of ALPHABET_GROUPS) {
+      const lesson = await prisma.lesson.create({
+        data: {
+          moduleId: prismaModule.id,
+          title: group.title,
+          order: lessonOrder++,
+          kind: "VOCABULARIO",
+        },
+      });
+      stats.lessons++;
+
+      let exerciseOrder = 0;
+      for (const [i, orden] of group.orders.entries()) {
+        const letter = byId.get(orden);
+        if (!letter) continue;
+        const minuscules = letter.minuscula.split(/\s+/).filter(Boolean);
+        const lowercase = minuscules[0];
+        const concept = `${letter.nombre_gr} (${letter.nombre_translit}): suena como "${letter.equivalente_es}"`;
+
+        // Impares → escribir la letra; pares → reconocer su sonido.
+        if (i % 2 === 0) {
+          const accept = [...new Set([lowercase, letter.mayuscula, ...minuscules])];
+          await prisma.exercise.create({
+            data: {
+              lessonId: lesson.id,
+              type: "ALPHABET_DRILL",
+              schemaJson: makeAlphabetDrill(lowercase, concept, accept),
+              order: exerciseOrder++,
+            },
+          });
+          stats.exercises++;
+          stats.letters++;
+        } else {
+          const distractors = pickDistractors(soundPool, letter.equivalente_es, 3);
+          if (distractors.length >= 1) {
+            await prisma.exercise.create({
+              data: {
+                lessonId: lesson.id,
+                type: "MULTIPLE_CHOICE",
+                schemaJson: makeAlphabetChoiceMC(lowercase, letter.equivalente_es, distractors),
+                order: exerciseOrder++,
+              },
+            });
+            stats.exercises++;
+          } else {
+            const accept = [...new Set([lowercase, letter.mayuscula, ...minuscules])];
+            await prisma.exercise.create({
+              data: {
+                lessonId: lesson.id,
+                type: "ALPHABET_DRILL",
+                schemaJson: makeAlphabetDrill(lowercase, concept, accept),
+                order: exerciseOrder++,
+              },
+            });
+            stats.exercises++;
+            stats.letters++;
+          }
+        }
+      }
     }
   }
 

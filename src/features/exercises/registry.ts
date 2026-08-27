@@ -50,4 +50,22 @@ export function validateExercise(
   }
 }
 
+// La palabra griega que se debe pronunciar (auto-play del reproductor, Fase 4.5).
+export function exerciseSpokenText(exercise: Exercise): string | undefined {
+  switch (exercise.type) {
+    case "multiple_choice":
+      return exercise.prompt.text;
+    case "translation":
+      return exercise.answer;
+    case "fill_blank":
+      return exercise.answer;
+    case "order_words":
+      return exercise.answer.join("");
+    case "alphabet_drill":
+      return exercise.letter;
+    default:
+      return undefined;
+  }
+}
+
 export type { ExerciseModules } from "./types/module";

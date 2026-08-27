@@ -23,7 +23,7 @@ export function MultipleChoiceRenderer({
           <div className="text-center font-greek text-[46px] font-medium leading-[1.15] tracking-[-0.5px] text-[var(--color-text)]">
             {exercise.prompt.text}
           </div>
-          <AudioButton src={audioPathForText(exercise.prompt.text)} />
+          <AudioButton src={audioPathForText(exercise.prompt.text)} size="lg" />
         </div>
       )}
 

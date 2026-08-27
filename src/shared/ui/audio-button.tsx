@@ -4,13 +4,14 @@ import { useState } from "react";
 import { Volume2 } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
+import { playWord } from "@/shared/lib/sound";
 
-// Reproduce un archivo de audio estático (Fase 3.5). Sin llamadas de red: es
-// contenido servido desde /audio/el/. Diseño tipo mockup AnforaLeccion (círculo
-// con borde, icono de altavoz).
+// Reproduce un audio estático (Fase 3.5). Usa el controlador compartido
+// (shared/lib/sound.ts): un único elemento <audio> persistente para evitar la
+// restricción de autoplay por elemento (Fase 4.5).
 export function AudioButton({
   src,
-  size = "md",
+  size = "sm",
   className,
 }: {
   src: string;
@@ -22,15 +23,12 @@ export function AudioButton({
   function play() {
     if (busy || !src) return;
     setBusy(true);
-    const audio = new Audio(src);
-    audio.onended = () => setBusy(false);
-    audio.onerror = () => setBusy(false);
-    void audio.play().catch(() => setBusy(false));
-    window.setTimeout(() => setBusy(false), 4000);
+    playWord(src);
+    window.setTimeout(() => setBusy(false), 1200);
   }
 
   const box =
-    size === "lg" ? "size-12" : size === "sm" ? "size-9" : "size-11";
+    size === "lg" ? "size-12" : size === "md" ? "size-11" : "size-9";
 
   const icon = size === "sm" ? 17 : 20;
 

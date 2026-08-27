@@ -20,7 +20,7 @@ export function AlphabetDrillRenderer({
         <p className="text-center font-greek text-[42px] font-medium leading-tight text-[var(--color-text)]">
           {exercise.letter}
         </p>
-        <AudioButton src={audioPathForText(exercise.letter)} />
+        <AudioButton src={audioPathForText(exercise.letter)} size="lg" />
       </div>
       <p className="text-center font-display text-[18px] italic text-[var(--color-text-soft)]">
         {exercise.prompt.text}

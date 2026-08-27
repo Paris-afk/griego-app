@@ -45,5 +45,6 @@ export async function getLessonPlayback(lessonId: string) {
     initialScore: score._sum.points ?? 0,
     completed,
     correctIds,
+    streak: user.profile?.streak ?? 0,
   };
 }

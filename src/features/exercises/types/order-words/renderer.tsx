@@ -48,11 +48,11 @@ export function OrderWordsRenderer({
         ))}
       </div>
 
-      {/* Pool */}
+      {/* Pool (clave única por índice: puede haber letras repetidas) */}
       <div className="flex flex-wrap items-center gap-2">
-        {pool.map((word) => (
+        {pool.map((word, idx) => (
           <button
-            key={word}
+            key={`${word}-${idx}`}
             type="button"
             disabled={disabled}
             onClick={() => append(word)}

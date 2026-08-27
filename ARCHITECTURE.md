@@ -18,17 +18,23 @@
 | Hosting (si se hace público) | **Oracle Cloud Free Tier** ($0) o **Hetzner CPX11** (~$5/mes) | Ver changelog en [PLAN.md](./PLAN.md) §0. |
 | Auth | Login mínimo propio (cookie de sesión) | Un solo usuario; migrable a `Auth.js` sin tocar el modelo de datos porque todo cuelga de `userId` (§4). |
 
-### 1.1 Lo que DeepSeek **no** puede hacer (y qué implica)
+### 1.1 Qué modalidades soporta DeepSeek (y qué implica)
 
-DeepSeek acepta **solo texto**. Verificado en su documentación oficial (ago-2026): los modelos V4/V4-Flash declaran `input_modalities: ["text"]`. Consecuencias directas:
+> **Corregido el 2026-08-27.** Este documento afirmaba que DeepSeek era solo texto. Era cierto cuando se verificó (24-ago), pero **DeepSeek publicó soporte de imagen el 21-ago-2026** y la nota quedó obsoleta a los pocos días. Lección: verificar de nuevo antes de decidir sobre una modalidad, no confiar en lo escrito aquí.
 
-| Funcionalidad deseada | Estado | Camino |
+| Modalidad | Estado | Camino |
 |---|---|---|
-| Validar respuestas escritas + explicar errores | ✅ **Sí, es el caso de uso central** | Texto → DeepSeek → feedback estructurado |
-| Foto de escritura a mano | ❌ No con DeepSeek solo | Reemplazado por **teclado griego en pantalla** (`free_writing`). La foto queda como exploración futura con OCR en el navegador (Tesseract.js: aceptable con griego impreso, pobre con manuscrito) |
-| Pronunciación (audio → texto) | ⏸️ **Decisión pendiente** | DeepSeek no procesa audio. Requiere un segundo proveedor (Whisper API) o Web Speech API del navegador (no existe en iOS Safari). Movido a Fase 8, opcional — ver [PLAN.md](./PLAN.md) |
+| **Texto** | ✅ Soportado | `deepseek-chat`. Es el caso de uso central |
+| **Imagen** | ✅ Soportado desde ago-2026 | Solo el modelo **`deepseek-v4-flash-vision-exp`** acepta imágenes; enviarlas a otro modelo devuelve **400**. Imágenes por base64, URL o Files API (JPEG/PNG/GIF/WebP). Facturación: hasta **384 tokens por imagen** a precio de V4-Flash. ⚠️ Es **experimental** (`-exp`): puede cambiar o desaparecer |
+| **Audio** | ❌ No soportado | Requeriría un segundo proveedor (Whisper API) o la Web Speech API (que iOS Safari no expone de forma fiable). Fase 8, opcional |
 
-**Regla de arquitectura:** mientras la app sea *DeepSeek-only*, todo ejercicio debe poder resolverse **con texto o con selección**. Cualquier modalidad nueva (audio, imagen) es una decisión explícita que agrega un proveedor y se documenta aquí antes de codearse.
+**Lo que esto cambia:** la foto de escritura a mano **ya no obliga a un segundo proveedor**. El pipeline de dos pasos (OCR + validación) que se diseñó originalmente es innecesario — un solo modelo hace ambas cosas.
+
+**Lo que NO cambia:** la foto sigue **fuera de alcance por decisión de producto** (2026-08-27), no por limitación técnica. El riesgo real no era el proveedor sino que **el OCR de manuscrito en griego es difícil**: si marca errores que el alumno no cometió, frustra más de lo que enseña. Se reevalúa cuando el dictado esté en uso.
+
+**Regla de arquitectura:** cualquier modalidad nueva (imagen, audio) es una **decisión explícita que se documenta aquí antes de codearse** — aunque ya no añada un proveedor, añade costo por token, una superficie de fallo y, en el caso de la imagen, una dependencia de un modelo experimental.
+
+Sources: [DeepSeek API — Change Log](https://api-docs.deepseek.com/updates/) · [Guía de visión](https://api-docs.deepseek.com/guides/vision)
 
 ---
 

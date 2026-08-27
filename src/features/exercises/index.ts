@@ -9,7 +9,7 @@ export type {
   ExerciseTypeList,
 } from "./schemas";
 
-export { exerciseRegistry, validateExercise } from "./registry";
+export { exerciseRegistry, validateExercise, exerciseSpokenText } from "./registry";
 export type { ExerciseModules } from "./registry";
 
 export type {

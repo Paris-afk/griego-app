@@ -1,7 +1,7 @@
 # Plan — Roadmap por fases — Griego App
 
 > Ver [README.md](./README.md) para la visión, [ARCHITECTURE.md](./ARCHITECTURE.md) para el stack técnico y [SCREENS.md](./SCREENS.md) para pantallas y diseño.
-> **Estado:** v3 — arquitectura revisada y confirmada (Next.js full-stack, **DeepSeek como único proveedor de IA**). ~~Pendiente iniciar Fase 0~~ → **Fases 0–4 completadas (2026-08-25).**
+> **Estado:** v3 — arquitectura revisada y confirmada (Next.js full-stack, **DeepSeek como único proveedor de IA**). ~~Pendiente iniciar Fase 0~~ → **Fases 0–4.5 completadas (2026-08-27).**
 
 ---
 
@@ -39,7 +39,13 @@
 | 2026-08-25 | **Fase 3.5 ejecutada (audio del vocabulario).** El TTS se resuelve en el **pipeline de contenido**, no en runtime (decisión del usuario, ver arriba). Script `npm run audio:generate`: parsea los CSV → `public/audio/el/<hash>.mp3`. **edge-tts devolvió 403 → se usó gTTS** (alternativa del plan) + ffmpeg a **48 kbps mono**; **236 archivos / 1.9 MB**. Rutas content-addressed: `shared/lib/audio.ts` (hash FNV-1a → `/audio/el/<hash>.mp3`), mismo hash en generador y UI. `VocabularyEntry.audioUrl` se rellena y cada audio se registra en `MediaAsset` (fuente `gtts`) **desde el seed** (proyección idempotente). 🔊 (`AudioButton`) en `multiple_choice`, `alphabet_drill`, feedback de traducción y "palabra del día" de Hoy. **Corregido un bug del seed**: el reset borraba `Language` antes que `User`, violando FK por el perfil del usuario demo — ahora `user` (cascade) va primero. `npm test` (29), `lint` y `next build` pasan. **Pendiente del usuario:** probar el 🔊 en el iPhone con modo avión (verificación física) |
 | 2026-08-25 | **Fase 4 ejecutada (alfabeto y teclado griego).** Nuevo modelo **`AlphabetLetter`** en Prisma (migración `alphabet_letters`) + seed desde `a1-modulo0-alfabeto.csv` (24 letras con nombre, transcripción, IPA, equivalente, transferencia) + query `getAlphabet()`. **Teclado griego en pantalla** reutilizable (`shared/ui/greek-keyboard.tsx`): layout ΕΡΤΥΘΙΟΠ / ΑΣΔΦΓΗΞΚΛ / ΖΧΨΩΒΝΜ, con tecla de **acento como TECLA MUERTA** (acentúa la **siguiente** vocal — así se puede acentuar cualquier letra, ej. καλημέρα) y **ς final** siempre visible. Integrado en `alphabet_drill`, `translation`, `fill_blank` y `free_writing`. Lógica pura en `shared/lib/greek.ts` (testeable). **Pantalla de referencia del alfabeto** en `/alphabet` (tabla de 24 letras con mayús/minús, nombre, sonido 🔊 y ejemplo) — **composición inventada por mí** (SCREENS.md §5: no está diseñada; hay que avisar); enlazada desde el Módulo 0. `npm test` (34), `lint` y `next build` pasan. **Pendiente del usuario:** probar el teclado en el iPhone (el objetivo de la fase es escribir griego sin el teclado del sistema) |
 | 2026-08-25 | **⭐ Hueco conocido del teclado: solo minúsculas.** El teclado griego inserta únicamente minúsculas (sin Shift). El validador normaliza (NFD + lower), así que **no bloquea** las respuestas, pero: (1) el Módulo 0 enseña las mayúsculas, y (2) buena parte del contenido va capitalizado (`Καλημέρα`, `Δευτέρα`, `Ιανουάριος`, nombres propios). **Queda pendiente decidir si se añade una tecla Shift** (alternancia mayús/minús en el teclado) tras probar el teclado en el iPhone. No se implementa aún por no saber si al escribir a mano se prefiere capitalizar o no |
+| 2026-08-27 | **Fase 4.5 ejecutada (ritmo de la lección).** **Seed:** `El alfabeto` partido en 3 lecciones de 8 (`Las letras amigas`, `Sonidos que cuestan`, `Vocales que suenan igual`), `Numero` en 2 de 10, `Identidad` en 2; lecciones de 8-12 ejercicios. **Tipos intercalados** usando los 4 renderers: MC (significado), TR (escribir), y — como el contenido es de palabra suelta (no hay frases) — **OW = ordenar las LETRAS de la palabra** (spelling, entrena η/ι/υ y ο/ω) y **FB = completar con el artículo** (solo sustantivos). `interleaveLessonExercises` baraja de forma determinista y evita la misma palabra en dos ejercicios seguidos (helpers puros en `prisma/seed-helpers.ts`, testeados). **Reproductor:** panel "Comenzar" que desbloquea el audio (regla de autoplay es por elemento → **un único `<audio>` persistente** vía `shared/lib/sound.ts`, + un segundo para sfx); **acierto → auto-avance a ~600 ms** sin "Continuar" (sonido de acierto); **error → la hoja espera** (sonido distinto, botón "Seguir"); barra de progreso **animada**; **pantalla de fin con números reales** (aciertos, puntos, racha). `exerciseSpokenText` da la palabra a pronunciar por ejercicio. SFX generados (`public/sfx/correct.mp3`/`wrong.mp3`). **Limite conocido:** `Saludo` quedó en 14 ejercicios (la categoría tiene 7 palabras y no se puede partir en dos ≥4), un poco sobre el rango 8-12. `npm test` (42), `lint` y `next build` pasan. **Pendiente del usuario:** verificar el ritmo en el iPhone (tocar "Comenzar" y jugar una lección completa acertando todo, oyendo cada palabra, sin tocar "Continuar") |
+| 2026-08-27 | **Fase 4.5 — refinamientos post-revisión.** (1) **Intercalar también por TIPO**: `interleaveLessonExercises` pasó a un algoritmo voraz con puntuación que evita tanto la misma palabra seguida como que un **tipo aparezca >2 veces seguidas** (ej. "Saludo" ya no tiene 5 TR o 3 MC concatenados). (2) **Variedad en el alfabeto**: dentro de cada lección de 8, se alterna `alphabet_drill` (escribir la letra) con `multiple_choice` (ver la letra → **elegir su sonido**, con audio; reutiliza el MC existente con la letra como prompt) — ya no son 8 idénticas. (3) **`Saludo` (7 palabras) partido en 2**: `chunkSizes` ahora permite lecciones de 3 en el caso límite → las 7 palabras dan 2 lecciones (8 y 6 ejercicios) en lugar de una de 14. (4) **Fix de claves en `order_words`**: el pool usaba `key={word}` y con letras repetidas colisionaba (React duplicaba/omitía) → ahora `key=` único por índice. `npm test` (43), `lint` y `next build` pasan. **Pendiente del usuario:** probar el ritmo en el iPhone |
 
+| 2026-08-27 | **Añadida la Fase 4.5 — Ritmo de la lección, antes del profesor IA.** Al probar la app funciona pero aburre. Hueco de planificación propio: todas las fases eran de *capacidad*, ninguna de *cómo se siente aprender*. Medido sobre el contenido real: `El alfabeto` = 24 drills idénticos seguidos, `Numero` = 20 ejercicios alternando `MC TR` mecánicamente. Tres causas separadas: lecciones demasiado largas (seed), sin variedad de tipos (seed — `fill_blank` y `order_words` ya existen sin usar), y sin ritmo (reproductor: sin autoplay, y hay que tocar "Continuar" incluso al acertar). Dato técnico que condiciona la solución: **la restricción de autoplay es por elemento** — hay que reutilizar un único `<audio>` desbloqueado en el gesto de "Comenzar", no crear uno por palabra |
+| 2026-08-27 | **Corregido: DeepSeek SÍ acepta imágenes.** ARCHITECTURE.md §1.1 afirmaba que era solo texto — cierto al verificarlo el 24-ago, pero DeepSeek publicó `deepseek-v4-flash-vision-exp` el **21-ago-2026** y la nota quedó obsoleta en días. Consecuencia: la foto ya **no requiere un segundo proveedor** ni el pipeline OCR+validación de dos pasos que se diseñó al principio. Solo ese modelo acepta imágenes (otros devuelven 400), es experimental y factura hasta 384 tokens por imagen |
+| 2026-08-27 | **Fase 5 con alcance reducido: la IA sale de los ejercicios normales.** No interviene en `multiple_choice`, `translation` ni `alphabet_drill` — los CSV ya traen la columna `nota` escrita a mano, y para contenido fijo una explicación humana gana a una generada (y es gratis). La IA se reserva para donde no hay respuesta única: escritura abierta y errores de dictado. Se añade el tipo **`dictation`**, que corrige de forma determinista y reutiliza el audio de la Fase 3.5 + el teclado de la Fase 4; ataca η/ι/υ y ο/ω, que ningún ejercicio actual entrena. Regla nueva: **la IA nunca afirma hechos contables** (conteos, racha) — los genera el código, porque cachear "es la 3ª vez esta semana" lo volvería falso con el tiempo |
+| 2026-08-27 | **Foto de escritura a mano: fuera de alcance por producto, no por técnica.** Ya es posible con un solo proveedor, pero el OCR de manuscrito en griego es poco fiable y marcar errores inexistentes frustraría al alumno. Se reevalúa cuando el dictado esté en uso real |
 ---
 
 ## 1. Definición de MVP
@@ -143,14 +149,53 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 - [x] `alphabet_drill` + **teclado griego en pantalla** reutilizable (con acentos y ς final).
 - [x] **Listo cuando:** puedes escribir cualquier palabra griega desde el iPhone sin cambiar el teclado del sistema.
 
-### Fase 5 — El profesor IA (4-6 días) ⭐
-- [ ] `lib/ai/tutor.ts`: cliente de DeepSeek con salida JSON forzada y manejo de errores/timeout.
-- [ ] System prompt del profesor + inyección del `LearnerSnapshot`.
-- [ ] `AiFeedbackCache` por `hash(ejercicio, respuesta)`.
+### Fase 4.5 — Ritmo de la lección (2-3 días) ⭐ *va ANTES del profesor IA*
+
+> Añadida el 2026-08-27, tras probar la app: **funciona pero aburre**. Hueco de planificación propio — todas las fases anteriores son de *capacidad*, ninguna de *cómo se siente aprender*. El feedback del profesor (Fase 5) va a aparecer dentro de este flujo, así que el flujo tiene que estar bien antes.
+>
+> Diagnóstico medido sobre el contenido real: `El alfabeto` son **24 `alphabet_drill` idénticos seguidos** (la primera lección que ve un usuario nuevo); `Numero` son **20 ejercicios alternando `MC TR MC TR`** mecánicamente, con la misma palabra dos veces seguidas.
+
+**Contenido (seed):**
+- [x] **Lecciones de 8-12 ejercicios.** Partir las largas: `El alfabeto` en 3 lecciones de 8 (agrupadas por dificultad de transferencia: primero las POSITIVA, luego β/ζ/θ, luego las confusiones η/ι/υ y ο/ω), `Numero` en 2 de 10.
+- [x] **Intercalar tipos, no alternar.** Usar los 4 renderers que ya existen (`fill_blank` y `order_words` están construidos y sin usar). Evitar que la misma palabra aparezca en dos ejercicios seguidos.
+
+**Reproductor:**
+- [x] **Autoplay del audio.** Un **único** elemento `<audio>` persistente, desbloqueado con el gesto de "Comenzar", al que se le cambia el `src` por palabra. La restricción de autoplay es **por elemento**: crear uno nuevo por palabra lo vuelve a bloquear ([MDN](https://developer.mozilla.org/en-US/docs/Web/Media/Guides/Autoplay)). Un segundo elemento, desbloqueado en el mismo gesto, para los sonidos de acierto/error.
+- [x] **Acierto: avanzar solo.** Sonido corto + auto-avance a los ~600 ms, **sin tocar "Continuar"**. Tocar dos veces por respuesta correcta es lo que más mata el ritmo.
+- [x] **Error: la hoja espera.** Sonido distinto y el feedback se queda hasta que el usuario lo cierre — ahí sí hay que leer.
+- [x] Barra de progreso animada entre ejercicios, en lugar de saltar.
+
+**Cierre:**
+- [x] Pantalla de fin de lección con números reales: aciertos, palabras nuevas, racha. Hoy la lección simplemente termina.
+
+- [x] **Listo cuando (verificado en local):** una lección de 10 ejercicios se juega **de principio a fin sin tocar "Continuar" ni una vez** al acertar todo, con el audio sonando solo en cada palabra. **La verificación física en el iPhone queda pendiente del usuario** (no automatizable por CLI): tocar "Comenzar" y jugar una lección completa acertando todo, oyendo cada palabra y sin tocar "Continuar".
+
+### Fase 5 — Dictado y el profesor IA (4-6 días) ⭐
+
+> **Alcance reducido el 2026-08-27.** La IA **no** interviene en los ejercicios normales (`multiple_choice`, `translation`, `alphabet_drill`). Motivo: los CSV ya traen una columna `nota` escrita a mano, y para contenido fijo una explicación humana gana a una generada — *"TRAMPA: suena casi como 'no' en español pero significa lo contrario"* es mejor que cualquier cosa que produzca un LLM, y es gratis.
+>
+> **La IA se reserva para donde no hay respuesta única que comparar:** escritura abierta y explicación de errores de dictado. Todo lo demás usa la `nota` del contenido.
+
+**Dictado — el tipo de ejercicio nuevo (no necesita IA para corregir):**
+- [ ] Tipo `dictation`: suena el audio → el usuario escribe en griego con el teclado → **validación determinista** (la respuesta esperada se conoce).
+- [ ] Reutiliza lo que ya existe: los mp3 de la Fase 3.5 y el teclado griego de la Fase 4. No hay que construir infraestructura nueva.
+- [ ] Generarlo en el seed para el vocabulario ya sembrado.
+- [ ] **Por qué importa:** ataca el punto débil que ningún ejercicio actual entrena — oír `/i/` y decidir si se escribe **η, ι o υ** (las tres suenan igual), o `/o/` entre **ο y ω**. Es exactamente el `errorTag confusion_i` / `confusion_omicron_omega` de `contrastive-es-el.csv`.
+
+**El profesor IA (alcance acotado):**
+- [ ] `features/tutor/`: puerto a DeepSeek con salida JSON forzada, timeout y manejo de errores.
+- [ ] System prompt del profesor + `LearnerSnapshot` como contexto **de tono y énfasis**.
+- [ ] Se invoca **solo** en: `free_writing` (respuesta abierta) y errores de `dictation`. Nunca en opción múltiple ni traducción.
+- [ ] **La IA nunca afirma hechos contables.** Los conteos, la racha y "lo agregué a tu repaso" los genera el código desde `errorTags`, frescos en cada render. Si la IA escribiera "es la 3ª vez esta semana" y eso se cacheara, en un mes seguiría diciéndolo y sería falso. El mockup `AnforaFeedback` ya los tiene como **dos bloques separados con iconos distintos** — respetar esa separación.
+- [ ] Validación Zod de la respuesta + un reintento + caída al feedback fijo del contenido. La app funciona completa sin IA.
+- [ ] `AiFeedbackCache` por `hash(ejercicio, respuesta normalizada)`.
+- [ ] **Rate limiting** en la Server Action que llama a DeepSeek (ARCHITECTURE.md §8) — no existe todavía.
+- [ ] **Render en dos tiempos:** la parte determinista de la hoja (escribiste / correcto / etiqueta del error) se pinta **al instante**; la explicación de la IA se rellena al llegar. Nada de dos segundos de hoja en blanco.
 - [ ] Recálculo del `LearnerSnapshot` al cerrar cada lección, a partir de `errorTags[]`.
-- [ ] Tipo `free_writing` (respuesta abierta corregida por DeepSeek).
-- [ ] UI de feedback estructurado (error señalado → corrección → explicación → ánimo).
-- [ ] **Listo cuando:** al fallar un ejercicio recibes una explicación pertinente en <2 s, que **hace referencia a tus errores recurrentes reales**, y repetir el mismo error no genera una segunda llamada a la API.
+
+- [ ] **Listo cuando:** un dictado se corrige al instante sin llamar a la IA; al fallarlo, la explicación llega en <2 s **sin** que la hoja se quede vacía mientras tanto; repetir el mismo error no genera una segunda llamada; y con `DEEPSEEK_API_KEY` vacía la app sigue funcionando entera con el feedback del contenido.
+
+> **Fuera de alcance por ahora:** la foto de escritura a mano. **Ya es técnicamente posible con DeepSeek solo** (`deepseek-v4-flash-vision-exp`, ago-2026 — ver ARCHITECTURE.md §1.1), así que no requiere un segundo proveedor. Se deja fuera por producto: el OCR de manuscrito en griego es poco fiable y marcar errores inexistentes frustraría. Se reevalúa cuando el dictado esté en uso real.
 
 ### Fase 6 — Retención y stats (3-5 días)
 - [ ] Repetición espaciada (SM-2): cola de repaso diaria.
