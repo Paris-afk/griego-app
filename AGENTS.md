@@ -49,6 +49,7 @@ src/
 prisma/                      schema + migraciones + seed
 content/                     CSV versionados (fuente de verdad del contenido)
 design/                      tokens y mockups (ver §4)
+tests/                       últimos de la app: unit en tests/units/ (Vitest); e2e (Playwright) cuando toque
 ```
 
 **Regla de dependencias — una sola dirección:** `app/ → features/ → shared/`
@@ -68,9 +69,11 @@ features/<nombre>/
   lib/            ← lógica interna
 ```
 
-**El motor de ejercicios** (`features/exercises/`): cada tipo lleva **schema Zod + renderer + validator juntos** en `types/<tipo>.tsx`, y `registry.ts` es el único índice.
+**El motor de ejercicios** (`features/exercises/`): cada tipo vive en **su propia carpeta** `types/<tipo>/` con `schema.ts` + `renderer.tsx` + `validate.ts` + `index.ts`, y `registry.ts` es el único índice.
 
-- **Agregar un tipo de ejercicio:** un archivo + una línea en `registry.ts`. Si acabas tocando el reproductor de lecciones o el motor de corrección, algo se salió del patrón.
+> `schema.ts` es **TS puro a propósito**: el seed lo importa desde Node y no debe arrastrar React. Por eso son archivos separados y no un solo `.tsx` (ARCHITECTURE.md §3.2, patrón 1).
+
+- **Agregar un tipo de ejercicio:** una carpeta + una línea en `registry.ts`. Si acabas tocando el reproductor de lecciones o el motor de corrección, algo se salió del patrón.
 - **Agregar una capacidad nueva:** una carpeta nueva en `features/`. No toques las existentes.
 
 ---
@@ -125,6 +128,7 @@ Salen de decisiones ya tomadas y documentadas. Si crees que alguna está mal, **
 - **Server Actions** para mutaciones; Route Handlers solo si se necesita un endpoint HTTP real.
 - **Prisma** para todo acceso a datos. Nada de SQL crudo sin explicar por qué.
 - **Zod** para todo dato que cruce una frontera: `schemaJson` de ejercicios, filas del CSV al sembrar, y respuestas de DeepSeek.
+- **Tests:** **Vitest** en `tests/units/` (unit de la lógica del dominio), comando `npm test`. Los tests son **la última capa del app** — el código debe poder verificarse sin el navegador. Componentes React (`jsdom`) y **e2e con Playwright** se añaden cuando la fase lo requiera.
 - **Idioma:** identificadores y comentarios en inglés; texto de cara al usuario en español.
 - **Commits:** en español, imperativo, una unidad de trabajo por commit.
 - **Dependencias:** no instales nada pesado sin decir para qué. Esto corre en una laptop.
@@ -135,7 +139,8 @@ Salen de decisiones ya tomadas y documentadas. Si crees que alguna está mal, **
 
 - **Una fase a la vez.** No adelantes trabajo de fases posteriores aunque parezca fácil.
 - **Antes de escribir código en una fase nueva**, resume en pocas líneas qué vas a hacer.
-- **Al terminar**, verifica el criterio de "Listo cuando:" de esa fase y márcala `[x]` en PLAN.md.
+- **Cada fase crea SUS tests.** Añade tests (Vitest en `tests/units/`) para la lógica nueva de la fase: validadores, normalización, schemas, token de sesión, seed, etc. El código debe ser verificable sin abrir el navegador.
+- **Al terminar, en verde:** antes de dar una fase por terminada corre `npm run lint`, `npm test` y `next build` (o `npm run dev` para smoke) y deja los tres en verde. Luego marca la fase `[x]` en PLAN.md.
 - **Distingue lo que puedes verificar de lo que no.** Algunas tareas requieren el teléfono del usuario o su red (instalar la PWA, Tailscale). Déjalas listas, **avisa que quedan pendientes** y no las marques como hechas.
 - **Si tomas una decisión técnica no documentada**, agrégala al changelog de PLAN.md §0.
 - **Si la documentación resulta estar mal o incompleta**, corrige el documento en el mismo commit. Los documentos son la fuente de verdad; no los dejes desactualizados.

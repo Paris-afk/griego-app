@@ -3,7 +3,8 @@ import { ArrowRight, Flame, RotateCcw } from "lucide-react";
 
 import { getCurrentUser } from "@/features/auth";
 import { getContinuation, getWordOfTheDay } from "@/features/catalog";
-import { buttonVariants, GoalRing, ProgressBar } from "@/shared/ui";
+import { AudioButton, buttonVariants, GoalRing, ProgressBar } from "@/shared/ui";
+import { audioPathForText } from "@/shared/lib/audio";
 
 function formatToday(): string {
   const text = new Date().toLocaleDateString("es-ES", {
@@ -107,8 +108,11 @@ export default async function TodayPage() {
           <div className="text-[10px] font-semibold tracking-[1.4px] text-[var(--color-text-soft)]">
             PALABRA DEL DÍA
           </div>
-          <div className="font-greek text-[33px] font-medium leading-[1.25] tracking-[-0.2px] text-[var(--color-text)]">
-            {wordOfTheDay.term}
+          <div className="flex items-center gap-3">
+            <div className="font-greek text-[33px] font-medium leading-[1.25] tracking-[-0.2px] text-[var(--color-text)]">
+              {wordOfTheDay.term}
+            </div>
+            <AudioButton src={audioPathForText(wordOfTheDay.term)} />
           </div>
           <div className="text-[14px] text-[var(--color-text-soft)]">
             {wordOfTheDay.transliteration} · {wordOfTheDay.translation}

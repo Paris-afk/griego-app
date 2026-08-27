@@ -1,2 +1,6 @@
-// Feature lesson-player — reproductor de lección en modo foco (Fase 2-3).
-// Estructura vacía preparada.
+// API pública del feature lesson-player — el reproductor en modo foco.
+export { LessonExperience } from "./lesson-experience";
+export type { LessonExperienceProps } from "./lesson-experience";
+export { checkAnswer, completeLesson } from "./actions";
+export type { CheckAnswerResult } from "./actions";
+export { getLessonPlayback } from "./queries";

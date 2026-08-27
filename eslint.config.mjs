@@ -22,12 +22,23 @@ const featureNames = fs
   .filter((d) => d.isDirectory())
   .map((d) => d.name);
 
+// `except` se matchea contra la ruta ABSOLUTA del import (el plugin no le
+// aplica basePath), así que debe ser un glob absoluto.
+const featureIndexExcept = path.resolve(
+  __dirname,
+  "src",
+  "features",
+  "**",
+  "index.ts",
+);
+const featureRootExcept = path.resolve(__dirname, "src", "features", "*");
+
 const crossFeatureZones = featureNames.map((name) => ({
   target: `./src/features/${name}/**`,
   from: featureNames
     .filter((other) => other !== name)
     .map((other) => `./src/features/${other}/**`),
-  except: ["./src/features/**/index.ts"],
+  except: [featureIndexExcept, featureRootExcept],
   message: `features/${name} solo puede importar de otros features por su index.ts (ARCHITECTURE.md §3.1)`,
 }));
 
@@ -36,6 +47,11 @@ const eslintConfig = defineConfig([
   {
     plugins: { import: importPlugin },
     rules: {
+      // Permitir parámetros/variables sin usar si arrancan con `_` (placeholders).
+      "@typescript-eslint/no-unused-vars": [
+        "warn",
+        { argsIgnorePattern: "^_", varsIgnorePattern: "^_", ignoreRestSiblings: true },
+      ],
       "import/no-restricted-paths": [
         "error",
         {

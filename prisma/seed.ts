@@ -6,6 +6,7 @@ import { PrismaClient } from "@prisma/client";
 import { z } from "zod";
 
 import { ExerciseSchema, type Exercise } from "../src/features/exercises/schemas";
+import { audioPathForText } from "../src/shared/lib/audio";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Seed del contenido — «contenido como datos, BD como proyección» (§3 de PLAN
@@ -257,7 +258,10 @@ const prisma = new PrismaClient();
 async function main() {
   // Borrar lo sembrado antes (dependencias: hijos primero). El contenido que
   // apunta a usuarios se limpia para reconstruir el curso desde cero.
+  // `user` PRIMERO: su cascade borra perfiles/respuestas, y los perfiles
+  // referencian `Language` — si borráramos Language antes, violaría la FK.
   await prisma.$transaction([
+    prisma.user.deleteMany(),
     prisma.userAnswer.deleteMany(),
     prisma.userProgress.deleteMany(),
     prisma.reviewQueue.deleteMany(),
@@ -273,7 +277,6 @@ async function main() {
     prisma.level.deleteMany(),
     prisma.course.deleteMany(),
     prisma.language.deleteMany(),
-    prisma.user.deleteMany(),
   ]);
 
   // Idiomas y curso (el "par" es→el — CURRICULUM.md §4).
@@ -345,9 +348,20 @@ async function main() {
             transliteration: entry.transliteracion,
             partOfSpeech: entry.tipo_palabra,
             tags: entry.categoria,
+            audioUrl: audioPathForText(entry.griego),
           },
         });
         stats.vocabulary++;
+
+        await prisma.mediaAsset.create({
+          data: {
+            url: audioPathForText(entry.griego),
+            type: "AUDIO",
+            source: "gtts",
+            license: "personal",
+            attribution: "gTTS (Google) · voz griega (el-GR)",
+          },
+        });
 
         const exerciseBatch: {
           type: "MULTIPLE_CHOICE" | "TRANSLATION";
