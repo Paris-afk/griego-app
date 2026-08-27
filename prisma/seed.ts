@@ -271,6 +271,7 @@ async function main() {
     prisma.textReading.deleteMany(),
     prisma.vocabularyEntry.deleteMany(),
     prisma.mediaAsset.deleteMany(),
+    prisma.alphabetLetter.deleteMany(),
     prisma.contrastiveNote.deleteMany(),
     prisma.lesson.deleteMany(),
     prisma.module.deleteMany(),
@@ -433,6 +434,22 @@ async function main() {
       });
       stats.exercises++;
       stats.letters++;
+
+      // Letra de referencia (pantalla del alfabeto, Fase 4).
+      await prisma.alphabetLetter.create({
+        data: {
+          languageId: el.id,
+          order: letter.orden,
+          uppercase: letter.mayuscula,
+          lowercase: letter.minuscula,
+          nameGreek: letter.nombre_gr,
+          nameTranslit: letter.nombre_translit,
+          ipa: letter.sonido_ipa,
+          equivalentEs: letter.equivalente_es,
+          transferencia: letter.transferencia,
+          note: letter.nota,
+        },
+      });
     }
   }
 

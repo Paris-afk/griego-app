@@ -6,4 +6,5 @@ export {
   getLesson,
   getContinuation,
   getWordOfTheDay,
+  getAlphabet,
 } from "./queries";

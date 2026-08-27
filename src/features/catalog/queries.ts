@@ -71,6 +71,25 @@ export async function getModule(moduleId: string) {
   });
 }
 
+// Las 24 letras del alfabeto (referencia, Fase 4) — ordenadas.
+export async function getAlphabet() {
+  return db.alphabetLetter.findMany({
+    orderBy: { order: "asc" },
+    select: {
+      id: true,
+      order: true,
+      uppercase: true,
+      lowercase: true,
+      nameGreek: true,
+      nameTranslit: true,
+      ipa: true,
+      equivalentEs: true,
+      transferencia: true,
+      note: true,
+    },
+  });
+}
+
 // Una lección con su contexto (curso/level/módulo) y sus ejercicios (en orden).
 // Los renderers de los ejercicios viven en el feature `exercises` (Fase 3).
 export async function getLesson(lessonId: string) {

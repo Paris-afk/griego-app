@@ -65,6 +65,7 @@ model Language {
   profilesAsNative    Profile[] @relation("ProfileNativeLanguage")
   profilesAsTarget    Profile[] @relation("ProfileTargetLanguage")
   vocabularyEntries   VocabularyEntry[]
+  alphabetLetters     AlphabetLetter[]
 }
 
 model Course {
@@ -175,6 +176,26 @@ model VocabularyEntry {
   tags            String // CSV simple ("comida,básico"); migrar a tabla de tags si hace falta filtrar en serio
 
   reviewQueueEntries ReviewQueue[]
+}
+
+// Letras del alfabeto griego (Módulo 0). Proyección de a1-modulo0-alfabeto.csv;
+// alimenta la pantalla de referencia del alfabeto (Fase 4). `transferencia` es
+// del PAR es→el (POSITIVA/NEGATIVA/NEUTRA — CURRICULUM.md §4).
+model AlphabetLetter {
+  id            String       @id @default(cuid())
+  languageId    String
+  language      Language     @relation(fields: [languageId], references: [id])
+  order         Int
+  uppercase     String
+  lowercase     String // "σ ς" en la sigma (ς solo al final de palabra)
+  nameGreek     String
+  nameTranslit  String
+  ipa           String
+  equivalentEs  String
+  transferencia TransferType
+  note          String?
+
+  @@unique([languageId, order])
 }
 
 model TextReading {

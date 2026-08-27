@@ -44,6 +44,23 @@ export default async function ModulePage({
         </div>
       </header>
 
+      {mod.title.toLowerCase().includes("alfabeto") && (
+        <Link
+          href="/alphabet"
+          className="flex items-center justify-between rounded-card border border-[var(--color-primary)] bg-[#F6E8DF] px-4 py-3.5 text-[var(--color-text)] transition-colors hover:border-[var(--color-primary)]"
+        >
+          <span className="flex flex-col gap-[1px]">
+            <span className="font-display text-[17px] font-medium">
+              Tabla del alfabeto
+            </span>
+            <span className="text-[12px] text-[var(--color-text-soft)]">
+              Las 24 letras con su sonido y ejemplo
+            </span>
+          </span>
+          <ChevronRight width={18} height={18} strokeWidth={2.2} aria-hidden />
+        </Link>
+      )}
+
       <ul className="flex flex-col gap-2">
         {mod.lessons.map((lesson) => (
           <li key={lesson.id}>

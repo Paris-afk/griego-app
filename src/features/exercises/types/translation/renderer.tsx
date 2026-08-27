@@ -1,10 +1,12 @@
 "use client";
 
+import { GreekKeyboard } from "@/shared/ui";
 import type { ExerciseRendererProps } from "../module";
 import type { Translation } from "./schema";
 
 const DISPLAY_CHARS = /^[\p{Script=Greek}\s;,]+$/u;
 
+// Escribir la traducción en griego se hace con el teclado griego en pantalla.
 export function TranslationRenderer({
   exercise,
   value,
@@ -12,6 +14,7 @@ export function TranslationRenderer({
   disabled,
 }: ExerciseRendererProps<Translation>) {
   const isGreek = DISPLAY_CHARS.test(exercise.prompt.text);
+  const text = typeof value === "string" ? value : "";
 
   return (
     <div className="flex flex-col gap-6">
@@ -25,14 +28,11 @@ export function TranslationRenderer({
         {exercise.prompt.text}
       </div>
 
-      <textarea
-        value={typeof value === "string" ? value : ""}
-        onChange={(e) => onChange(e.target.value)}
+      <GreekKeyboard
+        value={text}
+        onChange={(next) => onChange(next)}
+        placeholder="Escribe en griego…"
         disabled={disabled}
-        rows={2}
-        autoFocus
-        className="min-h-[72px] w-full resize-none rounded-[10px] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-center font-greek text-[22px] text-[var(--color-text)] outline-none focus:border-[var(--color-primary)] disabled:opacity-60"
-        placeholder="Escribe aquí…"
       />
     </div>
   );
