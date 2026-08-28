@@ -699,6 +699,24 @@ export function ambiguousPositions(word: string, max = 2): number[] {
   return hits;
 }
 
+// ── IDs deterministas ────────────────────────────────────────────────────────
+// El contenido se reconstruye en cada seed, pero el progreso del usuario apunta
+// a `Exercise.id`. Si los ids fueran aleatorios (cuid), cada `db:seed` borraría
+// todo el avance. Derivándolos del CONTENIDO:
+//   · contenido igual → mismo id → la fila sobrevive y el progreso con ella
+//   · contenido distinto → id distinto → fila nueva, y la vieja se limpia
+// que es la semántica correcta: si el ejercicio cambió, ya no es el mismo.
+export function stableId(prefix: string, ...parts: unknown[]): string {
+  const input = parts.map((p) => JSON.stringify(p)).join("|");
+  let h1 = 0x811c9dc5;
+  let h2 = 0x01000193;
+  for (let i = 0; i < input.length; i++) {
+    h1 = Math.imul(h1 ^ input.charCodeAt(i), 0x01000193) >>> 0;
+    h2 = Math.imul(h2 ^ input.charCodeAt(input.length - 1 - i), 0x85ebca6b) >>> 0;
+  }
+  return `${prefix}_${h1.toString(36)}${h2.toString(36)}`;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Seed
 // ─────────────────────────────────────────────────────────────────────────────
@@ -710,28 +728,43 @@ async function main() {
   // bridge_feature inexistente falle ruidosamente en la terminal (§7 punto 1).
   const concepts = loadConcepts();
 
-  // Borrar lo sembrado antes (dependencias: hijos primero). El contenido que
-  // apunta a usuarios se limpia para reconstruir el curso desde cero.
-  // `user` PRIMERO: su cascade borra perfiles/respuestas, y los perfiles
-  // referencian `Language` — si borráramos Language antes, violaría la FK.
+  // Ids generados en esta corrida. Lo que quede fuera es contenido que ya no
+  // produce el CSV y hay que retirar (con sus respuestas, que ya no aplican).
+  // Migración de una vez: hasta ahora los ids eran aleatorios (cuid), así que
+  // chocan con las restricciones únicas al pasar a ids estables. Se limpia el
+  // contenido antiguo UNA vez; a partir de aquí el progreso ya sobrevive a
+  // cada `db:seed`.
+  const legacy = await prisma.module.findFirst({ where: { id: { not: { startsWith: "mod_" } } } });
+  if (legacy) {
+    console.log("Migrando a ids estables: se retira el contenido antiguo una sola vez.");
+    await prisma.$transaction([
+      prisma.exercise.deleteMany(),
+      prisma.lesson.deleteMany(),
+      prisma.module.deleteMany(),
+    ]);
+  }
+
+  const keptExerciseIds = new Set<string>();
+  const keptLessonIds = new Set<string>();
+
+  // Se reconstruye SOLO el contenido. Los usuarios y su progreso NO se tocan.
+  //
+  // Antes se borraba todo, usuarios incluidos: era tolerable cuando no había
+  // contenido ni progreso reales, pero con 51 lecciones y el sistema de dominio
+  // significaba **perder la cuenta y todo el avance en cada actualización de
+  // contenido**. Ese era el motivo real de "se cierra la sesión sola".
+  //
+  // `Exercise` usa IDs DETERMINISTAS derivados de su contenido (ver
+  // `exerciseId()`), así que un ejercicio que no cambia conserva su fila y las
+  // respuestas que apuntan a él. Si su contenido cambia, cambia el id: la fila
+  // vieja se borra y sus respuestas se van con ella — que es lo correcto,
+  // porque ya no son respuestas a ese ejercicio.
   await prisma.$transaction([
-    prisma.user.deleteMany(),
-    prisma.userAnswer.deleteMany(),
-    prisma.userProgress.deleteMany(),
-    prisma.reviewQueue.deleteMany(),
-    prisma.learnerSnapshot.deleteMany(),
     prisma.aiFeedbackCache.deleteMany(),
-    prisma.exercise.deleteMany(),
     prisma.textReading.deleteMany(),
-    prisma.vocabularyEntry.deleteMany(),
     prisma.mediaAsset.deleteMany(),
     prisma.alphabetLetter.deleteMany(),
     prisma.contrastiveNote.deleteMany(),
-    prisma.lesson.deleteMany(),
-    prisma.module.deleteMany(),
-    prisma.level.deleteMany(),
-    prisma.course.deleteMany(),
-    prisma.language.deleteMany(),
   ]);
 
   // Idiomas y curso (el "par" es→el — CURRICULUM.md §4).
@@ -770,8 +803,11 @@ async function main() {
     if (mod.number === 0) continue;
 
     const rows = parseCsv(mod.file).map((r) => VocabRow.parse(r));
-    const prismaModule = await prisma.module.create({
-      data: { levelId: level.id, title: mod.title, order: mod.number },
+    const moduleId = stableId("mod", mod.number);
+    const prismaModule = await prisma.module.upsert({
+      where: { id: moduleId },
+      update: { title: mod.title, order: mod.number },
+      create: { id: moduleId, levelId: level.id, title: mod.title, order: mod.number },
     });
     stats.modules++;
 
@@ -818,14 +854,20 @@ async function main() {
         offset += size;
         const title = lessonTitle(titleCase(categoria), partIndex, sizes.length);
         partIndex++;
-        const lesson = await prisma.lesson.create({
-          data: {
+        const lessonId = stableId("les", mod.number, title);
+        const lesson = await prisma.lesson.upsert({
+          where: { id: lessonId },
+          update: { title, order: lessonOrder, kind: "VOCABULARIO" },
+          create: {
+            id: lessonId,
             moduleId: prismaModule.id,
             title,
-            order: lessonOrder++,
+            order: lessonOrder,
             kind: "VOCABULARIO",
           },
         });
+        lessonOrder++;
+        keptLessonIds.add(lesson.id);
         stats.lessons++;
 
         // La tarjeta de regla solo va en la PRIMERA lección de la categoría:
@@ -834,14 +876,20 @@ async function main() {
         const items = buildLessonExercises(chunk, `${categoria}-${offset}`, conceptRow);
         let exerciseOrder = 0;
         for (const ex of items) {
-          await prisma.exercise.create({
-            data: {
+          const exId = stableId("ex", lesson.id, ex.type, ex.schemaJson);
+          await prisma.exercise.upsert({
+            where: { id: exId },
+            update: { order: exerciseOrder, schemaJson: ex.schemaJson },
+            create: {
+              id: exId,
               lessonId: lesson.id,
               type: ex.type,
               schemaJson: ex.schemaJson,
-              order: exerciseOrder++,
+              order: exerciseOrder,
             },
           });
+          keptExerciseIds.add(exId);
+          exerciseOrder++;
           stats.exercises++;
         }
       }
@@ -853,8 +901,11 @@ async function main() {
     if (mod.number !== 0) continue;
 
     const rows = parseCsv(mod.file).map((r) => AlphabetRow.parse(r));
-    const prismaModule = await prisma.module.create({
-      data: { levelId: level.id, title: mod.title, order: mod.number },
+    const moduleId = stableId("mod", mod.number);
+    const prismaModule = await prisma.module.upsert({
+      where: { id: moduleId },
+      update: { title: mod.title, order: mod.number },
+      create: { id: moduleId, levelId: level.id, title: mod.title, order: mod.number },
     });
     stats.modules++;
 
@@ -884,14 +935,20 @@ async function main() {
     let lessonOrder = 0;
 
     for (const [groupIndex, group] of ALPHABET_GROUPS.entries()) {
-      const lesson = await prisma.lesson.create({
-        data: {
+      const lessonId = stableId("les", mod.number, group.title);
+      const lesson = await prisma.lesson.upsert({
+        where: { id: lessonId },
+        update: { title: group.title, order: lessonOrder, kind: "VOCABULARIO" },
+        create: {
+          id: lessonId,
           moduleId: prismaModule.id,
           title: group.title,
-          order: lessonOrder++,
+          order: lessonOrder,
           kind: "VOCABULARIO",
         },
       });
+      lessonOrder++;
+      keptLessonIds.add(lesson.id);
       stats.lessons++;
 
       const letters = group.orders
@@ -976,14 +1033,20 @@ async function main() {
 
       let exerciseOrder = 0;
       for (const ex of items) {
-        await prisma.exercise.create({
-          data: {
+        const exId = stableId("ex", lesson.id, ex.type, ex.schemaJson);
+        await prisma.exercise.upsert({
+          where: { id: exId },
+          update: { order: exerciseOrder, schemaJson: ex.schemaJson },
+          create: {
+            id: exId,
             lessonId: lesson.id,
             type: ex.type,
             schemaJson: ex.schemaJson,
-            order: exerciseOrder++,
+            order: exerciseOrder,
           },
         });
+        keptExerciseIds.add(exId);
+        exerciseOrder++;
         stats.exercises++;
       }
     }
@@ -1006,7 +1069,22 @@ async function main() {
     stats.notes++;
   }
 
-  console.log("Seed completado:", stats);
+  // Retirar el contenido que ya no genera el CSV. Las respuestas a ejercicios
+  // desaparecidos se van en cascada, que es correcto: ese ejercicio ya no
+  // existe. Las de los que siguen igual se conservan — ese es todo el punto.
+  const removedExercises = await prisma.exercise.deleteMany({
+    where: { id: { notIn: [...keptExerciseIds] } },
+  });
+  const removedLessons = await prisma.lesson.deleteMany({
+    where: { id: { notIn: [...keptLessonIds] } },
+  });
+
+  const preserved = await prisma.userAnswer.count();
+  console.log("Seed completado:", {
+    ...stats,
+    retirados: { ejercicios: removedExercises.count, lecciones: removedLessons.count },
+    respuestasConservadas: preserved,
+  });
 }
 
 const MIN_CATEGORY_SIZE = 3;

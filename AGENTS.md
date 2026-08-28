@@ -149,9 +149,11 @@ npx tsx scripts/dev-session.ts   # crea el usuario de prueba y escupe el token
 
 Luego se manda como cookie `griego_session=<token>`. Útil saber:
 
-- **`npm run db:seed` BORRA todos los usuarios** (es idempotente y reconstruye
-  desde cero). Tras sembrar hay que volver a crear la sesión y **volver a entrar
-  en el navegador**: la cookie anterior apunta a un usuario que ya no existe.
+- **`npm run db:seed` YA NO borra usuarios ni progreso** (corregido el 2026-08-28).
+  Reconstruye solo el contenido, y los ids de módulos/lecciones/ejercicios se
+  derivan de su contenido (`stableId`), así que lo que no cambia conserva su fila
+  y las respuestas que apuntan a ella. El log dice cuántas respuestas se
+  conservaron y cuánto contenido huérfano se retiró.
 - Tras cambiar `prisma/schema.prisma` o correr `prisma generate`, **reinicia el
   servidor de desarrollo**. El hot-reload no recoge un cliente de Prisma
   regenerado y da errores minificados del tipo `a[d] is not a function`, que no
