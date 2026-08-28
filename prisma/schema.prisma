@@ -144,6 +144,15 @@ enum ExerciseType {
   READING_COMPREHENSION
   ALPHABET_DRILL
   REPEAT_WORD // Fase 8, pendiente de proveedor de STT — ver ARCHITECTURE.md §1.1
+  // Fase 4.6 — catálogo ampliado, ver EXERCISES.md
+  CONCEPT // tarjeta de regla: no puntúa, abre la lección
+  MATCH_PAIRS
+  GENDER_SORT
+  LISTEN_CHOOSE
+  AUTOCOMPLETE
+  CASE_PAIRS
+  MEMORY_GRID
+  SPEED_ROUND
 }
 
 model Exercise {

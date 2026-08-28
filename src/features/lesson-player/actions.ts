@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 
 import { getCurrentUser } from "@/features/auth";
+// `validateExercise` sale de la capa pura (validators.ts), no del registro:
+// el servidor no debe arrastrar renderers para corregir una respuesta.
 import { ExerciseSchema, validateExercise } from "@/features/exercises";
 import type { ValidationResult } from "@/features/exercises";
 import { db } from "@/shared/lib/db";

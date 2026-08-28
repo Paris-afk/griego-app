@@ -190,7 +190,8 @@ src/features/exercises/
     translation/
     free-writing/
     alphabet-drill/
-  registry.ts               ← el ÚNICO lugar que conoce la lista completa
+  validators.ts             ← despacho de validación, TS PURO (servidor y tests)
+  registry.ts               ← módulos completos con renderers (solo cliente)
   normalize.ts              ← normalización NFD compartida (§5.3)
 ```
 
@@ -205,6 +206,8 @@ export const multipleChoice: ExerciseModule<'multiple_choice'> = {
 };
 ```
 
+> **Dos índices, no uno** — corregido el 2026-08-28 al implementar la Fase 4.6: `registry.ts` importa los renderers, así que importarlo arrastra React. Pero la validación corre en el **servidor** (Server Actions) y en los tests. Por eso el despacho vive en `validators.ts`, TS puro. Es la misma razón que separa `schema.ts`: cada pieza de un tipo debe poder importarse sin las otras dos. La co-locación no se rompe — una carpeta sigue siendo un tipo—; lo que se separa es el ÍNDICE.
+>
 > **Por qué carpeta con archivos separados y no un solo `.tsx`** — corregido el 2026-08-25, tras detectarlo al ejecutar la Fase 0:
 > el **seed** valida los CSV con los mismos schemas Zod y corre en Node, sin React. Si el schema viviera dentro del `.tsx` del renderer, importarlo desde el seed arrastraría React al proceso: frágil y lento sin ganar nada.
 > La separación mantiene la co-locación real (**una carpeta = un tipo, un solo lugar donde mirar**) y además respeta las fronteras servidor/cliente: `validate.ts` nunca llega al bundle del navegador y `renderer.tsx` nunca llega al seed.
@@ -321,6 +324,8 @@ export type Exercise = z.infer<typeof ExerciseSchema>;
 ```
 
 ### 5.2 Tipos de actividad
+
+> **El catálogo completo, con el propósito pedagógico y la anatomía móvil de cada tipo, está en [EXERCISES.md](./EXERCISES.md).** Esta tabla es solo el contrato técnico.
 
 | Tipo | Descripción | Corrección | ¿Usa DeepSeek? |
 |---|---|---|---|

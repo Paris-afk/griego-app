@@ -29,6 +29,7 @@ Nada está construido todavía. El repo contiene **solo documentación y archivo
 | [ARCHITECTURE.md](./ARCHITECTURE.md) §4-5 | Modelo de datos y motor de ejercicios | Fases 0-3 |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) §6 | Capa de tutoría (prompts, caché, LearnerSnapshot) | Fase 5 |
 | [ARCHITECTURE.md](./ARCHITECTURE.md) §7 | **Por qué las cosas son como son** | Antes de proponer cambios |
+| [EXERCISES.md](./EXERCISES.md) | **Catálogo de los 11 tipos de ejercicio** + la estructura Regla→Práctica→Consolidación | Al construir cualquier ejercicio |
 | [SCREENS.md](./SCREENS.md) | Pantallas, anatomía, sistema de diseño | Al construir UI |
 | [CURRICULUM.md](./CURRICULUM.md) | Qué se enseña y en qué orden | Fases 1 y 4 |
 | [content/README.md](./content/README.md) | Esquema de los CSV y validaciones obligatorias | Al escribir el seed |

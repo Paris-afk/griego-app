@@ -81,6 +81,7 @@ export function LessonExperience({
   const [result, setResult] = useState<CheckAnswerResult | null>(null);
   const [score, setScore] = useState(initialScore);
   const [pending, setPending] = useState(false);
+  const [showConcept, setShowConcept] = useState(false);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const current = parsed[index];
@@ -111,6 +112,20 @@ export function LessonExperience({
     ExerciseRendererProps<Exercise>
   >;
 
+  // Tarjeta de regla (EXERCISES.md §2): no puntúa, no se falla, y su CTA es
+  // "Empezar" en vez de "Comprobar".
+  const isInformational = exerciseModule.isInformational === true;
+
+  // La regla queda accesible durante TODA la lección con el botón "¿por qué?".
+  // Es la diferencia concreta con Duolingo: en cualquier momento puedes
+  // recordar qué estás practicando.
+  const conceptEntry = parsed.find((e) => e.exercise.type === "concept");
+  const ConceptCard = conceptEntry
+    ? (exerciseRegistry.concept.Renderer as unknown as React.ComponentType<
+        ExerciseRendererProps<Exercise>
+      >)
+    : null;
+
   const canSubmit =
     typeof value === "string"
       ? value.trim().length > 0
@@ -139,6 +154,14 @@ export function LessonExperience({
       answer: value,
     });
     setResult(res);
+    if (isInformational) {
+      // La tarjeta de regla no puntúa ni celebra: se lee y se pasa. Se marca
+      // como resuelta para que el progreso y la reanudación funcionen igual.
+      setCorrectSet((prev) => new Set(prev).add(current.id));
+      setPending(false);
+      advance();
+      return;
+    }
     if (res.isCorrect) {
       setScore((s) => s + res.points);
       setCorrectSet((prev) => new Set(prev).add(current.id));
@@ -210,6 +233,15 @@ export function LessonExperience({
         <span className="text-[12px] tabular-nums tracking-[0.4px] text-[var(--color-text-soft)]">
           {displayLabel}
         </span>
+        {conceptEntry && !isInformational && phase !== "start" && phase !== "finish" && (
+          <button
+            type="button"
+            onClick={() => setShowConcept(true)}
+            className="ml-1 flex h-11 items-center rounded-pill px-2 text-[12px] font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-strong)]"
+          >
+            ¿por qué?
+          </button>
+        )}
       </div>
 
       {phase === "start" ? (
@@ -227,13 +259,15 @@ export function LessonExperience({
         />
       ) : (
         <>
-          <div className="pt-12">
-            <p className="font-display text-[19px] italic text-[var(--color-text-soft)]">
-              {current.exercise.instruction}
-            </p>
-          </div>
+          {!isInformational && (
+            <div className="pt-12">
+              <p className="font-display text-[19px] italic text-[var(--color-text-soft)]">
+                {current.exercise.instruction}
+              </p>
+            </div>
+          )}
 
-          <div className="flex-grow pt-7">
+          <div className={cn("flex-grow", isInformational ? "pt-10" : "pt-7")}>
             <Renderer
               exercise={current.exercise}
               value={value}
@@ -243,7 +277,16 @@ export function LessonExperience({
           </div>
 
           <div className="mt-6">
-            {phase === "answering" ? (
+            {isInformational ? (
+              <button
+                type="button"
+                onClick={submit}
+                disabled={pending}
+                className="flex min-h-[56px] w-full items-center justify-center rounded-button bg-[var(--color-primary)] text-[16px] font-semibold text-white transition-colors hover:bg-[var(--color-primary-strong)] disabled:opacity-40"
+              >
+                Empezar
+              </button>
+            ) : phase === "answering" ? (
               <button
                 type="button"
                 onClick={submit}
@@ -305,6 +348,36 @@ export function LessonExperience({
             )}
           </div>
         </>
+      )}
+
+      {/* La regla, reabierta a mitad de lección sin perder el progreso. */}
+      {showConcept && conceptEntry && ConceptCard && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="La regla de esta lección"
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/40 px-[22px] pb-6"
+          onClick={() => setShowConcept(false)}
+        >
+          <div
+            className="max-h-[80vh] w-full max-w-md overflow-y-auto rounded-card border border-[var(--color-border)] bg-[var(--color-surface)] p-5"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <ConceptCard
+              exercise={conceptEntry.exercise}
+              value={null}
+              onChange={() => {}}
+              disabled
+            />
+            <button
+              type="button"
+              onClick={() => setShowConcept(false)}
+              className="mt-5 flex min-h-[56px] w-full items-center justify-center rounded-button bg-[var(--color-primary)] text-[16px] font-semibold text-white"
+            >
+              Seguir practicando
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );

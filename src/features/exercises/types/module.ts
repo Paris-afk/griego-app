@@ -30,6 +30,12 @@ export interface ExerciseModule<T extends ExerciseType> {
     exercise: Extract<Exercise, { type: T }>,
     input: unknown,
   ) => ValidationResult;
+  /**
+   * Informativo: no puntúa y no se puede fallar (`concept`, EXERCISES.md §3.1).
+   * El reproductor lo muestra con un CTA de "Empezar" y avanza sin fase de
+   * feedback. Es lo que hace que una lección ENSEÑE antes de ejercitar.
+   */
+  isInformational?: boolean;
 }
 
 // Mapa completo por tipo. `Record` así falla en compilación si falta un tipo

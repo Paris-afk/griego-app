@@ -1,0 +1,33 @@
+# Tarjetas de regla — una por categoría de lección (EXERCISES.md §2, tipo `concept`)
+#
+# Es la respuesta al problema de Duolingo: antes de practicar, saber QUÉ regla
+# estás practicando. La tarjeta abre la lección y el botón "¿por qué?" la reabre
+# en cualquier momento.
+#
+# `bridge_feature` referencia la columna `feature` de contrastive-es-el.csv. El seed
+# copia su `bridge_language` a la tarjeta. Vacío = la lección no tiene un puente
+# con el español (no todo lo tiene, y forzarlo sería inventar).
+#
+# `clave` casa con la `categoria` de los CSV de vocabulario, o con la clave de
+# grupo del alfabeto (alfabeto-1/2/3).
+clave,titulo,cuerpo,bridge_feature
+alfabeto-1,Las letras que ya sabes decir,"Estas letras suenan igual que en español. Lo único nuevo es su forma: aprendes a leerlas, no a pronunciarlas. Diecinueve de las veinticuatro letras griegas están en este grupo.",vocales
+alfabeto-2,Las tres que cuestan,"β no suena /b/ sino /v/, siempre. θ es la z de España en 'zapato'. ζ es una s con vibración, como el zumbido de una abeja. Son las únicas tres que piden práctica de verdad.",beta_labiodental
+alfabeto-3,"Letras distintas, un mismo sonido","η, ι y υ suenan las tres /i/. ο y ω suenan las dos /o/. Pronunciarlas es fácil; lo difícil es recordar cuál lleva cada palabra. Se aprende con la palabra entera, no con reglas.",iotacismo
+saludo,Saludar y decir quién eres,"En griego el saludo cambia según la hora y según la confianza: Γεια σου a un amigo, Γεια σας a un desconocido o a varios. Presentarse va en el mismo bloque porque en la conversación real va junto.",
+cortesia,Las palabras que abren puertas,"Ευχαριστώ y παρακαλώ resuelven la mitad de las situaciones. Ojo con una trampa: Ναι significa 'sí', aunque a un hispanohablante le suene a 'no'. Es el error más común del primer día.",
+identidad,Decir de dónde eres,"El griego no dice 'mi nombre es' sino 'me llaman': Με λένε. Y el verbo είμαι sirve para ser y para estar — esa distinción que tanto cuesta a los extranjeros en español, aquí no existe.",
+numero,Contar en griego,"Del 1 al 12 hay que memorizar. Del 13 en adelante se componen: δεκατρία es literalmente 'diez-tres'. Muchos números te van a sonar: de δέκα viene 'década', de οχτώ viene 'octógono'.",
+familia,La familia y el tercer género,"Aquí aparece el neutro. El español tiene masculino y femenino; el griego añade το. Y no siempre se adivina por la terminación: το όνομα acaba en -α pero es neutro, no femenino.",genero_neutro
+rutina,Hablar de tu día,"Los verbos griegos se conjugan por persona, como en español, así que el concepto ya lo tienes. Lo nuevo es que hay dos familias de conjugación según dónde cae el acento.",aspecto_verbal
+comida,Comer y beber,"Casi todo el vocabulario de comida es neutro: το ψωμί, το νερό, το γάλα. Es un buen sitio para acostumbrarse al artículo το antes de que aparezca en cosas menos previsibles.",genero_neutro
+compras,Comprar y preguntar precios,"Πόσο κοστίζει; resuelve cualquier compra. La palabra αγορά, mercado, es la misma ágora de la Grecia clásica — y de ahí viene 'agorafobia' en español.",
+dia,Los días de la semana,"Los días griegos son números ordinales: Δευτέρα es 'el segundo', Τρίτη 'el tercero', Τετάρτη 'el cuarto'. Una vez lo ves, no se olvidan. Κυριακή es 'del Señor', igual que 'domingo'.",
+mes,Los meses del año,"Este es el regalo del griego al hispanohablante: los doce meses comparten origen latino y se reconocen casi todos a la primera. Solo cuida la pronunciación — la β suena /v/: Φεβρουάριος es 'Fevruários'.",vocales
+fecha,Hablar de fechas,"Semana, mes y año: εβδομάδα, μήνας, χρόνος. De χρόνος viene 'cronómetro' y 'crónica'. Su plural es irregular: τα χρόνια.",
+viaje,Moverse por Grecia,"Mucho vocabulario de viaje ya lo tienes sin saberlo: αεροδρόμιο es literalmente 'aeródromo', πόλη está en 'metrópoli' y 'política', δρόμος en 'hipódromo'.",
+plan,Decir lo que quieres hacer,"El griego no tiene infinitivo. 'Quiero comer' se dice θέλω να φάω, literalmente 'quiero que coma'. Suena raro hasta que caes en que ya lo haces en español al decir 'quiero que leas'.",sin_infinitivo
+tiempo,"Ayer, hoy y mañana","Para hablar del futuro basta anteponer θα al verbo: θα πάω, 'iré'. Es de lo más simple del griego, y contrasta con el pasado, que tiene formas irregulares que hay que memorizar.",
+aoristo,Contar lo que pasó,"El aóristo es el pasado puntual. Ya distingues 'leí' de 'leía' en español sin pensarlo: eso es aspecto, y el griego usa la misma idea. Los verbos frecuentes son irregulares y van de memoria.",aspecto_verbal
+verbo-a,Verbos de tipo A,"La primera familia de conjugación: el acento cae en la raíz, como en γράφω o δουλεύω. Es la más numerosa y la que conviene dominar primero.",
+verbo-b1,Verbos de tipo B1,"La segunda familia: el acento cae en la terminación, como en μιλάω o αγαπάω. Muchos admiten dos formas escritas —μιλάω y μιλώ— y las dos son correctas.",

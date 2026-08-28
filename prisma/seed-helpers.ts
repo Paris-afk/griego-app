@@ -43,7 +43,21 @@ function hashString(input: string): number {
 
 export interface LessonExercise {
   word: string;
-  type: "MULTIPLE_CHOICE" | "TRANSLATION" | "ORDER_WORDS" | "FILL_BLANK";
+  /** Debe coincidir con el enum ExerciseType de Prisma. */
+  type:
+    | "MULTIPLE_CHOICE"
+    | "TRANSLATION"
+    | "ORDER_WORDS"
+    | "FILL_BLANK"
+    | "ALPHABET_DRILL"
+    | "CONCEPT"
+    | "MATCH_PAIRS"
+    | "GENDER_SORT"
+    | "LISTEN_CHOOSE"
+    | "AUTOCOMPLETE"
+    | "CASE_PAIRS"
+    | "MEMORY_GRID"
+    | "SPEED_ROUND";
   schemaJson: Exercise;
 }
 

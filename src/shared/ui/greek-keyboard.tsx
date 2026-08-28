@@ -55,12 +55,18 @@ export function GreekKeyboard({
   placeholder = "Escribe aquí…",
   disabled,
   className,
+  hideInput = false,
 }: {
   value: string;
   onChange: (next: string) => void;
   placeholder?: string;
   disabled?: boolean;
   className?: string;
+  /**
+   * Oculta el campo propio del teclado. Lo usa `autocomplete`, donde la palabra
+   * con huecos ya es el campo: dos campos a la vez confundirían.
+   */
+  hideInput?: boolean;
 }) {
   const [pendingAccent, setPendingAccent] = useState(false);
 
@@ -75,13 +81,15 @@ export function GreekKeyboard({
 
   return (
     <div className={cn("flex flex-col gap-2.5", className)}>
-      <label className="flex min-h-[56px] w-full items-center justify-center rounded-[10px] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-center font-greek text-[24px] text-[var(--color-text)]">
-        {value || (
-          <span className="font-ui text-[15px] font-normal text-[var(--color-text-soft)]">
-            {placeholder}
-          </span>
-        )}
-      </label>
+      {!hideInput && (
+        <label className="flex min-h-[56px] w-full items-center justify-center rounded-[10px] border border-[var(--color-border)] bg-[var(--color-surface)] px-4 py-3 text-center font-greek text-[24px] text-[var(--color-text)]">
+          {value || (
+            <span className="font-ui text-[15px] font-normal text-[var(--color-text-soft)]">
+              {placeholder}
+            </span>
+          )}
+        </label>
+      )}
 
       <div className="flex flex-col gap-1.5">
         {ROWS.map((row, i) => (

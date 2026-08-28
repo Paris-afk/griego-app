@@ -46,6 +46,9 @@
 | 2026-08-27 | **Corregido: DeepSeek SÍ acepta imágenes.** ARCHITECTURE.md §1.1 afirmaba que era solo texto — cierto al verificarlo el 24-ago, pero DeepSeek publicó `deepseek-v4-flash-vision-exp` el **21-ago-2026** y la nota quedó obsoleta en días. Consecuencia: la foto ya **no requiere un segundo proveedor** ni el pipeline OCR+validación de dos pasos que se diseñó al principio. Solo ese modelo acepta imágenes (otros devuelven 400), es experimental y factura hasta 384 tokens por imagen |
 | 2026-08-27 | **Fase 5 con alcance reducido: la IA sale de los ejercicios normales.** No interviene en `multiple_choice`, `translation` ni `alphabet_drill` — los CSV ya traen la columna `nota` escrita a mano, y para contenido fijo una explicación humana gana a una generada (y es gratis). La IA se reserva para donde no hay respuesta única: escritura abierta y errores de dictado. Se añade el tipo **`dictation`**, que corrige de forma determinista y reutiliza el audio de la Fase 3.5 + el teclado de la Fase 4; ataca η/ι/υ y ο/ω, que ningún ejercicio actual entrena. Regla nueva: **la IA nunca afirma hechos contables** (conteos, racha) — los genera el código, porque cachear "es la 3ª vez esta semana" lo volvería falso con el tiempo |
 | 2026-08-27 | **Foto de escritura a mano: fuera de alcance por producto, no por técnica.** Ya es posible con un solo proveedor, pero el OCR de manuscrito en griego es poco fiable y marcar errores inexistentes frustraría al alumno. Se reevalúa cuando el dictado esté en uso real |
+| 2026-08-28 | **Catálogo de ejercicios diseñado — [EXERCISES.md](./EXERCISES.md), Fase 4.6.** Disparador: la restricción de "máx. 2 seguidos" produjo alternancia perfecta (`TR MC TR MC`) en 4 de 10 lecciones, porque solo tienen 2 tipos disponibles. Se pasa de 5 a **11 tipos**, organizados en 4 niveles cognitivos (reconocer → clasificar → producir → consolidar). **Lo central no son los tipos sino la estructura**: cada lección abre con una tarjeta `concept` que dice qué regla vas a practicar, y un botón `¿por qué?` la reabre en cualquier momento — es la respuesta directa a "lo feo de Duolingo es que aprietas sin saber por qué". Cada tipo entrena algo que la investigación del par es→el identificó: `gender_sort` el neutro, `listen_choose`/`autocomplete` las confusiones η/ι/υ y ο/ω, `case_pairs` las mayúsculas que el teclado no permite entrenar. **Ningún tipo necesita contenido nuevo** — todo sale de los 102 sustantivos con artículo, las 204 palabras sin espacio y los 236 audios ya en el repo |
+| 2026-08-28 | **Fase 4.6 implementada.** 8 tipos nuevos (`concept`, `match_pairs`, `gender_sort`, `listen_choose`, `autocomplete`, `case_pairs`, `memory_grid`, `speed_round`) → 16 en total. Estructura Regla→Práctica→Consolidación: toda primera lección abre con su tarjeta y el botón **¿por qué?** la reabre sin perder progreso. Contenido de las reglas en [`content/concepts-es-el.csv`](./content/concepts-es-el.csv) (20 tarjetas, con el `bridge_language` resuelto desde contrastive-es-el.csv y validado al sembrar). **Alfabeto: de `AD MC` alternado (2 tipos) a 5 tipos** con regla y memorama de mayúsculas — que es el único sitio donde se entrenan las mayúsculas. Resultado medido: mínimo 3 tipos por lección, racha máxima de un tipo = 2. 61/61 tests, lint y build en verde |
+| 2026-08-28 | **Corrección de arquitectura: dos índices en el motor de ejercicios.** `registry.ts` importa los renderers `.tsx`, así que el servidor arrastraba React solo para corregir una respuesta (y los tests no podían importarlo). Se separa `validators.ts` — despacho de validación en TS puro — que usan el servidor y los tests; `registry.ts` queda para el cliente. Mismo motivo que hace `schema.ts` un archivo aparte. Detectado al implementar la Fase 4.6 |
 ---
 
 ## 1. Definición de MVP
@@ -169,6 +172,29 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 - [x] Pantalla de fin de lección con números reales: aciertos, palabras nuevas, racha. Hoy la lección simplemente termina.
 
 - [x] **Listo cuando (verificado en local):** una lección de 10 ejercicios se juega **de principio a fin sin tocar "Continuar" ni una vez** al acertar todo, con el audio sonando solo en cada palabra. **La verificación física en el iPhone queda pendiente del usuario** (no automatizable por CLI): tocar "Comenzar" y jugar una lección completa acertando todo, oyendo cada palabra y sin tocar "Continuar".
+
+### Fase 4.6 — Variedad y estructura de la lección (4-5 días) ⭐
+
+> Diseño completo en **[EXERCISES.md](./EXERCISES.md)**. Añadida el 2026-08-28 tras dos rondas de ajuste de ritmo: la restricción "máximo 2 del mismo tipo seguidos" se cumplió produciendo **alternancia perfecta** (`TR MC TR MC`, `AD MC AD MC`) en 4 de 10 lecciones — igual de predecible. La causa no es el algoritmo sino que esas lecciones **solo tienen 2 tipos disponibles**.
+>
+> Y el problema de fondo, que ningún tipo nuevo arregla por sí solo: **no sabes qué regla estás practicando**. Eso se resuelve con estructura, no con variedad.
+
+**Estructura de la lección (lo más importante de la fase):**
+- [x] Tipo `concept` — tarjeta de regla al inicio de cada lección. No puntúa, no se falla. Usa el `bridge_language` de `contrastive-es-el.csv`, que ya está escrito.
+- [x] Botón **`¿por qué?`** en la cabecera de la lección: reabre la tarjeta sin perder el progreso.
+- [x] Orden obligatorio: **Regla → Práctica (reconocer→clasificar→producir) → Consolidación**. Una lección no puede ser de un solo nivel.
+
+**Tipos nuevos** (ninguno necesita contenido nuevo — todo sale de los CSV y los 236 audios):
+- [x] `match_pairs` — unir 5 parejas griego↔español. **Tocar, no arrastrar.**
+- [x] `listen_choose` — oír y elegir, con distractores que suenan igual (`νησί` vs `νισί`). Entrena η/ι/υ.
+- [x] `gender_sort` — ο/η/το en tres botones grandes. **102 sustantivos** ya tienen artículo (το=41, η=30, ο=26).
+- [x] `case_pairs` — unir Α↔α. Cubre el hueco de mayúsculas que el teclado no permite entrenar.
+- [x] `autocomplete` — completar las letras que faltan, con los huecos puestos **a propósito** en η/ι/υ y ο/ω.
+- [x] `memory_grid` — memorama de 6 parejas (3×4 en móvil: cartas de 110px). Variante con audio.
+- [x] `speed_round` — 10 afirmaciones ✓/✗ con cronómetro. El tiempo presiona pero no castiga.
+- [x] Mejorar `letter_tiles` (`order_words`): añadir **letras distractoras** confundibles, hoy se resuelve por descarte.
+
+- [x] **Listo cuando:** toda lección abre con su tarjeta de regla y el botón `¿por qué?` funciona; ninguna lección usa menos de 3 tipos; y las tres lecciones de alfabeto ya no son `AD MC` alternado.
 
 ### Fase 5 — Dictado y el profesor IA (4-6 días) ⭐
 

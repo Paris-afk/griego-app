@@ -9,7 +9,16 @@ export type {
   ExerciseTypeList,
 } from "./schemas";
 
-export { exerciseRegistry, validateExercise, exerciseSpokenText } from "./registry";
+// Capa PURA (sin React): la usa el servidor y los tests.
+export {
+  validateExercise,
+  exerciseSpokenText,
+  isInformationalType,
+  INFORMATIONAL_TYPES,
+} from "./validators";
+
+// Capa de UI: arrastra los renderers .tsx, solo la necesita el cliente.
+export { exerciseRegistry } from "./registry";
 export type { ExerciseModules } from "./registry";
 
 export type {

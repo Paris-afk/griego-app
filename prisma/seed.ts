@@ -210,13 +210,50 @@ function lessonTitle(base: string, lessonOrder: number, totalParts: number): str
 // Construye los ejercicios de una lección a partir de sus entradas: MC (significado)
 // + un ejercicio secundario que rota entre TR (escribir), OW (ordenar letras, ortografía)
 // y FB (artículo — solo sustantivos). Luego intercala para no repetir palabra seguida.
+// ── Tarjetas de regla (concepts-es-el.csv) ──────────────────────────────────
+// Contenido, no código: el texto de cada regla vive en un CSV versionado, igual
+// que el vocabulario (ARCHITECTURE.md §3, principio 1).
+export interface ConceptRow {
+  titulo: string;
+  cuerpo: string;
+  /** `bridge_language` resuelto desde contrastive-es-el.csv. */
+  bridge?: string;
+}
+
+function loadConcepts(): Map<string, ConceptRow> {
+  const bridges = new Map(
+    parseCsv("contrastive-es-el.csv").map((r) => [r.feature, r.bridge_language]),
+  );
+  const out = new Map<string, ConceptRow>();
+  for (const row of parseCsv("concepts-es-el.csv")) {
+    if (!row.clave || !row.titulo || !row.cuerpo) {
+      throw new Error(`concepts-es-el.csv: fila incompleta (${JSON.stringify(row)})`);
+    }
+    const feature = row.bridge_feature?.trim();
+    if (feature && !bridges.has(feature)) {
+      throw new Error(
+        `concepts-es-el.csv: bridge_feature "${feature}" no existe en contrastive-es-el.csv`,
+      );
+    }
+    out.set(row.clave, {
+      titulo: row.titulo,
+      cuerpo: row.cuerpo,
+      ...(feature ? { bridge: bridges.get(feature) } : {}),
+    });
+  }
+  return out;
+}
+
 function buildLessonExercises(
   entries: VocabRowOutput[],
   seedKey: string,
+  concept?: ConceptRow,
 ): LessonExercise[] {
   const spanPool = entries.map((e) => e.espanol);
   const items: LessonExercise[] = [];
+
   entries.forEach((entry, i) => {
+    const single = !/\s/.test(entry.griego);
     const distractors = pickDistractors(spanPool, entry.espanol, 3);
     if (distractors.length >= 1) {
       items.push({
@@ -226,14 +263,33 @@ function buildLessonExercises(
       });
     }
 
-    const rotation = i % 3;
-    if (rotation === 1 && !/\s/.test(entry.griego) && Array.from(entry.griego).length >= 2) {
+    // Ejercicio secundario: rota entre cinco tipos en vez de tres, y cada uno
+    // se elige por lo que ENTRENA, no al azar (EXERCISES.md §3).
+    const homophones = single ? homophoneVariants(entry.griego, 3) : [];
+    const blanks = single ? ambiguousPositions(entry.griego, 2) : [];
+    const rotation = i % 5;
+
+    if (rotation === 1 && homophones.length >= 2) {
+      // Distractores que suenan igual → decidir la ortografía de oído.
+      items.push({
+        word: entry.griego,
+        type: "LISTEN_CHOOSE",
+        schemaJson: makeListenChoose(entry.griego, homophones.slice(0, 3), entry.espanol),
+      });
+    } else if (rotation === 2 && blanks.length >= 1) {
+      // Huecos en las letras ambiguas → misma confusión, por escrito.
+      items.push({
+        word: entry.griego,
+        type: "AUTOCOMPLETE",
+        schemaJson: makeAutocomplete(entry.griego, blanks, entry.espanol),
+      });
+    } else if (rotation === 3 && single && Array.from(entry.griego).length >= 2) {
       items.push({
         word: entry.griego,
         type: "ORDER_WORDS",
         schemaJson: makeOrderWords(entry.espanol, entry.griego),
       });
-    } else if (rotation === 2 && entry.articulo) {
+    } else if (rotation === 4 && entry.articulo) {
       items.push({
         word: entry.griego,
         type: "FILL_BLANK",
@@ -247,7 +303,78 @@ function buildLessonExercises(
       });
     }
   });
-  return interleaveLessonExercises(items, seedKey);
+
+  // CLASIFICAR: el género en tres botones. Solo si hay sustantivos con artículo
+  // singular suficientes — es el ejercicio más específico del par es→el.
+  const nouns = entries.filter((e) => ["ο", "η", "το"].includes(e.articulo));
+  if (nouns.length >= 4) {
+    items.push({
+      word: `__gender__${seedKey}`,
+      type: "GENDER_SORT",
+      schemaJson: makeGenderSort(
+        nouns.slice(0, 8).map((e) => ({
+          word: e.griego,
+          article: e.articulo,
+          ...(e.nota ? { hint: e.nota } : {}),
+        })),
+      ),
+    });
+  }
+
+  // RECONOCER en bloque: unir parejas. Rápido y satisfactorio.
+  if (entries.length >= 4) {
+    items.push({
+      word: `__pairs__${seedKey}`,
+      type: "MATCH_PAIRS",
+      schemaJson: makeMatchPairs(
+        entries.slice(0, 5).map((e) => ({ left: e.griego, right: e.espanol })),
+      ),
+    });
+  }
+
+  const practice = interleaveLessonExercises(items, seedKey);
+
+  // 1. REGLA — abre la lección (EXERCISES.md §2).
+  const opening: LessonExercise[] = concept
+    ? [
+        {
+          word: `__concept__${seedKey}`,
+          type: "CONCEPT",
+          schemaJson: makeConcept(concept.titulo, concept.cuerpo, concept.bridge),
+        },
+      ]
+    : [];
+
+  // 3. CONSOLIDACIÓN — el juego, al final, como recompensa.
+  const closing: LessonExercise[] = [];
+  if (entries.length >= 6) {
+    closing.push({
+      word: `__memory__${seedKey}`,
+      type: "MEMORY_GRID",
+      schemaJson: makeMemoryGrid(
+        entries.slice(0, 6).map((e) => ({ greek: e.griego, match: e.espanol })),
+      ),
+    });
+  } else if (entries.length >= 4) {
+    // Con poco vocabulario el memorama queda soso: la ronda rápida sí funciona.
+    closing.push({
+      word: `__speed__${seedKey}`,
+      type: "SPEED_ROUND",
+      schemaJson: makeSpeedRound(
+        entries.slice(0, 6).map((e, i) => {
+          const lie = entries[(i + 1) % entries.length];
+          const isTrue = i % 2 === 0;
+          return {
+            greek: e.griego,
+            spanish: isTrue ? e.espanol : lie.espanol,
+            isTrue: isTrue || lie.espanol === e.espanol,
+          };
+        }),
+      ),
+    });
+  }
+
+  return [...opening, ...practice, ...closing];
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -362,6 +489,132 @@ function makeAlphabetChoiceMC(letter: string, correctSound: string, distractors:
   return assertExercise(schema);
 }
 
+// ── Tipos de la Fase 4.6 (EXERCISES.md) ─────────────────────────────────────
+
+// Tarjeta de regla. Abre la lección y la reabre el botón "¿por qué?".
+function makeConcept(title: string, body: string, bridge?: string) {
+  return assertExercise({
+    type: "concept",
+    instruction: "",
+    points: 0,
+    difficulty: "easy",
+    title,
+    body,
+    ...(bridge ? { bridge } : {}),
+  });
+}
+
+function makeMatchPairs(pairs: { left: string; right: string }[], withAudio = false) {
+  return assertExercise({
+    type: "match_pairs",
+    instruction: "Une cada palabra con su significado:",
+    points: 15,
+    difficulty: "easy",
+    pairs,
+    withAudio,
+  });
+}
+
+// El género en tres botones. El neutro es lo único que no transfiere del
+// español, así que es el ejercicio más específico del par es→el.
+function makeGenderSort(items: { word: string; article: string; hint?: string }[]) {
+  return assertExercise({
+    type: "gender_sort",
+    instruction: "¿Masculino, femenino o neutro?",
+    points: 15,
+    difficulty: "medium",
+    items,
+  });
+}
+
+// Los distractores SUENAN IGUAL a propósito: fuerzan la decisión η/ι/υ y ο/ω.
+function makeListenChoose(answer: string, distractors: string[], meaning: string) {
+  return assertExercise({
+    type: "listen_choose",
+    instruction: "Escucha y elige la palabra correcta:",
+    points: 10,
+    difficulty: "medium",
+    answer,
+    options: [answer, ...distractors],
+    meaning,
+  });
+}
+
+function makeAutocomplete(answer: string, blanks: number[], meaning: string) {
+  return assertExercise({
+    type: "autocomplete",
+    instruction: "Completa la palabra:",
+    points: 10,
+    difficulty: "medium",
+    answer,
+    blanks,
+    meaning,
+  });
+}
+
+function makeCasePairs(pairs: { upper: string; lower: string }[]) {
+  return assertExercise({
+    type: "case_pairs",
+    instruction: "Une cada mayúscula con su minúscula:",
+    points: 15,
+    difficulty: "easy",
+    pairs,
+  });
+}
+
+function makeMemoryGrid(pairs: { greek: string; match: string }[], withAudio = false) {
+  return assertExercise({
+    type: "memory_grid",
+    instruction: "Encuentra las parejas:",
+    points: 20,
+    difficulty: "easy",
+    pairs,
+    withAudio,
+  });
+}
+
+function makeSpeedRound(claims: { greek: string; spanish: string; isTrue: boolean }[]) {
+  return assertExercise({
+    type: "speed_round",
+    instruction: "Rápido: ¿es correcto?",
+    points: 20,
+    difficulty: "hard",
+    claims,
+    secondsPerClaim: 5,
+  });
+}
+
+// Genera variantes ortográficas que SUENAN IGUAL (η/ι/υ y ο/ω intercambiables).
+// Son los distractores de listen_choose: obligan a decidir la ortografía de oído.
+const HOMOPHONE_SETS = ["ηιυ", "οω"];
+
+export function homophoneVariants(word: string, max = 3): string[] {
+  const out = new Set<string>();
+  const chars = Array.from(word);
+  for (let i = 0; i < chars.length && out.size < max; i++) {
+    const set = HOMOPHONE_SETS.find((s) => s.includes(chars[i]));
+    if (!set) continue;
+    for (const alt of set) {
+      if (alt === chars[i]) continue;
+      const variant = [...chars.slice(0, i), alt, ...chars.slice(i + 1)].join("");
+      if (variant !== word) out.add(variant);
+      if (out.size >= max) break;
+    }
+  }
+  return [...out];
+}
+
+// Posiciones de las letras ambiguas: los huecos de `autocomplete` van AHÍ, no
+// al azar — es lo que convierte el ejercicio en entrenamiento de η/ι/υ y ο/ω.
+export function ambiguousPositions(word: string, max = 2): number[] {
+  const chars = Array.from(word);
+  const hits: number[] = [];
+  for (let i = 0; i < chars.length && hits.length < max; i++) {
+    if (HOMOPHONE_SETS.some((s) => s.includes(chars[i]))) hits.push(i);
+  }
+  return hits;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // Seed
 // ─────────────────────────────────────────────────────────────────────────────
@@ -369,6 +622,10 @@ function makeAlphabetChoiceMC(letter: string, correctSound: string, distractors:
 const prisma = new PrismaClient();
 
 async function main() {
+  // Tarjetas de regla: se cargan y VALIDAN antes de tocar la BD, para que un
+  // bridge_feature inexistente falle ruidosamente en la terminal (§7 punto 1).
+  const concepts = loadConcepts();
+
   // Borrar lo sembrado antes (dependencias: hijos primero). El contenido que
   // apunta a usuarios se limpia para reconstruir el curso desde cero.
   // `user` PRIMERO: su cascade borra perfiles/respuestas, y los perfiles
@@ -483,7 +740,10 @@ async function main() {
         });
         stats.lessons++;
 
-        const items = buildLessonExercises(chunk, `${categoria}-${offset}`);
+        // La tarjeta de regla solo va en la PRIMERA lección de la categoría:
+        // repetirla en cada parte sería ruido.
+        const conceptRow = partIndex === 1 ? concepts.get(categoria) : undefined;
+        const items = buildLessonExercises(chunk, `${categoria}-${offset}`, conceptRow);
         let exerciseOrder = 0;
         for (const ex of items) {
           await prisma.exercise.create({
@@ -528,13 +788,14 @@ async function main() {
       });
     }
 
-    // 3 lecciones de 8 (partir las 24 seguidas, que aburrían). Dentro de cada
-    // una, alterno alphabet_drill (escribir) y multiple_choice (ver la letra →
-    // elegir su sonido) para que no sean 8 idénticas.
+    // 3 lecciones agrupadas por dificultad de transferencia. Cada una sigue la
+    // estructura Regla → Práctica → Consolidación (EXERCISES.md §2): la tarjeta
+    // de regla abre, y el memorama de mayúsculas cierra.
     const soundPool = rows.map((r) => r.equivalente_es);
     const byId = new Map(rows.map((r) => [r.orden, r]));
     let lessonOrder = 0;
-    for (const group of ALPHABET_GROUPS) {
+
+    for (const [groupIndex, group] of ALPHABET_GROUPS.entries()) {
       const lesson = await prisma.lesson.create({
         data: {
           moduleId: prismaModule.id,
@@ -545,53 +806,97 @@ async function main() {
       });
       stats.lessons++;
 
-      let exerciseOrder = 0;
-      for (const [i, orden] of group.orders.entries()) {
-        const letter = byId.get(orden);
-        if (!letter) continue;
+      const letters = group.orders
+        .map((orden) => byId.get(orden))
+        .filter((l): l is NonNullable<typeof l> => Boolean(l));
+
+      const items: LessonExercise[] = [];
+
+      // 1. REGLA
+      const conceptRow = concepts.get(`alfabeto-${groupIndex + 1}`);
+      if (conceptRow) {
+        items.push({
+          word: `__concept__alfabeto-${groupIndex + 1}`,
+          type: "CONCEPT",
+          schemaJson: makeConcept(conceptRow.titulo, conceptRow.cuerpo, conceptRow.bridge),
+        });
+      }
+
+      // 2. PRÁCTICA — tres tipos rotando, no dos alternando.
+      letters.forEach((letter, i) => {
         const minuscules = letter.minuscula.split(/\s+/).filter(Boolean);
         const lowercase = minuscules[0];
-        const concept = `${letter.nombre_gr} (${letter.nombre_translit}): suena como "${letter.equivalente_es}"`;
+        const accept = [...new Set([lowercase, letter.mayuscula, ...minuscules])];
+        const label = `${letter.nombre_gr} (${letter.nombre_translit}): suena como "${letter.equivalente_es}"`;
+        const distractors = pickDistractors(soundPool, letter.equivalente_es, 3);
 
-        // Impares → escribir la letra; pares → reconocer su sonido.
-        if (i % 2 === 0) {
-          const accept = [...new Set([lowercase, letter.mayuscula, ...minuscules])];
-          await prisma.exercise.create({
-            data: {
-              lessonId: lesson.id,
-              type: "ALPHABET_DRILL",
-              schemaJson: makeAlphabetDrill(lowercase, concept, accept),
-              order: exerciseOrder++,
-            },
+        const rotation = i % 3;
+        if (rotation === 0) {
+          // Escribir la letra.
+          items.push({
+            word: lowercase,
+            type: "ALPHABET_DRILL",
+            schemaJson: makeAlphabetDrill(lowercase, label, accept),
           });
-          stats.exercises++;
           stats.letters++;
+        } else if (rotation === 1 && distractors.length >= 1) {
+          // Ver la letra → elegir su sonido.
+          items.push({
+            word: lowercase,
+            type: "MULTIPLE_CHOICE",
+            schemaJson: makeAlphabetChoiceMC(lowercase, letter.equivalente_es, distractors),
+          });
         } else {
-          const distractors = pickDistractors(soundPool, letter.equivalente_es, 3);
-          if (distractors.length >= 1) {
-            await prisma.exercise.create({
-              data: {
-                lessonId: lesson.id,
-                type: "MULTIPLE_CHOICE",
-                schemaJson: makeAlphabetChoiceMC(lowercase, letter.equivalente_es, distractors),
-                order: exerciseOrder++,
-              },
+          // Oír la letra → elegirla entre otras. Sin texto de apoyo: es el más
+          // exigente de los tres y usa el audio ya generado por letra.
+          const others = letters
+            .filter((o) => o.orden !== letter.orden)
+            .map((o) => o.minuscula.split(/\s+/)[0])
+            .slice(0, 3);
+          if (others.length >= 1) {
+            items.push({
+              word: lowercase,
+              type: "LISTEN_CHOOSE",
+              schemaJson: makeListenChoose(lowercase, others, letter.nombre_translit),
             });
-            stats.exercises++;
           } else {
-            const accept = [...new Set([lowercase, letter.mayuscula, ...minuscules])];
-            await prisma.exercise.create({
-              data: {
-                lessonId: lesson.id,
-                type: "ALPHABET_DRILL",
-                schemaJson: makeAlphabetDrill(lowercase, concept, accept),
-                order: exerciseOrder++,
-              },
+            items.push({
+              word: lowercase,
+              type: "ALPHABET_DRILL",
+              schemaJson: makeAlphabetDrill(lowercase, label, accept),
             });
-            stats.exercises++;
             stats.letters++;
           }
         }
+      });
+
+      // 3. CONSOLIDACIÓN — unir mayúscula con minúscula. Es el único sitio donde
+      // se entrenan las mayúsculas: el teclado en pantalla solo da minúsculas
+      // (hueco detectado en la Fase 4).
+      if (letters.length >= 4) {
+        items.push({
+          word: `__case__alfabeto-${groupIndex + 1}`,
+          type: "CASE_PAIRS",
+          schemaJson: makeCasePairs(
+            letters.slice(0, 6).map((l) => ({
+              upper: l.mayuscula,
+              lower: l.minuscula.split(/\s+/)[0],
+            })),
+          ),
+        });
+      }
+
+      let exerciseOrder = 0;
+      for (const ex of items) {
+        await prisma.exercise.create({
+          data: {
+            lessonId: lesson.id,
+            type: ex.type,
+            schemaJson: ex.schemaJson,
+            order: exerciseOrder++,
+          },
+        });
+        stats.exercises++;
       }
     }
   }

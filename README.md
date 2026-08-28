@@ -9,6 +9,7 @@
 | **[PLAN.md](./PLAN.md)** | Roadmap por fases, pipeline de contenido, riesgos, **historial de decisiones** |
 | **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Stack, diagramas, modelo de datos, motor de ejercicios, capa de IA, **revisión crítica de la arquitectura** |
 | **[CURRICULUM.md](./CURRICULUM.md)** | Los tres ejes del contenido (nivel/vertiente/tema), currículo A1 verificado contra manuales reales, **pedagogía contrastiva por par de idiomas** |
+| **[EXERCISES.md](./EXERCISES.md)** | Catálogo de tipos de ejercicio, estructura de la lección y qué entrena cada uno |
 | **[SCREENS.md](./SCREENS.md)** | Inventario de pantallas, anatomía de las críticas, sistema de diseño — **dirección visual «Ánfora» elegida** |
 
 ---

@@ -6,9 +6,16 @@ import { freeWriting } from "./types/free-writing";
 import { readingComprehension } from "./types/reading-comprehension";
 import { alphabetDrill } from "./types/alphabet-drill";
 import { repeatWord } from "./types/repeat-word";
+import { concept } from "./types/concept";
+import { matchPairs } from "./types/match-pairs";
+import { genderSort } from "./types/gender-sort";
+import { listenChoose } from "./types/listen-choose";
+import { autocomplete } from "./types/autocomplete";
+import { casePairs } from "./types/case-pairs";
+import { memoryGrid } from "./types/memory-grid";
+import { speedRound } from "./types/speed-round";
 
-import type { Exercise } from "./schemas";
-import type { ExerciseModules, ValidationResult } from "./types/module";
+import type { ExerciseModules } from "./types/module";
 
 // Único índice de todos los tipos de ejercicio (patrón 1 de ARCHITECTURE.md
 // §3.2). Agregar un tipo = una carpeta en `types/` + una línea aquí.
@@ -21,51 +28,24 @@ export const exerciseRegistry: ExerciseModules = {
   reading_comprehension: readingComprehension,
   alphabet_drill: alphabetDrill,
   repeat_word: repeatWord,
+  concept,
+  match_pairs: matchPairs,
+  gender_sort: genderSort,
+  listen_choose: listenChoose,
+  autocomplete,
+  case_pairs: casePairs,
+  memory_grid: memoryGrid,
+  speed_round: speedRound,
 };
 
-// Despacho discriminado de la validación determinista. Al recorrer `exercise`
-// por su `type` (discriminator de la unión) TS estrecha cada módulo y evitamos
-// el problema de invocar una función de unión con un argumento de unión.
-export function validateExercise(
-  exercise: Exercise,
-  input: unknown,
-): ValidationResult {
-  switch (exercise.type) {
-    case "multiple_choice":
-      return multipleChoice.validate(exercise, input);
-    case "fill_blank":
-      return fillBlank.validate(exercise, input);
-    case "order_words":
-      return orderWords.validate(exercise, input);
-    case "translation":
-      return translation.validate(exercise, input);
-    case "free_writing":
-      return freeWriting.validate(exercise, input);
-    case "reading_comprehension":
-      return readingComprehension.validate(exercise, input);
-    case "alphabet_drill":
-      return alphabetDrill.validate(exercise, input);
-    case "repeat_word":
-      return repeatWord.validate(exercise, input);
-  }
-}
-
-// La palabra griega que se debe pronunciar (auto-play del reproductor, Fase 4.5).
-export function exerciseSpokenText(exercise: Exercise): string | undefined {
-  switch (exercise.type) {
-    case "multiple_choice":
-      return exercise.prompt.text;
-    case "translation":
-      return exercise.answer;
-    case "fill_blank":
-      return exercise.answer;
-    case "order_words":
-      return exercise.answer.join("");
-    case "alphabet_drill":
-      return exercise.letter;
-    default:
-      return undefined;
-  }
-}
+// El despacho de validación vive en `validators.ts` (TS puro): este archivo
+// importa los renderers, y el servidor no debe arrastrar React solo para
+// corregir una respuesta. Se re-exporta para no romper a quien ya lo importaba.
+export {
+  validateExercise,
+  exerciseSpokenText,
+  isInformationalType,
+  INFORMATIONAL_TYPES,
+} from "./validators";
 
 export type { ExerciseModules } from "./types/module";
