@@ -15,7 +15,9 @@ export function PhraseBlankRenderer({
   disabled,
 }: ExerciseRendererProps<PhraseBlank>) {
   const typed = typeof value === "string" ? value : "";
-  const hasOptions = exercise.options.length > 0;
+  // Escalera: elegir entre opciones es el paso suave; escribir con el teclado
+  // es el siguiente. A partir de `medium` se escribe aunque haya opciones.
+  const hasOptions = exercise.options.length > 0 && exercise.difficulty === "easy";
 
   return (
     <div className="flex flex-col gap-5">

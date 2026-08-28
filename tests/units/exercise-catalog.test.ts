@@ -368,3 +368,48 @@ describe("escalera de dificultad", () => {
     expect(optionsForDifficulty(dos, "a", "easy")).toHaveLength(2);
   });
 });
+
+describe("escalera de dificultad — dictation y phrase_blank", () => {
+  // Los renderers deciden por `difficulty`, así que aquí se prueba el CONTRATO:
+  // que los schemas admitan las tres variantes y que el validador no cambie de
+  // criterio según la dificultad — corregir es corregir, sea fácil o difícil.
+  const dictationAt = (difficulty: string) =>
+    ExerciseSchema.parse({
+      type: "dictation",
+      instruction: "i",
+      answer: "νησί",
+      meaning: "isla",
+      difficulty,
+    });
+
+  it("dictation admite las tres dificultades", () => {
+    for (const d of ["easy", "medium", "hard"]) {
+      expect(dictationAt(d).difficulty).toBe(d);
+    }
+  });
+
+  it("la dificultad NO cambia qué se considera correcto", () => {
+    // Solo cambia el andamiaje (ver la traducción o no), nunca el criterio.
+    for (const d of ["easy", "medium", "hard"]) {
+      expect(validateExercise(dictationAt(d), "νησί").isCorrect).toBe(true);
+      expect(validateExercise(dictationAt(d), "νισί").isCorrect).toBe(false);
+    }
+  });
+
+  it("phrase_blank admite las tres dificultades sin cambiar la corrección", () => {
+    for (const d of ["easy", "medium", "hard"]) {
+      const ex = ExerciseSchema.parse({
+        type: "phrase_blank",
+        instruction: "i",
+        words: ["Γεια", "σου"],
+        blankIndex: 0,
+        answer: "Γεια σου",
+        meaning: "hola",
+        options: ["Γεια", "Τι"],
+        difficulty: d,
+      });
+      expect(validateExercise(ex, "Γεια").isCorrect).toBe(true);
+      expect(validateExercise(ex, "Τι").isCorrect).toBe(false);
+    }
+  });
+});

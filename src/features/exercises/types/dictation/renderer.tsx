@@ -18,7 +18,17 @@ export function DictationRenderer({
   disabled,
 }: ExerciseRendererProps<Dictation>) {
   const typed = typeof value === "string" ? value : "";
-  const [showHint, setShowHint] = useState(false);
+  // Escalera de dificultad (EXERCISES.md §5):
+  //  · fácil   → la traducción se ve de entrada (andamiaje)
+  //  · medio   → está, pero hay que pedirla
+  //  · difícil → no hay pista: solo el oído
+  const hintMode =
+    exercise.difficulty === "easy"
+      ? "visible"
+      : exercise.difficulty === "medium"
+        ? "onDemand"
+        : "hidden";
+  const [showHint, setShowHint] = useState(hintMode === "visible");
 
   return (
     <div className="flex flex-col gap-5">
@@ -28,7 +38,7 @@ export function DictationRenderer({
           Escucha y escribe lo que oyes
         </span>
 
-        {exercise.meaning &&
+        {exercise.meaning && hintMode !== "hidden" &&
           (showHint ? (
             <span className="font-display text-[17px] italic text-[var(--color-text-soft)]">
               {exercise.meaning}
