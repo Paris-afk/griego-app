@@ -260,6 +260,12 @@ model UserAnswer {
   aiFeedbackJson Json? // salida de DeepSeek, ya validada — null si no hizo falta llamar a la IA (§6.1)
   points         Int      @default(0)
   answeredAt     DateTime @default(now())
+
+  // El tutor consulta los fallos recientes del usuario en cada error, y
+  // `checkAnswer` cuenta intentos previos por ejercicio. Sin estos índices
+  // ambas cosas escanean la tabla entera.
+  @@index([userId, answeredAt])
+  @@index([userId, exerciseId])
 }
 
 model ReviewQueue {

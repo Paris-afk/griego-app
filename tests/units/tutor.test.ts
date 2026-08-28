@@ -9,6 +9,8 @@ import {
   renderTurn,
 } from "@/features/tutor/lib/prompt";
 import { buildProgressNote } from "@/features/tutor/lib/progress-note";
+import { buildSnapshot } from "@/features/tutor/lib/snapshot";
+import { ERROR_TAGS, isKnownErrorTag } from "@/shared/lib/error-tags";
 import {
   RATE_LIMIT_CONFIG,
   checkRateLimit,
@@ -222,5 +224,80 @@ describe("degradación sin IA", () => {
     } finally {
       if (original !== undefined) process.env.DEEPSEEK_API_KEY = original;
     }
+  });
+});
+
+describe("catálogo de errorTags", () => {
+  it("ninguna etiqueta es subcadena de otra", () => {
+    // INVARIANTE CRÍTICO: `UserAnswer.errorTags` es un CSV y los conteos usan
+    // `contains`. Si una etiqueta fuera prefijo de otra, los conteos se
+    // contaminarían en silencio y la nota de progreso mentiría.
+    const colisiones: string[] = [];
+    for (const a of ERROR_TAGS) {
+      for (const b of ERROR_TAGS) {
+        if (a !== b && b.includes(a)) colisiones.push(`"${a}" está dentro de "${b}"`);
+      }
+    }
+    expect(colisiones).toEqual([]);
+  });
+
+  it("reconoce las etiquetas conocidas y rechaza las inventadas", () => {
+    expect(isKnownErrorTag("acento_faltante")).toBe(true);
+    expect(isKnownErrorTag("inventado")).toBe(false);
+  });
+});
+
+describe("LearnerSnapshot", () => {
+  it("solo considera recurrente lo que se repite", () => {
+    const snap = buildSnapshot({
+      errorTags: ["acento_faltante", "acento_faltante", "confusion_i"],
+      masteredCount: 10,
+    });
+    expect(snap.recurringErrors).toEqual([{ tag: "acento_faltante", count: 2 }]);
+  });
+
+  it("ordena por frecuencia", () => {
+    const snap = buildSnapshot({
+      errorTags: [
+        ...Array(5).fill("confusion_i"),
+        ...Array(9).fill("acento_faltante"),
+      ],
+      masteredCount: 0,
+    });
+    expect(snap.recurringErrors[0].tag).toBe("acento_faltante");
+  });
+
+  it("deriva las letras débiles de los errores recurrentes", () => {
+    const snap = buildSnapshot({
+      errorTags: ["confusion_i", "confusion_i", "confusion_omicron_omega", "confusion_omicron_omega"],
+      masteredCount: 0,
+    });
+    // Una letra es débil porque PROVOCA fallos, no por aparecer mucho.
+    expect(snap.weakLetters).toEqual(expect.arrayContaining(["η", "ι", "υ", "ο", "ω"]));
+  });
+
+  it("ignora etiquetas desconocidas en vez de contarlas", () => {
+    const snap = buildSnapshot({
+      errorTags: ["inventado", "inventado", "inventado"],
+      masteredCount: 0,
+    });
+    expect(snap.recurringErrors).toEqual([]);
+  });
+
+  it("el resumen es compacto: es su razón de existir (§6.3)", () => {
+    const snap = buildSnapshot({
+      errorTags: Array(20).fill("acento_faltante"),
+      masteredCount: 84,
+    });
+    expect(snap.summaryText).toContain("84 palabras dominadas");
+    // Mandar el historial crudo sería caro y ruidoso; esto debe caber en ~80 tokens.
+    expect(snap.summaryText.length).toBeLessThan(300);
+  });
+
+  it("aguanta un alumno sin historial", () => {
+    const snap = buildSnapshot({ errorTags: [], masteredCount: 0 });
+    expect(snap.recurringErrors).toEqual([]);
+    expect(snap.weakLetters).toEqual([]);
+    expect(snap.summaryText).toBeTruthy();
   });
 });

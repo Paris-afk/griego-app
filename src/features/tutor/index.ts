@@ -3,7 +3,7 @@
 // dictado. Los ejercicios normales usan la `nota` del contenido, escrita a
 // mano (PLAN.md Fase 5).
 
-export { getTutorFeedback } from "./actions";
+export { getTutorFeedback, refreshLearnerSnapshot } from "./actions";
 export type { TutorFeedback } from "./actions";
 
 export { askTutor } from "./lib/tutor-client";
@@ -18,4 +18,6 @@ export { buildProgressNote } from "./lib/progress-note";
 export type { ProgressNote } from "./lib/progress-note";
 
 export { checkRateLimit } from "./lib/rate-limit";
+export { buildSnapshot } from "./lib/snapshot";
+export type { SnapshotInput, SnapshotResult } from "./lib/snapshot";
 export type { LearnerContext, TutorTurn } from "./lib/prompt";

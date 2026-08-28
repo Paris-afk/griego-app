@@ -8,6 +8,7 @@ import { getCurrentUser } from "@/features/auth";
 // el servidor no debe arrastrar renderers para corregir una respuesta.
 import { ExerciseSchema, validateExercise } from "@/features/exercises";
 import type { ValidationResult } from "@/features/exercises";
+import { refreshLearnerSnapshot } from "@/features/tutor";
 import { db } from "@/shared/lib/db";
 
 // Server Actions del reproductor. La validación SIEMPRE es determinista y vive
@@ -100,4 +101,13 @@ export async function completeLesson(lessonId: string): Promise<void> {
       completedAt: new Date(),
     },
   });
+
+  // Al cerrar lección, no en cada respuesta (§6.3): es un resumen lento y
+  // recalcularlo por turno costaría lo mismo sin cambiar el resultado.
+  // Si falla, no se rompe la lección: el snapshot es contexto, no dato crítico.
+  try {
+    await refreshLearnerSnapshot(user.id);
+  } catch {
+    // Silencioso a propósito: completar la lección ya está persistido arriba.
+  }
 }

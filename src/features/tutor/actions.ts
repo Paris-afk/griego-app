@@ -5,10 +5,12 @@ import { z } from "zod";
 
 import { getCurrentUser } from "@/features/auth";
 import { ExerciseSchema } from "@/features/exercises";
+import { isKnownErrorTag } from "@/shared/lib/error-tags";
 import { db } from "@/shared/lib/db";
 
 import { askTutor } from "./lib/tutor-client";
 import { buildProgressNote, type ProgressNote } from "./lib/progress-note";
+import { buildSnapshot } from "./lib/snapshot";
 import { checkRateLimit } from "./lib/rate-limit";
 import type { LearnerContext } from "./lib/prompt";
 import type { TutorResponse } from "./schemas";
@@ -41,6 +43,7 @@ export interface TutorFeedback {
 }
 
 const WEEK_MS = 7 * 24 * 60 * 60 * 1000;
+const SNAPSHOT_WINDOW_MS = WEEK_MS;
 
 export async function getTutorFeedback(input: {
   exerciseId: string;
@@ -53,19 +56,32 @@ export async function getTutorFeedback(input: {
   const parsed = schema.safeParse(input);
   if (!parsed.success) throw new Error("Parámetros inválidos.");
 
-  // El conteo semanal SIEMPRE se calcula, haya IA o no: es lo que hace que el
-  // dato sea fresco en vez de una frase cacheada que envejece mal.
+  // El conteo semanal SIEMPRE se calcula fresco, haya IA o no: es lo que hace
+  // que el dato sea cierto en vez de una frase cacheada que envejece mal.
+  //
+  // DIRIGIDO a propósito: solo se cuentan los tags de ESTE turno (uno o dos),
+  // en vez de traerse todas las respuestas fallidas de la semana y agregarlas
+  // en JS. Con el índice (userId, answeredAt) son dos `count` baratos.
+  // Seguro con `contains` porque ninguna etiqueta es subcadena de otra —
+  // invariante de error-tags.ts, con test que lo comprueba.
   const since = new Date(Date.now() - WEEK_MS);
-  const recent = await db.userAnswer.findMany({
-    where: { userId: user.id, isCorrect: false, answeredAt: { gte: since } },
-    select: { errorTags: true },
-  });
+  const uniqueTags = [...new Set(parsed.data.errorTags)].filter(isKnownErrorTag);
+  const counts = await Promise.all(
+    uniqueTags.map((tag) =>
+      db.userAnswer.count({
+        where: {
+          userId: user.id,
+          isCorrect: false,
+          answeredAt: { gte: since },
+          errorTags: { contains: tag },
+        },
+      }),
+    ),
+  );
   const countsInWeek: Record<string, number> = {};
-  for (const row of recent) {
-    for (const tag of row.errorTags.split(",").filter(Boolean)) {
-      countsInWeek[tag] = (countsInWeek[tag] ?? 0) + 1;
-    }
-  }
+  uniqueTags.forEach((tag, i) => {
+    countsInWeek[tag] = counts[i];
+  });
   const progress = buildProgressNote(parsed.data.errorTags, countsInWeek);
 
   const exercise = await db.exercise.findUnique({
@@ -99,16 +115,20 @@ export async function getTutorFeedback(input: {
     return { ai: null, progress, unavailableReason: "rate_limited" };
   }
 
-  const snapshot = await db.learnerSnapshot.findUnique({ where: { userId: user.id } });
-  const profile = await db.profile.findUnique({ where: { userId: user.id } });
+  const [snapshot, profile] = await Promise.all([
+    db.learnerSnapshot.findUnique({ where: { userId: user.id } }),
+    db.profile.findUnique({ where: { userId: user.id } }),
+  ]);
 
   const ctx: LearnerContext = {
     level: "A1",
     masteredCount: snapshot?.masteredCount ?? 0,
     streak: profile?.streak ?? 0,
-    recurringErrors: Object.entries(countsInWeek)
-      .map(([tag, count]) => ({ tag, count }))
-      .sort((a, b) => b.count - a.count),
+    // Del snapshot, no del conteo de este turno: da TONO al prompt y se
+    // recalcula al cerrar lección (§6.3). Una lectura por clave única.
+    recurringErrors: Array.isArray(snapshot?.recurringErrors)
+      ? (snapshot.recurringErrors as { tag: string; count: number }[])
+      : [],
     weakLetters: (snapshot?.weakLetters ?? "").split(",").filter(Boolean),
   };
 
@@ -140,4 +160,52 @@ export async function getTutorFeedback(input: {
   });
 
   return { ai: outcome.response, progress };
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Recálculo del LearnerSnapshot (ARCHITECTURE.md §6.3)
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Se llama al cerrar una lección, no en cada respuesta: es un resumen lento y
+ * recalcularlo por turno sería caro sin cambiar nada del resultado.
+ *
+ * Sustituye al escaneo que hacía `getTutorFeedback` en cada fallo.
+ */
+export async function refreshLearnerSnapshot(userId: string): Promise<void> {
+  const since = new Date(Date.now() - SNAPSHOT_WINDOW_MS);
+
+  const [failed, mastered] = await Promise.all([
+    db.userAnswer.findMany({
+      where: { userId, isCorrect: false, answeredAt: { gte: since } },
+      select: { errorTags: true },
+    }),
+    db.userAnswer.findMany({
+      where: { userId, isCorrect: true },
+      select: { exerciseId: true },
+      distinct: ["exerciseId"],
+    }),
+  ]);
+
+  const snapshot = buildSnapshot({
+    errorTags: failed.flatMap((row) => row.errorTags.split(",").filter(Boolean)),
+    masteredCount: mastered.length,
+  });
+
+  await db.learnerSnapshot.upsert({
+    where: { userId },
+    update: {
+      recurringErrors: snapshot.recurringErrors,
+      weakLetters: snapshot.weakLetters.join(","),
+      masteredCount: snapshot.masteredCount,
+      summaryText: snapshot.summaryText,
+    },
+    create: {
+      userId,
+      recurringErrors: snapshot.recurringErrors,
+      weakLetters: snapshot.weakLetters.join(","),
+      masteredCount: snapshot.masteredCount,
+      summaryText: snapshot.summaryText,
+    },
+  });
 }
