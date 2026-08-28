@@ -196,7 +196,8 @@ Aquí no recuerdas una palabra: **aplicas una regla**. Es donde se nota que ente
 4. **Áreas táctiles:** 56px las opciones y el CTA; 44px mínimo todo lo demás (SCREENS.md §4.1).
 5. **Un tipo nuevo = una carpeta** en `features/exercises/types/<tipo>/` + una línea en `registry.ts` **y otra en `validators.ts`** (ARCHITECTURE.md §3.2, patrón 1).
    > Hay **dos índices a propósito**: `validators.ts` es TS puro (lo usan el servidor y los tests) y `registry.ts` añade los renderers (solo cliente). Sin la separación, corregir una respuesta en el servidor arrastraría React — el mismo motivo por el que `schema.ts` va aparte. TypeScript verifica que ambos estén completos.
-6. **El color nunca es la única señal** de acierto/error: siempre icono y texto también.
+6. **Un tipo nuevo no está terminado sin test.** Añadir un tipo obliga a añadir su ejemplo en `tests/units/exercise-coverage.test.ts`; el `Record<ExerciseType, …>` falla si falta. Además, todo validador debe soportar entrada basura sin lanzar (corre en el servidor con lo que mande el cliente) y **ningún tipo puntuable puede aprobar con la respuesta vacía** — hay un test que lo comprueba para los 16.
+7. **El color nunca es la única señal** de acierto/error: siempre icono y texto también.
 
 ---
 

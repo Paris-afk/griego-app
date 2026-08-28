@@ -120,7 +120,8 @@ Salen de decisiones ya tomadas y documentadas. Si crees que alguna está mal, **
 7. **Solo los colores de [`design/tokens.css`](./design/tokens.css).** Nada de inventar un gris intermedio. Contraste mínimo 4.5:1 (3:1 si el texto es ≥24px).
 8. **Áreas táctiles:** 44px mínimo para cualquier cosa tocable; 56px para opciones de ejercicio y CTA principal.
 9. **Sin barra de estado de iOS falsa** ni teclado falso dibujado en la UI.
-10. **No inventes griego.** El contenido está en `content/`. Si falta algo, dilo; no lo improvises. Un error de griego enseña algo incorrecto.
+10. **Todo lo que se puede testear, se testea.** Ningún tipo de ejercicio, validador ni helper puro se da por terminado sin su test. `tests/units/exercise-coverage.test.ts` tiene una **guarda anti-olvido**: un `Record<ExerciseType, …>` que falla en compilación si añades un tipo y no añades su ejemplo. No la esquives — complétala.
+11. **No inventes griego.** El contenido está en `content/`. Si falta algo, dilo; no lo improvises. Un error de griego enseña algo incorrecto.
 
 ---
 
