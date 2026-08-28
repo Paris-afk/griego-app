@@ -188,7 +188,60 @@ Aquí no recuerdas una palabra: **aplicas una regla**. Es donde se nota que ente
 
 ---
 
-## 5. Reglas transversales
+## 5. Dificultad progresiva y dominio *(diseño — Fase 6)*
+
+### El problema
+
+Hoy `difficulty` se guarda en los 487 ejercicios (347 fácil / 79 medio / 61 difícil) y **nadie lo consume**: es metadato muerto. Y todo alumno ve lo mismo, sepa la palabra o la esté viendo por primera vez.
+
+Babbel resuelve esto con actividades que solo aparecen cuando ya puedes con ellas: escribir la oración entera solo oyéndola, leer un texto y decir de qué trata, ver frases y señalar cuál está mal. **Las tres son del extremo difícil.** Añadirlas planas repetiría el error de pedir frases enteras en la primera lección.
+
+### La idea: un solo puntaje de dominio lo gobierna todo
+
+`ReviewQueue` ya tiene la forma de SM-2 (`interval`, `easeFactor`, `repetitions`) y está vacía. Se le añade un **dominio de 0 a 5 por entrada de vocabulario**, derivado del historial de `UserAnswer`:
+
+```
+dominio ↓  →  ejercicio MÁS FÁCIL   (andamiaje: fallar no debe repetir el mismo muro)
+dominio ↑  →  ejercicio MÁS DIFÍCIL (progresión: acertar debe subir el listón)
+```
+
+Ese único número decide **qué** te toca (la cola de repaso) y **qué tan difícil** te lo pregunta (la escalera). Son la misma feature.
+
+### La escalera, por tipo
+
+Cada tipo ya existe; lo que se añade es que su schema admita variantes y que el generador elija según el dominio.
+
+| Tipo | Fácil | Medio | Difícil |
+|---|---|---|---|
+| `multiple_choice` | 2 opciones | 4 opciones | 4, con distractores que suenan igual |
+| `phrase_blank` | con opciones | con teclado | hueco en la palabra clave |
+| `dictation` | palabra, traducción visible | palabra, sin traducción | **frase entera** ← lo de Babbel |
+| `translation` | palabra corta | palabra larga | frase |
+| `autocomplete` | 1 hueco | 2 huecos | todas las letras ambiguas |
+| `listen_choose` | distractores distintos | distractores homófonos | sin traducción de apoyo |
+| `gender_sort` | 4 palabras | 8 palabras | incluye engañosas (`το πρόβλημα`) |
+| `memory_grid` | 4 parejas, texto | 6 parejas | 6 parejas con audio |
+| `speed_round` | 6 s por ítem | 5 s | 3 s |
+
+### La sección de palabras flojas
+
+Es la otra cara del mismo dato. Una pantalla que ordena por **dónde más fallas**, no por qué toca hoy:
+
+- Palabras con dominio bajo, ordenadas por fallos recientes
+- Agrupadas por `errorTag` — *"12 fallos por acento"* es más accionable que doce palabras sueltas
+- Entrar practica solo eso, en el nivel de dificultad que corresponde
+
+Los `errorTags` ya se guardan en cada `UserAnswer`, así que el dato está desde la Fase 3. Solo falta agregarlo y mostrarlo.
+
+### Tipos nuevos que esto habilita *(no antes)*
+
+- **`spot_the_error`** — tres frases, una mal. Requiere dominio alto: sin él, no distingues el error del desconocimiento.
+- **`dictation` de frase** — la cima de la escalera, no un tipo aparte.
+- **`reading_comprehension`** — ya existe como placeholder (Fase 7).
+
+---
+
+## 6. Reglas transversales
 
 1. **Ningún tipo se salta la validación determinista.** Todos tienen respuesta conocida. La IA no interviene (ver PLAN.md Fase 5).
 2. **Todos generan `errorTags`** para alimentar el `LearnerSnapshot`: `gender_sort` → `genero_neutro`, `autocomplete` → `confusion_i` / `confusion_omicron_omega`, `case_pairs` → `mayuscula_desconocida`.

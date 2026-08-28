@@ -56,6 +56,7 @@
 | 2026-08-28 | Arreglados 6 errores de tipos **preexistentes** en `validate-exercise.test.ts` (casts `as Exercise` que ocultaban un campo obligatorio ausente). **El proyecto compila ahora con cero errores de tipos**, tests incluidos — antes `next build` no los veía porque solo revisa lo alcanzable desde la app |
 | 2026-08-28 | **Ajustes tras la primera prueba real.** (1) **Las frases ya no se piden enteras**: escribir «Πώς σε λένε;» con teclado en pantalla en la primera lección son 11 pulsaciones sin haber interiorizado el alfabeto. Tipo nuevo **`phrase_blank`** — la frase se ve completa y falta UNA palabra, con opciones cuando el vocabulario da para distractores. Verificado: 0 ejercicios de escribir frases enteras. (2) **Tolerancia a acentos**: `autocomplete` y `order_words` comparaban de forma exacta y fallaban una palabra entera por una tilde. Ahora usan la normalización del resto — se acepta y se señala. Test que recorre los 4 tipos donde se escribe |
 | 2026-08-28 | **Contenido: el A1 completo activado** — de 2 módulos a **7**, de 10 lecciones a **51**, de 108 ejercicios a **487**, con las 212 entradas de vocabulario. Tres regresiones que solo aparecieron con el contenido completo, y su arreglo: **MC dominaba el 50%** (se generaba para cada entrada) y el intercalado acababa amontonando 4 seguidas → ahora va en una de cada dos; **categorías diminutas** producían "lecciones" de una palabra (`verbo-a` con `έχω`) → se absorben en la anterior; **lecciones de hasta 16 ejercicios** → máximo 5 entradas por lección. Resultado: racha máx 2, mínimo 3 tipos por lección, ninguna supera 12, media de 9,5 |
+| 2026-08-28 | **Fase 6 replanteada: dificultad progresiva y palabras flojas son UNA feature, no dos.** Las une un **puntaje de dominio por palabra** que decide qué te toca y qué tan difícil te lo pregunta. Construir el repaso sin dificultad haría que repasar una palabra fallada muestre el mismo ejercicio que te venció, sin andamiaje; la dificultad sin repaso no tendría señal que la mueva. Constatado que `difficulty` ya se guarda en los 487 ejercicios y **nadie lo consume** — metadato muerto — y que `ReviewQueue` está vacía. Los ejemplos de Babbel (escribir la oración solo oyéndola, decir de qué trata un texto, señalar la frase mal) son **todos del extremo difícil**: añadirlos planos repetiría el error de pedir frases enteras en la primera lección. Escalera por tipo documentada en [EXERCISES.md](./EXERCISES.md) §5 |
 ---
 
 ## 1. Definición de MVP
@@ -230,11 +231,31 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 
 > **Fuera de alcance por ahora:** la foto de escritura a mano. **Ya es técnicamente posible con DeepSeek solo** (`deepseek-v4-flash-vision-exp`, ago-2026 — ver ARCHITECTURE.md §1.1), así que no requiere un segundo proveedor. Se deja fuera por producto: el OCR de manuscrito en griego es poco fiable y marcar errores inexistentes frustraría. Se reevalúa cuando el dictado esté en uso real.
 
-### Fase 6 — Retención y stats (3-5 días)
-- [ ] Repetición espaciada (SM-2): cola de repaso diaria.
+### Fase 6 — Dominio, dificultad progresiva y repaso (5-7 días) ⭐
+
+> Diseño completo en **[EXERCISES.md](./EXERCISES.md) §5**. Ampliada el 2026-08-28: la dificultad progresiva y la sección de palabras flojas **no son dos features, son una**. Las une un puntaje de dominio por palabra que decide *qué* te toca y *qué tan difícil* te lo pregunta.
+>
+> Construir el repaso sin dificultad haría que repasar una palabra fallada te muestre **el mismo ejercicio que te venció**, sin andamiaje. Y la dificultad sin repaso no tendría señal que la mueva.
+
+**1. El dominio (la columna vertebral — va primero):**
+- [ ] Puntaje 0-5 por `VocabularyEntry`, derivado de `UserAnswer` (aciertos, fallos, recencia).
+- [ ] Recalcularlo al cerrar lección, junto al `LearnerSnapshot` que ya se recalcula ahí.
+
+**2. La escalera de dificultad (consume el dominio):**
+- [ ] Que los schemas admitan variantes por nivel (ver la tabla de EXERCISES.md §5).
+- [ ] Que el generador elija la variante según el dominio: **fallas → más fácil; aciertas → más difícil.**
+- [ ] Empezar por `multiple_choice` (2↔4 opciones), `dictation` (traducción visible↔oculta) y `phrase_blank` (opciones↔teclado): son los de mayor efecto y menor coste.
+- [ ] `difficulty` deja de ser metadato muerto: hoy está en los 487 ejercicios y **nadie lo lee**.
+
+**3. Repaso y palabras flojas (la otra cara del mismo dato):**
+- [ ] Cola SM-2 diaria sobre `ReviewQueue` (ya tiene `interval`, `easeFactor`, `repetitions`; está vacía).
+- [ ] **Sección "dónde fallas"**: palabras de dominio bajo agrupadas por `errorTag` — *"12 fallos por acento"* es más accionable que doce palabras sueltas. Los `errorTags` se guardan desde la Fase 3.
 - [ ] Dashboard: racha, puntos, meta diaria, palabras dominadas, errores frecuentes.
 - [ ] Offline: caché de la lección en curso vía service worker.
-- [ ] **Listo cuando:** existe una "sesión diaria" (repaso + lección nueva) con datos persistidos.
+
+- [ ] **Listo cuando:** fallar una palabra hace que vuelva **más fácil**, y acertarla varias veces hace que vuelva **más difícil**; la sección de palabras flojas muestra agrupado por tipo de error; y existe una sesión diaria (repaso + lección nueva) con datos persistidos.
+
+> **Tipos que esto habilita, y no antes:** `spot_the_error` (tres frases, una mal — sin dominio alto no distingues el error del desconocimiento) y `dictation` de **frase entera**, que es la cima de la escalera y no un tipo aparte.
 
 ### Fase 7 — Lectura y comprensión (3-5 días)
 - [ ] `TextReading` + UI de lectura con vocabulario tocable y preguntas.
