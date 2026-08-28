@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Check, X, ArrowRight, ChevronLeft, RotateCcw, AlertTriangle, Play, Flame } from "lucide-react";
+import { Check, X, ArrowRight, ChevronLeft, RotateCcw, AlertTriangle, Play, Flame, MessageCircle, Clock } from "lucide-react";
 
 import {
   ExerciseSchema,
@@ -12,6 +12,7 @@ import {
   type ExerciseRendererProps,
 } from "@/features/exercises";
 import { checkAnswer, completeLesson, type CheckAnswerResult } from "./actions";
+import { getTutorFeedback, type TutorFeedback } from "@/features/tutor";
 import { AudioButton, ProgressBar } from "@/shared/ui";
 import { audioPathForText } from "@/shared/lib/audio";
 import { playSfx, playWord, unlockAudio } from "@/shared/lib/sound";
@@ -82,6 +83,10 @@ export function LessonExperience({
   const [score, setScore] = useState(initialScore);
   const [pending, setPending] = useState(false);
   const [showConcept, setShowConcept] = useState(false);
+  // El feedback del profesor llega DESPUÉS de pintar la corrección determinista
+  // (render en dos tiempos, PLAN.md Fase 5): nada de hoja en blanco esperando.
+  const [tutor, setTutor] = useState<TutorFeedback | null>(null);
+  const [tutorLoading, setTutorLoading] = useState(false);
   const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const current = parsed[index];
@@ -172,6 +177,16 @@ export function LessonExperience({
     } else {
       playSfx("wrong");
       setPhase("feedback");
+      // Sin await: la hoja ya se está pintando con lo determinista.
+      setTutorLoading(true);
+      void getTutorFeedback({
+        exerciseId: current.id,
+        answer: typeof value === "string" ? value : JSON.stringify(value ?? ""),
+        errorTags: res.errorTags,
+      })
+        .then(setTutor)
+        .catch(() => setTutor(null))
+        .finally(() => setTutorLoading(false));
     }
     setPending(false);
   }
@@ -180,6 +195,8 @@ export function LessonExperience({
     clearTimer();
     setValue(null);
     setResult(null);
+    setTutor(null);
+    setTutorLoading(false);
     if (index >= total - 1) {
       const allCorrect = parsed.every((e) => correctSet.has(e.id));
       if (allCorrect) {
@@ -336,6 +353,57 @@ export function LessonExperience({
                     </div>
                   </div>
                 </div>
+
+                {/* El profesor. Bloque propio y separado del hecho contable de
+                    abajo — así lo tiene el mockup AnforaFeedback. */}
+                {(tutorLoading || tutor?.ai) && (
+                  <div className="flex gap-3 border-l-2 border-[var(--color-secondary)] bg-[#F4F1E9] px-4 py-3.5">
+                    <MessageCircle
+                      width={16}
+                      height={16}
+                      className="mt-1 shrink-0 text-[#4E5C33]"
+                      aria-hidden
+                    />
+                    <div className="flex flex-col gap-1.5">
+                      <span className="text-[10px] font-semibold tracking-[1.4px] text-[#4E5C33]">
+                        TU PROFESOR
+                      </span>
+                      {tutorLoading ? (
+                        <span className="text-[15px] italic text-[var(--color-text-soft)]">
+                          Pensando…
+                        </span>
+                      ) : (
+                        <>
+                          <p className="font-display text-[16px] leading-[1.5] text-pretty text-[var(--color-text)]">
+                            {tutor?.ai?.explanation}
+                          </p>
+                          {tutor?.ai?.tip ? (
+                            <p className="text-[13px] text-[var(--color-text-soft)]">
+                              {tutor.ai.tip}
+                            </p>
+                          ) : null}
+                        </>
+                      )}
+                    </div>
+                  </div>
+                )}
+
+                {/* Hecho contable: lo genera el CÓDIGO desde errorTags, nunca la
+                    IA. Cachear "es la 3ª vez" lo volvería falso con el tiempo. */}
+                {tutor?.progress.text && (
+                  <div className="flex items-start gap-2.5 rounded-card border border-[#E3CFA0] bg-[#FBF3E2] px-4 py-3">
+                    <Clock
+                      width={16}
+                      height={16}
+                      className="mt-0.5 shrink-0 text-[var(--color-streak)]"
+                      aria-hidden
+                    />
+                    <p className="text-[13px] leading-[1.45] text-[#6E4D10]">
+                      {tutor.progress.text}
+                    </p>
+                  </div>
+                )}
+
                 <button
                   type="button"
                   onClick={advance}

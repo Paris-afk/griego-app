@@ -57,7 +57,8 @@ export interface LessonExercise {
     | "AUTOCOMPLETE"
     | "CASE_PAIRS"
     | "MEMORY_GRID"
-    | "SPEED_ROUND";
+    | "SPEED_ROUND"
+    | "DICTATION";
   schemaJson: Exercise;
 }
 

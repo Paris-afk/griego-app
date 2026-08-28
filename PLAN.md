@@ -49,6 +49,8 @@
 | 2026-08-28 | **Catálogo de ejercicios diseñado — [EXERCISES.md](./EXERCISES.md), Fase 4.6.** Disparador: la restricción de "máx. 2 seguidos" produjo alternancia perfecta (`TR MC TR MC`) en 4 de 10 lecciones, porque solo tienen 2 tipos disponibles. Se pasa de 5 a **11 tipos**, organizados en 4 niveles cognitivos (reconocer → clasificar → producir → consolidar). **Lo central no son los tipos sino la estructura**: cada lección abre con una tarjeta `concept` que dice qué regla vas a practicar, y un botón `¿por qué?` la reabre en cualquier momento — es la respuesta directa a "lo feo de Duolingo es que aprietas sin saber por qué". Cada tipo entrena algo que la investigación del par es→el identificó: `gender_sort` el neutro, `listen_choose`/`autocomplete` las confusiones η/ι/υ y ο/ω, `case_pairs` las mayúsculas que el teclado no permite entrenar. **Ningún tipo necesita contenido nuevo** — todo sale de los 102 sustantivos con artículo, las 204 palabras sin espacio y los 236 audios ya en el repo |
 | 2026-08-28 | **Fase 4.6 implementada.** 8 tipos nuevos (`concept`, `match_pairs`, `gender_sort`, `listen_choose`, `autocomplete`, `case_pairs`, `memory_grid`, `speed_round`) → 16 en total. Estructura Regla→Práctica→Consolidación: toda primera lección abre con su tarjeta y el botón **¿por qué?** la reabre sin perder progreso. Contenido de las reglas en [`content/concepts-es-el.csv`](./content/concepts-es-el.csv) (20 tarjetas, con el `bridge_language` resuelto desde contrastive-es-el.csv y validado al sembrar). **Alfabeto: de `AD MC` alternado (2 tipos) a 5 tipos** con regla y memorama de mayúsculas — que es el único sitio donde se entrenan las mayúsculas. Resultado medido: mínimo 3 tipos por lección, racha máxima de un tipo = 2. 61/61 tests, lint y build en verde |
 | 2026-08-28 | **Corrección de arquitectura: dos índices en el motor de ejercicios.** `registry.ts` importa los renderers `.tsx`, así que el servidor arrastraba React solo para corregir una respuesta (y los tests no podían importarlo). Se separa `validators.ts` — despacho de validación en TS puro — que usan el servidor y los tests; `registry.ts` queda para el cliente. Mismo motivo que hace `schema.ts` un archivo aparte. Detectado al implementar la Fase 4.6 |
+| 2026-08-28 | **Tests: cobertura de los 16 tipos + guarda anti-olvido.** Faltaban `free_writing`, `reading_comprehension` y `case_pairs`. Se añaden tres pruebas transversales: un `Record<ExerciseType, …>` que **falla si se añade un tipo sin ejemplo** (ya cazó a `dictation` al implementarlo), que ningún validador lance con entrada basura, y que **solo `concept` apruebe con respuesta vacía** — un tipo puntuable que aprobara sin responder dejaría avanzar la lección sin hacer nada. Regla escrita en AGENTS.md |
+| 2026-08-28 | **Fase 5 implementada.** Tipo `dictation` (oír → escribir con el teclado griego): corrección **determinista**, sin IA, porque la respuesta se conoce; etiqueta `confusion_i` y `confusion_omicron_omega`, que es justo lo que entrena. Feature `tutor/` con puerto a DeepSeek (timeout 8 s, un reintento, Zod obligatorio sobre la respuesta), caché por `hash(ejercicio, respuesta)` y **rate limiting** (20/min por usuario, ARCHITECTURE.md §8). La IA solo interviene en `free_writing` y `dictation`. **Los hechos contables los genera el código** (`progress-note.ts`) y el system prompt le prohíbe a la IA inventarlos. **Render en dos tiempos**: la corrección determinista se pinta al instante y la explicación llega después, sin hoja en blanco. Verificado con test: sin `DEEPSEEK_API_KEY` la app funciona entera. 98 tests |
 ---
 
 ## 1. Definición de MVP
@@ -203,23 +205,23 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 > **La IA se reserva para donde no hay respuesta única que comparar:** escritura abierta y explicación de errores de dictado. Todo lo demás usa la `nota` del contenido.
 
 **Dictado — el tipo de ejercicio nuevo (no necesita IA para corregir):**
-- [ ] Tipo `dictation`: suena el audio → el usuario escribe en griego con el teclado → **validación determinista** (la respuesta esperada se conoce).
-- [ ] Reutiliza lo que ya existe: los mp3 de la Fase 3.5 y el teclado griego de la Fase 4. No hay que construir infraestructura nueva.
-- [ ] Generarlo en el seed para el vocabulario ya sembrado.
-- [ ] **Por qué importa:** ataca el punto débil que ningún ejercicio actual entrena — oír `/i/` y decidir si se escribe **η, ι o υ** (las tres suenan igual), o `/o/` entre **ο y ω**. Es exactamente el `errorTag confusion_i` / `confusion_omicron_omega` de `contrastive-es-el.csv`.
+- [x] Tipo `dictation`: suena el audio → el usuario escribe en griego con el teclado → **validación determinista** (la respuesta esperada se conoce).
+- [x] Reutiliza lo que ya existe: los mp3 de la Fase 3.5 y el teclado griego de la Fase 4. No hay que construir infraestructura nueva.
+- [x] Generarlo en el seed para el vocabulario ya sembrado.
+- [x] **Por qué importa:** ataca el punto débil que ningún ejercicio actual entrena — oír `/i/` y decidir si se escribe **η, ι o υ** (las tres suenan igual), o `/o/` entre **ο y ω**. Es exactamente el `errorTag confusion_i` / `confusion_omicron_omega` de `contrastive-es-el.csv`.
 
 **El profesor IA (alcance acotado):**
-- [ ] `features/tutor/`: puerto a DeepSeek con salida JSON forzada, timeout y manejo de errores.
-- [ ] System prompt del profesor + `LearnerSnapshot` como contexto **de tono y énfasis**.
-- [ ] Se invoca **solo** en: `free_writing` (respuesta abierta) y errores de `dictation`. Nunca en opción múltiple ni traducción.
-- [ ] **La IA nunca afirma hechos contables.** Los conteos, la racha y "lo agregué a tu repaso" los genera el código desde `errorTags`, frescos en cada render. Si la IA escribiera "es la 3ª vez esta semana" y eso se cacheara, en un mes seguiría diciéndolo y sería falso. El mockup `AnforaFeedback` ya los tiene como **dos bloques separados con iconos distintos** — respetar esa separación.
-- [ ] Validación Zod de la respuesta + un reintento + caída al feedback fijo del contenido. La app funciona completa sin IA.
-- [ ] `AiFeedbackCache` por `hash(ejercicio, respuesta normalizada)`.
-- [ ] **Rate limiting** en la Server Action que llama a DeepSeek (ARCHITECTURE.md §8) — no existe todavía.
-- [ ] **Render en dos tiempos:** la parte determinista de la hoja (escribiste / correcto / etiqueta del error) se pinta **al instante**; la explicación de la IA se rellena al llegar. Nada de dos segundos de hoja en blanco.
-- [ ] Recálculo del `LearnerSnapshot` al cerrar cada lección, a partir de `errorTags[]`.
+- [x] `features/tutor/`: puerto a DeepSeek con salida JSON forzada, timeout y manejo de errores.
+- [x] System prompt del profesor + `LearnerSnapshot` como contexto **de tono y énfasis**.
+- [x] Se invoca **solo** en: `free_writing` (respuesta abierta) y errores de `dictation`. Nunca en opción múltiple ni traducción.
+- [x] **La IA nunca afirma hechos contables.** Los conteos, la racha y "lo agregué a tu repaso" los genera el código desde `errorTags`, frescos en cada render. Si la IA escribiera "es la 3ª vez esta semana" y eso se cacheara, en un mes seguiría diciéndolo y sería falso. El mockup `AnforaFeedback` ya los tiene como **dos bloques separados con iconos distintos** — respetar esa separación.
+- [x] Validación Zod de la respuesta + un reintento + caída al feedback fijo del contenido. La app funciona completa sin IA.
+- [x] `AiFeedbackCache` por `hash(ejercicio, respuesta normalizada)`.
+- [x] **Rate limiting** en la Server Action que llama a DeepSeek (ARCHITECTURE.md §8) — no existe todavía.
+- [x] **Render en dos tiempos:** la parte determinista de la hoja (escribiste / correcto / etiqueta del error) se pinta **al instante**; la explicación de la IA se rellena al llegar. Nada de dos segundos de hoja en blanco.
+- [ ] Recálculo del `LearnerSnapshot` al cerrar cada lección, a partir de `errorTags[]`. **Pendiente**: hoy el contexto del alumno se calcula al vuelo desde `UserAnswer` de los últimos 7 días, que funciona pero recorre la tabla en cada fallo. El snapshot lo hará O(1).
 
-- [ ] **Listo cuando:** un dictado se corrige al instante sin llamar a la IA; al fallarlo, la explicación llega en <2 s **sin** que la hoja se quede vacía mientras tanto; repetir el mismo error no genera una segunda llamada; y con `DEEPSEEK_API_KEY` vacía la app sigue funcionando entera con el feedback del contenido.
+- [x] **Listo cuando:** un dictado se corrige al instante sin llamar a la IA; al fallarlo, la explicación llega en <2 s **sin** que la hoja se quede vacía mientras tanto; repetir el mismo error no genera una segunda llamada; y con `DEEPSEEK_API_KEY` vacía la app sigue funcionando entera con el feedback del contenido.
 
 > **Fuera de alcance por ahora:** la foto de escritura a mano. **Ya es técnicamente posible con DeepSeek solo** (`deepseek-v4-flash-vision-exp`, ago-2026 — ver ARCHITECTURE.md §1.1), así que no requiere un segundo proveedor. Se deja fuera por producto: el OCR de manuscrito en griego es poco fiable y marcar errores inexistentes frustraría. Se reevalúa cuando el dictado esté en uso real.
 

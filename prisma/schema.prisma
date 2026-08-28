@@ -153,6 +153,7 @@ enum ExerciseType {
   CASE_PAIRS
   MEMORY_GRID
   SPEED_ROUND
+  DICTATION // Fase 5 — oír y escribir; corrección determinista
 }
 
 model Exercise {

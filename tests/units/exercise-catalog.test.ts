@@ -209,3 +209,46 @@ describe("generadores de distractores del seed", () => {
     expect(ambiguousPositions("κ")).toEqual([]);
   });
 });
+
+describe("dictation", () => {
+  const ex = ExerciseSchema.parse({
+    type: "dictation",
+    instruction: "Escucha y escribe",
+    answer: "νησί",
+    meaning: "isla",
+  });
+
+  it("acepta la palabra exacta", () => {
+    expect(validateExercise(ex, "νησί").isCorrect).toBe(true);
+  });
+
+  it("acepta sin acento pero lo señala", () => {
+    const res = validateExercise(ex, "νησι");
+    expect(res.isCorrect).toBe(true);
+    expect(res.errorTags).toContain("acento_faltante");
+  });
+
+  it("etiqueta la confusión η/ι/υ, que es el punto del dictado", () => {
+    // Escribir νισί al oír νησί es EL error que este tipo existe para entrenar:
+    // las dos suenan igual y solo se distinguen sabiendo la palabra.
+    const res = validateExercise(ex, "νισί");
+    expect(res.isCorrect).toBe(false);
+    expect(res.errorTags).toContain("confusion_i");
+  });
+
+  it("etiqueta la confusión ο/ω", () => {
+    const omega = ExerciseSchema.parse({
+      type: "dictation",
+      instruction: "i",
+      answer: "πρωί",
+      meaning: "mañana",
+    });
+    expect(validateExercise(omega, "προί").errorTags).toContain(
+      "confusion_omicron_omega",
+    );
+  });
+
+  it("ignora espacios sobrantes al principio y al final", () => {
+    expect(validateExercise(ex, "  νησί  ").isCorrect).toBe(true);
+  });
+});

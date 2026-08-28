@@ -267,7 +267,7 @@ function buildLessonExercises(
     // se elige por lo que ENTRENA, no al azar (EXERCISES.md §3).
     const homophones = single ? homophoneVariants(entry.griego, 3) : [];
     const blanks = single ? ambiguousPositions(entry.griego, 2) : [];
-    const rotation = i % 5;
+    const rotation = i % 6;
 
     if (rotation === 1 && homophones.length >= 2) {
       // Distractores que suenan igual → decidir la ortografía de oído.
@@ -289,7 +289,14 @@ function buildLessonExercises(
         type: "ORDER_WORDS",
         schemaJson: makeOrderWords(entry.espanol, entry.griego),
       });
-    } else if (rotation === 4 && entry.articulo) {
+    } else if (rotation === 4 && single && blanks.length >= 1) {
+      // El más exigente: sin texto de apoyo, la ortografía sale solo del oído.
+      items.push({
+        word: entry.griego,
+        type: "DICTATION",
+        schemaJson: makeDictation(entry.griego, entry.espanol),
+      });
+    } else if (rotation === 5 && entry.articulo) {
       items.push({
         word: entry.griego,
         type: "FILL_BLANK",
@@ -548,6 +555,21 @@ function makeAutocomplete(answer: string, blanks: number[], meaning: string) {
     difficulty: "medium",
     answer,
     blanks,
+    meaning,
+  });
+}
+
+// Dictado: oír y escribir. No necesita IA para corregir — la respuesta se
+// conoce. Solo para palabras con letras ambiguas: si no hay η/ι/υ ni ο/ω, el
+// dictado no entrena nada que la traducción no entrene ya.
+function makeDictation(answer: string, meaning: string) {
+  return assertExercise({
+    type: "dictation",
+    instruction: "Escucha y escribe la palabra:",
+    points: 15,
+    difficulty: "hard",
+    answer,
+    accept: [],
     meaning,
   });
 }

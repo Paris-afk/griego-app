@@ -26,6 +26,7 @@ import { validateAutocomplete } from "./types/autocomplete/validate";
 import { validateCasePairs } from "./types/case-pairs/validate";
 import { validateMemoryGrid } from "./types/memory-grid/validate";
 import { validateSpeedRound } from "./types/speed-round/validate";
+import { validateDictation } from "./types/dictation/validate";
 
 import type { Exercise, ExerciseType } from "./schemas";
 import type { ValidationResult } from "./types/module";
@@ -78,6 +79,8 @@ export function validateExercise(
       return validateMemoryGrid(exercise, input);
     case "speed_round":
       return validateSpeedRound(exercise, input);
+    case "dictation":
+      return validateDictation(exercise, input);
   }
 }
 
@@ -98,6 +101,9 @@ export function exerciseSpokenText(exercise: Exercise): string | undefined {
       // El audio ES el enunciado: sin él no hay ejercicio.
       return exercise.answer;
     case "autocomplete":
+      return exercise.answer;
+    case "dictation":
+      // El audio ES el ejercicio: sin él no hay nada que escribir.
       return exercise.answer;
     // Sin auto-play: el usuario controla el audio dentro del propio ejercicio
     // (match_pairs, memory_grid) o no hay una palabra única que pronunciar

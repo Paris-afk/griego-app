@@ -184,6 +184,13 @@ describe("robustez de todos los validadores", () => {
         { greek: "γ", match: "c" },
       ],
     },
+    dictation: {
+      type: "dictation",
+      instruction: "i",
+      answer: "νησί",
+      accept: [],
+      meaning: "isla",
+    },
     speed_round: {
       type: "speed_round",
       instruction: "i",

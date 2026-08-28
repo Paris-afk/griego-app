@@ -14,6 +14,7 @@ import { autocomplete } from "./types/autocomplete";
 import { casePairs } from "./types/case-pairs";
 import { memoryGrid } from "./types/memory-grid";
 import { speedRound } from "./types/speed-round";
+import { dictation } from "./types/dictation";
 
 import type { ExerciseModules } from "./types/module";
 
@@ -36,6 +37,7 @@ export const exerciseRegistry: ExerciseModules = {
   case_pairs: casePairs,
   memory_grid: memoryGrid,
   speed_round: speedRound,
+  dictation,
 };
 
 // El despacho de validación vive en `validators.ts` (TS puro): este archivo

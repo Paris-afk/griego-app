@@ -16,6 +16,7 @@ import { AutocompleteSchema } from "./types/autocomplete/schema";
 import { CasePairsSchema } from "./types/case-pairs/schema";
 import { MemoryGridSchema } from "./types/memory-grid/schema";
 import { SpeedRoundSchema } from "./types/speed-round/schema";
+import { DictationSchema } from "./types/dictation/schema";
 
 // Unión discriminada por `type` (ARCHITECTURE.md §5.1). Es el contrato del
 // `schemaJson`: se valida en seed time y en runtime antes de renderizar.
@@ -36,6 +37,7 @@ export const ExerciseSchema = z.discriminatedUnion("type", [
   CasePairsSchema,
   MemoryGridSchema,
   SpeedRoundSchema,
+  DictationSchema,
 ]);
 
 export type Exercise = z.infer<typeof ExerciseSchema>;
@@ -60,6 +62,7 @@ export const exerciseTypes = [
   "case_pairs",
   "memory_grid",
   "speed_round",
+  "dictation",
 ] as const satisfies readonly ExerciseType[];
 
 export type ExerciseTypeList = typeof exerciseTypes;
