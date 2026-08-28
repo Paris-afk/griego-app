@@ -57,6 +57,7 @@
 | 2026-08-28 | **Ajustes tras la primera prueba real.** (1) **Las frases ya no se piden enteras**: escribir «Πώς σε λένε;» con teclado en pantalla en la primera lección son 11 pulsaciones sin haber interiorizado el alfabeto. Tipo nuevo **`phrase_blank`** — la frase se ve completa y falta UNA palabra, con opciones cuando el vocabulario da para distractores. Verificado: 0 ejercicios de escribir frases enteras. (2) **Tolerancia a acentos**: `autocomplete` y `order_words` comparaban de forma exacta y fallaban una palabra entera por una tilde. Ahora usan la normalización del resto — se acepta y se señala. Test que recorre los 4 tipos donde se escribe |
 | 2026-08-28 | **Contenido: el A1 completo activado** — de 2 módulos a **7**, de 10 lecciones a **51**, de 108 ejercicios a **487**, con las 212 entradas de vocabulario. Tres regresiones que solo aparecieron con el contenido completo, y su arreglo: **MC dominaba el 50%** (se generaba para cada entrada) y el intercalado acababa amontonando 4 seguidas → ahora va en una de cada dos; **categorías diminutas** producían "lecciones" de una palabra (`verbo-a` con `έχω`) → se absorben en la anterior; **lecciones de hasta 16 ejercicios** → máximo 5 entradas por lección. Resultado: racha máx 2, mínimo 3 tipos por lección, ninguna supera 12, media de 9,5 |
 | 2026-08-28 | **Fase 6 replanteada: dificultad progresiva y palabras flojas son UNA feature, no dos.** Las une un **puntaje de dominio por palabra** que decide qué te toca y qué tan difícil te lo pregunta. Construir el repaso sin dificultad haría que repasar una palabra fallada muestre el mismo ejercicio que te venció, sin andamiaje; la dificultad sin repaso no tendría señal que la mueva. Constatado que `difficulty` ya se guarda en los 487 ejercicios y **nadie lo consume** — metadato muerto — y que `ReviewQueue` está vacía. Los ejemplos de Babbel (escribir la oración solo oyéndola, decir de qué trata un texto, señalar la frase mal) son **todos del extremo difícil**: añadirlos planos repetiría el error de pedir frases enteras en la primera lección. Escalera por tipo documentada en [EXERCISES.md](./EXERCISES.md) §5 |
+| 2026-08-28 | **Examen de módulo añadido como Fase 7** (la lectura pasa a 8, pronunciación a 9, publicación a 10). Es donde la IA se paga sola: **7 exámenes por nivel** frente a cientos de ejercicios, así que lo caro (foto, escritura abierta, dictado de frase) cabe ahí sin mover el costo y no cabría en la práctica diaria. Se modela como `Lesson` con `kind: EXAMEN` — no hace falta modelo nuevo. **La regla de que la IA no decide sigue en pie**: lo corregido por IA vale ≤30%, con el 70% determinista aprobado el examen está aprobado, y sin `DEEPSEEK_API_KEY` se puede aprobar entero. La **foto ya no necesita un segundo proveedor** (DeepSeek acepta imágenes desde ago-2026), y el examen es el sitio donde el riesgo del OCR de manuscrito es asumible porque hay fallback a teclado. Diseño en [EXERCISES.md](./EXERCISES.md) §6 |
 ---
 
 ## 1. Definición de MVP
@@ -257,14 +258,28 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 
 > **Tipos que esto habilita, y no antes:** `spot_the_error` (tres frases, una mal — sin dominio alto no distingues el error del desconocimiento) y `dictation` de **frase entera**, que es la cima de la escalera y no un tipo aparte.
 
-### Fase 7 — Lectura y comprensión (3-5 días)
+### Fase 7 — Examen de módulo (4-5 días) ⭐
+
+> Diseño en **[EXERCISES.md](./EXERCISES.md) §6**. Es donde la IA se paga sola: **7 exámenes por nivel** frente a cientos de ejercicios, así que las actividades caras (abiertas, con foto, corregidas por DeepSeek) caben aquí sin mover el costo — y no cabrían en la práctica diaria.
+>
+> **Depende de la Fase 6**: sin el puntaje de dominio, el examen sería una lección más con otro nombre — no sabría qué preguntar ni a qué nivel.
+
+- [ ] `LessonKind.EXAMEN` — no es un modelo nuevo, es una `Lesson` al final del módulo. Reutiliza reproductor, motor y progreso.
+- [ ] Comportamiento propio: sin auto-avance, sin celebración por acierto, el feedback **al final**, y nota con aprobado/suspenso al 70%.
+- [ ] Contenido **acumulativo** del módulo, elegido por dominio (los puntos flojos pesan más).
+- [ ] **Foto de escritura a mano** (A1): escribes 3-4 palabras en papel → `deepseek-v4-flash-vision-exp`. Ya es posible **con un solo proveedor** (ARCHITECTURE.md §1.1). **Fallback obligatorio**: si el OCR falla o no está disponible, se ofrece escribirlo con el teclado y no se pierde el examen.
+- [ ] Dictado de **frase entera** y escritura libre corta.
+- [ ] **La IA no decide si apruebas**: lo corregido por IA vale como máximo el **30%**; con el 70% determinista aprobado, el examen está aprobado; el juicio se muestra para poder discrepar; y si DeepSeek no responde, esas actividades puntúan como correctas y se avisa.
+- [ ] **Listo cuando:** al terminar un módulo hay un examen que mezcla su contenido, da nota, y **se puede aprobar entero con `DEEPSEEK_API_KEY` vacía**.
+
+### Fase 8 — Lectura y comprensión (3-5 días)
 - [ ] `TextReading` + UI de lectura con vocabulario tocable y preguntas.
 - [ ] **Listo cuando:** una lección de lectura se juega completa.
 
-### Fase 8 — Pronunciación (opcional, decisión pendiente — 4-6 días)
+### Fase 9 — Pronunciación (opcional, decisión pendiente — 4-6 días)
 > **Bloqueada por una decisión, no por trabajo:** DeepSeek no procesa audio. Requiere agregar un segundo proveedor (Whisper API, ~$0.006/min) o aceptar que solo funcione fuera de iOS (Web Speech API). Retomar solo si el resto de la app ya está en uso diario.
 
-### Fase 9 — Publicación (opcional)
+### Fase 10 — Publicación (opcional)
 > No es necesaria mientras el uso sea personal: la PWA instalada ya cubre el iPhone.
 - [ ] Migrar Prisma de SQLite a PostgreSQL y desplegar (Oracle Free Tier / Hetzner).
 - [ ] Android: empaquetar como TWA (Bubblewrap/PWABuilder) + Play Store (~$25 único).

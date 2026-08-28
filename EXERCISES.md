@@ -241,7 +241,54 @@ Los `errorTags` ya se guardan en cada `UserAnswer`, así que el dato está desde
 
 ---
 
-## 6. Reglas transversales
+## 6. El examen de módulo *(diseño — Fase 7)*
+
+### Por qué aquí y no en las lecciones
+
+Cerrar un módulo con un examen resuelve dos cosas a la vez.
+
+**Pedagógicamente**, da un hito: practicar 6 lecciones seguidas sin un momento de "demuéstralo" hace que todo se sienta igual de bajo riesgo. El examen es el único sitio donde no hay auto-avance ni segundas oportunidades gratis.
+
+**Económicamente**, es donde la IA se paga sola. Hay **7 exámenes por nivel** frente a cientos de ejercicios: las actividades caras —abiertas, con foto, corregidas por DeepSeek— caben aquí sin mover el costo, y no cabrían en la práctica diaria. Es justamente lo que separaría esta app de una gratuita.
+
+### Cómo se modela
+
+Un examen **no es un modelo nuevo**: es una `Lesson` con `kind: EXAMEN`, al final del módulo. Reutiliza el reproductor, el motor y el progreso tal cual. Lo que cambia es el comportamiento:
+
+| | Lección normal | Examen |
+|---|---|---|
+| Al acertar | auto-avanza a los 600 ms | avanza, sin celebración |
+| Al fallar | hoja de feedback y sigues | **se anota y sigue** — el feedback va al final |
+| Reintentar | libre | rehacer el examen entero |
+| Resultado | puntos | **nota y aprobado/suspenso** (70%) |
+| Contenido | el tema de la lección | **acumulativo del módulo** |
+
+### Qué actividades, por nivel
+
+Solo aquí aparecen las que necesitan juicio abierto:
+
+| Nivel | Actividades exclusivas del examen |
+|---|---|
+| **A1** | **Foto de escritura a mano** (escribes 3-4 palabras en papel) · dictado de **frase** · escritura libre corta |
+| **A2** | Escribir 2-3 frases sobre un tema · describir una imagen · `spot_the_error` |
+| **B1** | Párrafo con opinión · comprensión lectora con respuesta abierta |
+
+**La foto ya es posible con un solo proveedor**: DeepSeek acepta imágenes desde ago-2026 con `deepseek-v4-flash-vision-exp` (ARCHITECTURE.md §1.1). Se dejó fuera por producto —el OCR de manuscrito en griego es poco fiable— y el examen es el sitio donde ese riesgo es asumible: si falla, **se ofrece escribirlo con el teclado** y no se pierde el examen.
+
+### La regla que NO se rompe
+
+Sigue vigente que **la IA no decide si apruebas**:
+
+1. **La mayoría de la nota es determinista.** Las actividades corregidas por IA valen como mucho el **30%**.
+2. **Nadie suspende solo por juicio de la IA.** Si el 70% determinista está aprobado, el examen está aprobado.
+3. **El juicio se muestra, no se impone.** Se ve qué señaló y por qué, para poder discrepar.
+4. **Si DeepSeek no está disponible**, esas actividades puntúan como correctas y se avisa. Un examen no puede depender de una API externa.
+
+> **Depende de la Fase 6.** Sin el puntaje de dominio, el examen sería una lección más con otro nombre: no sabría qué preguntarte ni a qué nivel. Por eso va después.
+
+---
+
+## 7. Reglas transversales
 
 1. **Ningún tipo se salta la validación determinista.** Todos tienen respuesta conocida. La IA no interviene (ver PLAN.md Fase 5).
 2. **Todos generan `errorTags`** para alimentar el `LearnerSnapshot`: `gender_sort` → `genero_neutro`, `autocomplete` → `confusion_i` / `confusion_omicron_omega`, `case_pairs` → `mayuscula_desconocida`.
