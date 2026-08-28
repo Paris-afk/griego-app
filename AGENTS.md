@@ -138,7 +138,28 @@ Salen de decisiones ya tomadas y documentadas. Si crees que alguna está mal, **
 
 ---
 
-## 7. Cómo trabajar
+## 7. Verificar rutas protegidas
+
+Casi todas las rutas exigen sesión, así que un `curl` pelado devuelve 307 y no
+prueba nada. Para comprobarlas de verdad:
+
+```bash
+npx tsx scripts/dev-session.ts   # crea el usuario de prueba y escupe el token
+```
+
+Luego se manda como cookie `griego_session=<token>`. Útil saber:
+
+- **`npm run db:seed` BORRA todos los usuarios** (es idempotente y reconstruye
+  desde cero). Tras sembrar hay que volver a crear la sesión y **volver a entrar
+  en el navegador**: la cookie anterior apunta a un usuario que ya no existe.
+- Tras cambiar `prisma/schema.prisma` o correr `prisma generate`, **reinicia el
+  servidor de desarrollo**. El hot-reload no recoge un cliente de Prisma
+  regenerado y da errores minificados del tipo `a[d] is not a function`, que no
+  apuntan a la causa real.
+
+---
+
+## 8. Cómo trabajar
 
 - **Una fase a la vez.** No adelantes trabajo de fases posteriores aunque parezca fácil.
 - **Antes de escribir código en una fase nueva**, resume en pocas líneas qué vas a hacer.
