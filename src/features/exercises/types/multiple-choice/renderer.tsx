@@ -6,6 +6,7 @@ import { cn } from "@/shared/lib/utils";
 import { AudioButton } from "@/shared/ui";
 import { audioPathForText } from "@/shared/lib/audio";
 import type { ExerciseRendererProps } from "../module";
+import { optionsForDifficulty } from "./schema";
 import type { MultipleChoice } from "./schema";
 
 export function MultipleChoiceRenderer({
@@ -15,6 +16,13 @@ export function MultipleChoiceRenderer({
   disabled,
 }: ExerciseRendererProps<MultipleChoice>) {
   const selected = typeof value === "string" ? value : null;
+  // Escalera de dificultad: con `difficulty: "easy"` se ven 2 opciones en vez
+  // de 4 (EXERCISES.md §5). El generador fija ese campo según el dominio.
+  const options = optionsForDifficulty(
+    exercise.options,
+    exercise.answer,
+    exercise.difficulty,
+  );
 
   return (
     <div className="flex flex-col gap-5">
@@ -28,7 +36,7 @@ export function MultipleChoiceRenderer({
       )}
 
       <div className="flex flex-col gap-3">
-        {exercise.options.map((option) => {
+        {options.map((option) => {
           const active = option.text === selected;
           return (
             <button

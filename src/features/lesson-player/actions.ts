@@ -6,8 +6,9 @@ import { z } from "zod";
 import { getCurrentUser } from "@/features/auth";
 // `validateExercise` sale de la capa pura (validators.ts), no del registro:
 // el servidor no debe arrastrar renderers para corregir una respuesta.
-import { ExerciseSchema, validateExercise } from "@/features/exercises";
+import { ExerciseSchema, exerciseSpokenText, validateExercise } from "@/features/exercises";
 import type { ValidationResult } from "@/features/exercises";
+import { recordReview } from "@/features/review";
 import { refreshLearnerSnapshot } from "@/features/tutor";
 import { db } from "@/shared/lib/db";
 
@@ -68,6 +69,19 @@ export async function checkAnswer(input: {
       points,
     },
   });
+
+  // Programa el próximo repaso de esa palabra (SM-2). Es consecuencia del
+  // resultado, no algo que el cliente decida. No lanza nunca: si falla, la
+  // respuesta ya está guardada y la lección sigue.
+  const term = exerciseSpokenText(exerciseParsed.data);
+  if (term) {
+    await recordReview({
+      userId: user.id,
+      term,
+      isCorrect: result.isCorrect,
+      errorTags: result.errorTags,
+    });
+  }
 
   const totalExercises = await db.exercise.count({
     where: { lessonId: parsed.data.lessonId },

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { ExerciseSchema, exerciseTypes } from "@/features/exercises/schemas";
+import { optionsForDifficulty } from "@/features/exercises/types/multiple-choice/schema";
 // Capa PURA a propósito: importar el registro arrastraría los renderers .tsx.
 import {
   INFORMATIONAL_TYPES,
@@ -333,5 +334,37 @@ describe("phrase_blank", () => {
 
   it("informa de la palabra correcta en el feedback", () => {
     expect(validateExercise(ex, "Τι").correct).toBe("Πώς");
+  });
+});
+
+describe("escalera de dificultad", () => {
+  const options = [
+    { text: "árbol" },
+    { text: "mar" },
+    { text: "libro" },
+    { text: "casa" },
+  ];
+
+  it("en fácil reduce a 2 opciones — es el andamiaje", () => {
+    const out = optionsForDifficulty(options, "árbol", "easy");
+    expect(out).toHaveLength(2);
+    expect(out.map((o) => o.text)).toContain("árbol");
+  });
+
+  it("en medio y difícil las mantiene todas", () => {
+    expect(optionsForDifficulty(options, "árbol", "medium")).toHaveLength(4);
+    expect(optionsForDifficulty(options, "árbol", "hard")).toHaveLength(4);
+  });
+
+  it("la respuesta correcta NUNCA desaparece al reducir", () => {
+    for (const answer of options.map((o) => o.text)) {
+      const out = optionsForDifficulty(options, answer, "easy");
+      expect(out.map((o) => o.text), `se perdió "${answer}"`).toContain(answer);
+    }
+  });
+
+  it("no rompe si ya hay 2 o menos", () => {
+    const dos = [{ text: "a" }, { text: "b" }];
+    expect(optionsForDifficulty(dos, "a", "easy")).toHaveLength(2);
   });
 });

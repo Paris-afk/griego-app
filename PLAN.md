@@ -58,6 +58,7 @@
 | 2026-08-28 | **Contenido: el A1 completo activado** — de 2 módulos a **7**, de 10 lecciones a **51**, de 108 ejercicios a **487**, con las 212 entradas de vocabulario. Tres regresiones que solo aparecieron con el contenido completo, y su arreglo: **MC dominaba el 50%** (se generaba para cada entrada) y el intercalado acababa amontonando 4 seguidas → ahora va en una de cada dos; **categorías diminutas** producían "lecciones" de una palabra (`verbo-a` con `έχω`) → se absorben en la anterior; **lecciones de hasta 16 ejercicios** → máximo 5 entradas por lección. Resultado: racha máx 2, mínimo 3 tipos por lección, ninguna supera 12, media de 9,5 |
 | 2026-08-28 | **Fase 6 replanteada: dificultad progresiva y palabras flojas son UNA feature, no dos.** Las une un **puntaje de dominio por palabra** que decide qué te toca y qué tan difícil te lo pregunta. Construir el repaso sin dificultad haría que repasar una palabra fallada muestre el mismo ejercicio que te venció, sin andamiaje; la dificultad sin repaso no tendría señal que la mueva. Constatado que `difficulty` ya se guarda en los 487 ejercicios y **nadie lo consume** — metadato muerto — y que `ReviewQueue` está vacía. Los ejemplos de Babbel (escribir la oración solo oyéndola, decir de qué trata un texto, señalar la frase mal) son **todos del extremo difícil**: añadirlos planos repetiría el error de pedir frases enteras en la primera lección. Escalera por tipo documentada en [EXERCISES.md](./EXERCISES.md) §5 |
 | 2026-08-28 | **Examen de módulo añadido como Fase 7** (la lectura pasa a 8, pronunciación a 9, publicación a 10). Es donde la IA se paga sola: **7 exámenes por nivel** frente a cientos de ejercicios, así que lo caro (foto, escritura abierta, dictado de frase) cabe ahí sin mover el costo y no cabría en la práctica diaria. Se modela como `Lesson` con `kind: EXAMEN` — no hace falta modelo nuevo. **La regla de que la IA no decide sigue en pie**: lo corregido por IA vale ≤30%, con el 70% determinista aprobado el examen está aprobado, y sin `DEEPSEEK_API_KEY` se puede aprobar entero. La **foto ya no necesita un segundo proveedor** (DeepSeek acepta imágenes desde ago-2026), y el examen es el sitio donde el riesgo del OCR de manuscrito es asumible porque hay fallback a teclado. Diseño en [EXERCISES.md](./EXERCISES.md) §6 |
+| 2026-08-28 | **Fase 6 — primera mitad implementada.** `shared/lib/mastery.ts`: dominio 0-5 por palabra, **calculado sobre el historial y no almacenado**, para que no pueda desincronizarse (mismo criterio que la nota de progreso del tutor). Dos decisiones con motivo: **un fallo pesa el doble que un acierto** —acertar 4 de 5 no es dominar, es reconocer a veces— y **lo viejo pesa menos**, que es lo que la repetición espaciada intenta medir. `features/review` con **SM-2** (`nextSm2`, con la calidad DERIVADA del resultado en vez de preguntársela al alumno, para no romper el ritmo de la Fase 4.5), la pantalla **«dónde fallas»** agrupada por `errorTag` con ejemplos concretos, y el primer peldaño de la escalera: `multiple_choice` muestra **2 opciones con dominio bajo y 4 con dominio alto**. 144 tests |
 ---
 
 ## 1. Definición de MVP
@@ -239,18 +240,18 @@ Curso de griego **nivel A1** jugable de principio a fin (alfabeto + 3 módulos t
 > Construir el repaso sin dificultad haría que repasar una palabra fallada te muestre **el mismo ejercicio que te venció**, sin andamiaje. Y la dificultad sin repaso no tendría señal que la mueva.
 
 **1. El dominio (la columna vertebral — va primero):**
-- [ ] Puntaje 0-5 por `VocabularyEntry`, derivado de `UserAnswer` (aciertos, fallos, recencia).
+- [x] Puntaje 0-5 por `VocabularyEntry`, derivado de `UserAnswer` (aciertos, fallos, recencia).
 - [ ] Recalcularlo al cerrar lección, junto al `LearnerSnapshot` que ya se recalcula ahí.
 
 **2. La escalera de dificultad (consume el dominio):**
 - [ ] Que los schemas admitan variantes por nivel (ver la tabla de EXERCISES.md §5).
-- [ ] Que el generador elija la variante según el dominio: **fallas → más fácil; aciertas → más difícil.**
-- [ ] Empezar por `multiple_choice` (2↔4 opciones), `dictation` (traducción visible↔oculta) y `phrase_blank` (opciones↔teclado): son los de mayor efecto y menor coste.
-- [ ] `difficulty` deja de ser metadato muerto: hoy está en los 487 ejercicios y **nadie lo lee**.
+- [x] Que el generador elija la variante según el dominio: **fallas → más fácil; aciertas → más difícil.**
+- [x] Empezar por `multiple_choice` (2↔4 opciones), `dictation` (traducción visible↔oculta) y `phrase_blank` (opciones↔teclado): son los de mayor efecto y menor coste.
+- [x] `difficulty` deja de ser metadato muerto: hoy está en los 487 ejercicios y **nadie lo lee**.
 
 **3. Repaso y palabras flojas (la otra cara del mismo dato):**
-- [ ] Cola SM-2 diaria sobre `ReviewQueue` (ya tiene `interval`, `easeFactor`, `repetitions`; está vacía).
-- [ ] **Sección "dónde fallas"**: palabras de dominio bajo agrupadas por `errorTag` — *"12 fallos por acento"* es más accionable que doce palabras sueltas. Los `errorTags` se guardan desde la Fase 3.
+- [x] Cola SM-2 diaria sobre `ReviewQueue` (ya tiene `interval`, `easeFactor`, `repetitions`; está vacía).
+- [x] **Sección "dónde fallas"**: palabras de dominio bajo agrupadas por `errorTag` — *"12 fallos por acento"* es más accionable que doce palabras sueltas. Los `errorTags` se guardan desde la Fase 3.
 - [ ] Dashboard: racha, puntos, meta diaria, palabras dominadas, errores frecuentes.
 - [ ] Offline: caché de la lección en curso vía service worker.
 

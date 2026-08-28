@@ -11,3 +11,16 @@ export const MultipleChoiceSchema = Base.extend({
 });
 
 export type MultipleChoice = z.infer<typeof MultipleChoiceSchema>;
+
+// La escalera de dificultad (EXERCISES.md §5): con dominio bajo se muestran
+// MENOS opciones. Fallar y que vuelva con las mismas cuatro no es andamiaje.
+export function optionsForDifficulty(
+  options: MultipleChoice["options"],
+  answer: string,
+  difficulty: "easy" | "medium" | "hard",
+): MultipleChoice["options"] {
+  if (difficulty !== "easy" || options.length <= 2) return options;
+  const correct = options.find((o) => o.text === answer);
+  const other = options.find((o) => o.text !== answer);
+  return correct && other ? [correct, other] : options;
+}
