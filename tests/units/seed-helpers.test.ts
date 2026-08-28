@@ -5,6 +5,7 @@ import {
   interleaveLessonExercises,
   type LessonExercise,
 } from "../../prisma/seed-helpers";
+import { mergeTinyCategories } from "../../prisma/seed";
 
 describe("chunkSizes (partición de lecciones)", () => {
   it("una sola lección si no supera el máximo", () => {
@@ -93,5 +94,46 @@ describe("interleaveLessonExercises", () => {
     const a = interleaveLessonExercises(items, "k").map((i) => i.word);
     const b = interleaveLessonExercises(items, "k").map((i) => i.word);
     expect(a).toEqual(b);
+  });
+});
+
+describe("mergeTinyCategories", () => {
+  it("absorbe una categoría diminuta en la anterior", () => {
+    // `verbo-a` tenía una sola entrada y producía una "lección" de 2 ejercicios.
+    const out = mergeTinyCategories(
+      new Map([
+        ["comida", [1, 2, 3, 4]],
+        ["verbo-a", [5]],
+      ]),
+    );
+    expect([...out.keys()]).toEqual(["comida"]);
+    expect(out.get("comida")).toEqual([1, 2, 3, 4, 5]);
+  });
+
+  it("si la primera es diminuta, se funde hacia adelante", () => {
+    const out = mergeTinyCategories(
+      new Map([
+        ["fecha", [1]],
+        ["mes", [2, 3, 4, 5]],
+      ]),
+    );
+    expect([...out.keys()]).toEqual(["mes"]);
+    expect(out.get("mes")).toEqual([1, 2, 3, 4, 5]);
+  });
+
+  it("deja intactas las categorías con tamaño suficiente", () => {
+    const input = new Map([
+      ["a", [1, 2, 3]],
+      ["b", [4, 5, 6]],
+    ]);
+    expect(mergeTinyCategories(input)).toEqual(input);
+  });
+
+  it("no pierde entradas", () => {
+    const out = mergeTinyCategories(
+      new Map([["a", [1, 2, 3]], ["b", [4]], ["c", [5]], ["d", [6, 7, 8]]]),
+    );
+    const total = [...out.values()].flat().length;
+    expect(total).toBe(8);
   });
 });

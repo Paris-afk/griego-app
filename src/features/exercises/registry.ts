@@ -15,6 +15,7 @@ import { casePairs } from "./types/case-pairs";
 import { memoryGrid } from "./types/memory-grid";
 import { speedRound } from "./types/speed-round";
 import { dictation } from "./types/dictation";
+import { phraseBlank } from "./types/phrase-blank";
 
 import type { ExerciseModules } from "./types/module";
 
@@ -38,6 +39,7 @@ export const exerciseRegistry: ExerciseModules = {
   memory_grid: memoryGrid,
   speed_round: speedRound,
   dictation,
+  phrase_blank: phraseBlank,
 };
 
 // El despacho de validación vive en `validators.ts` (TS puro): este archivo

@@ -154,6 +154,7 @@ enum ExerciseType {
   MEMORY_GRID
   SPEED_ROUND
   DICTATION // Fase 5 — oír y escribir; corrección determinista
+  PHRASE_BLANK // completar UNA palabra de una frase (más suave que escribirla entera)
 }
 
 model Exercise {

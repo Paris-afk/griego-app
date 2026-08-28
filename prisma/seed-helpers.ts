@@ -58,7 +58,8 @@ export interface LessonExercise {
     | "CASE_PAIRS"
     | "MEMORY_GRID"
     | "SPEED_ROUND"
-    | "DICTATION";
+    | "DICTATION"
+    | "PHRASE_BLANK";
   schemaJson: Exercise;
 }
 

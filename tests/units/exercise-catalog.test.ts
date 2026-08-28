@@ -252,3 +252,86 @@ describe("dictation", () => {
     expect(validateExercise(ex, "  νησί  ").isCorrect).toBe(true);
   });
 });
+
+describe("tolerancia a los acentos", () => {
+  // Fallar una palabra entera por una tilde desanima sin enseñar nada: se
+  // acepta y se SEÑALA (ARCHITECTURE.md §5.3). Esta prueba recorre todos los
+  // tipos donde el usuario ESCRIBE, para que ninguno se salte la regla.
+  const casos = [
+    {
+      nombre: "translation",
+      exercise: {
+        type: "translation",
+        instruction: "i",
+        prompt: { text: "árbol" },
+        direction: "es→el",
+        answer: "δέντρο",
+        accept: [],
+      },
+      sinAcento: "δεντρο",
+    },
+    {
+      nombre: "autocomplete",
+      exercise: {
+        type: "autocomplete",
+        instruction: "i",
+        answer: "δέντρο",
+        blanks: [5],
+        meaning: "árbol",
+      },
+      sinAcento: "δεντρο",
+    },
+    {
+      nombre: "dictation",
+      exercise: { type: "dictation", instruction: "i", answer: "δέντρο", meaning: "árbol" },
+      sinAcento: "δεντρο",
+    },
+    {
+      nombre: "phrase_blank",
+      exercise: {
+        type: "phrase_blank",
+        instruction: "i",
+        words: ["Πώς", "σε", "λένε;"],
+        blankIndex: 2,
+        answer: "Πώς σε λένε;",
+        meaning: "¿cómo te llamas?",
+      },
+      sinAcento: "λενε;",
+    },
+  ];
+
+  for (const caso of casos) {
+    it(`${caso.nombre}: acepta sin tilde y lo señala`, () => {
+      const ex = ExerciseSchema.parse(caso.exercise);
+      const res = validateExercise(ex, caso.sinAcento);
+      expect(res.isCorrect, `${caso.nombre} falló por una tilde`).toBe(true);
+      expect(res.errorTags).toContain("acento_faltante");
+    });
+  }
+});
+
+describe("phrase_blank", () => {
+  const ex = ExerciseSchema.parse({
+    type: "phrase_blank",
+    instruction: "Completa",
+    words: ["Πώς", "σε", "λένε;"],
+    blankIndex: 0,
+    answer: "Πώς σε λένε;",
+    meaning: "¿cómo te llamas?",
+    options: ["Πώς", "Τι", "Με"],
+  });
+
+  it("solo juzga la palabra que faltaba, no la frase entera", () => {
+    expect(validateExercise(ex, "Πώς").isCorrect).toBe(true);
+    expect(validateExercise(ex, "Τι").isCorrect).toBe(false);
+  });
+
+  it("no exige escribir la frase completa", () => {
+    // Si alguien escribiera la frase entera, NO es lo pedido: falta la palabra.
+    expect(validateExercise(ex, "Πώς σε λένε;").isCorrect).toBe(false);
+  });
+
+  it("informa de la palabra correcta en el feedback", () => {
+    expect(validateExercise(ex, "Τι").correct).toBe("Πώς");
+  });
+});

@@ -169,9 +169,16 @@ const COURSE_TITLE = "Griego A1";
 const LEVEL_NAME = "A1";
 
 // Módulos sembrados en esta fase, con su número (orden) y título.
+// El A1 completo. Los 7 módulos siguen el orden verificado contra 5 manuales
+// reales de griego (CURRICULUM.md §3 y §5) — no es arbitrario.
 const SEED_MODULES = [
   { file: "a1-modulo0-alfabeto.csv", number: 0, title: "Alfabeto y sonidos" },
   { file: "a1-modulo1-saludos.csv", number: 1, title: "Saludos y presentarse" },
+  { file: "a1-modulo2-familia.csv", number: 2, title: "Familia" },
+  { file: "a1-modulo3-rutina-comida.csv", number: 3, title: "Rutina y comida" },
+  { file: "a1-modulo4-numeros-compras.csv", number: 4, title: "Números, fechas y compras" },
+  { file: "a1-modulo5-viajes-planes.csv", number: 5, title: "Viajes y planes" },
+  { file: "a1-modulo6-pasado-futuro.csv", number: 6, title: "Del pasado al futuro" },
 ] as const;
 
 // El alfabeto se parte en 3 lecciones de 8 (orden de la letra en el CSV), por
@@ -250,12 +257,17 @@ function buildLessonExercises(
   concept?: ConceptRow,
 ): LessonExercise[] {
   const spanPool = entries.map((e) => e.espanol);
+  // Palabras griegas sueltas del bloque, para los distractores de phrase_blank.
+  const wordPool = [...new Set(entries.flatMap((e) => e.griego.split(/\s+/)))].filter(Boolean);
   const items: LessonExercise[] = [];
 
   entries.forEach((entry, i) => {
     const single = !/\s/.test(entry.griego);
+    // MC solo en una de cada dos entradas. Generarlo para TODAS lo dejaba en
+    // el ~50% del contenido: el intercalado se quedaba sin alternativas y
+    // acababa amontonando cuatro seguidas al final (medido con el A1 completo).
     const distractors = pickDistractors(spanPool, entry.espanol, 3);
-    if (distractors.length >= 1) {
+    if (i % 2 === 0 && distractors.length >= 1) {
       items.push({
         word: entry.griego,
         type: "MULTIPLE_CHOICE",
@@ -301,6 +313,15 @@ function buildLessonExercises(
         word: entry.griego,
         type: "FILL_BLANK",
         schemaJson: makeFillBlankArticle(entry.articulo, entry.griego),
+      });
+    } else if (!single) {
+      // FRASES: nunca se piden enteras. Escribir «Πώς σε λένε;» con teclado en
+      // pantalla en la primera lección son 11 pulsaciones sin haber
+      // interiorizado el alfabeto — se completa UNA palabra en su lugar.
+      items.push({
+        word: entry.griego,
+        type: "PHRASE_BLANK",
+        schemaJson: makePhraseBlank(entry.griego, entry.espanol, wordPool),
       });
     } else {
       items.push({
@@ -562,6 +583,47 @@ function makeAutocomplete(answer: string, blanks: number[], meaning: string) {
 // Dictado: oír y escribir. No necesita IA para corregir — la respuesta se
 // conoce. Solo para palabras con letras ambiguas: si no hay η/ι/υ ni ο/ω, el
 // dictado no entrena nada que la traducción no entrene ya.
+// Completar UNA palabra de la frase. Con `options` cuando el vocabulario da
+// para generar distractores; si no, se escribe con el teclado.
+function makePhraseBlank(greek: string, meaning: string, pool: string[]) {
+  const words = greek.split(/\s+/).filter(Boolean);
+  // Se oculta la palabra más larga: suele ser la portadora de significado
+  // («σου» en «Γεια σου» no enseña nada; «Γεια» sí).
+  let blankIndex = 0;
+  words.forEach((w, i) => {
+    if (Array.from(w).length > Array.from(words[blankIndex]).length) blankIndex = i;
+  });
+  const target = words[blankIndex];
+  const distractors = pickDistractors(pool, target, 2);
+  return assertExercise({
+    type: "phrase_blank",
+    instruction: "Completa la frase:",
+    points: 10,
+    difficulty: "easy",
+    words,
+    blankIndex,
+    answer: greek,
+    meaning,
+    options: distractors.length >= 2 ? shuffleDeterministic([target, ...distractors], greek) : [],
+  });
+}
+
+// Barajado determinista: el seed debe producir lo mismo en cada corrida.
+function shuffleDeterministic<T>(items: T[], seed: string): T[] {
+  let h = 2166136261;
+  for (let i = 0; i < seed.length; i++) {
+    h ^= seed.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const out = [...items];
+  for (let i = out.length - 1; i > 0; i--) {
+    h = Math.imul(h ^ (h >>> 15), 2246822507) >>> 0;
+    const j = h % (i + 1);
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
+}
+
 function makeDictation(answer: string, meaning: string) {
   return assertExercise({
     type: "dictation",
@@ -705,7 +767,7 @@ async function main() {
 
   // ── Módulo 1 — temático (vocabulario) ────────────────────────────────────
   for (const mod of SEED_MODULES) {
-    if (mod.number !== 1) continue;
+    if (mod.number === 0) continue;
 
     const rows = parseCsv(mod.file).map((r) => VocabRow.parse(r));
     const prismaModule = await prisma.module.create({
@@ -741,10 +803,14 @@ async function main() {
 
     // Lecciones por categoría, partidas en 4-6 entradas (→ 8-12 ejercicios),
     // con tipos intercalados (MC + TR/OW/FB rotando) sin repetir palabra seguida.
-    const byCategory = groupBy(rows, (r) => r.categoria);
+    // Las categorías con muy pocas entradas se absorben en la anterior: una
+    // lección de una sola palabra (p. ej. `verbo-a`, con `έχω`) no es una
+    // lección, y quedaba con dos ejercicios y dos tipos.
+    const byCategory = mergeTinyCategories(groupBy(rows, (r) => r.categoria));
     let lessonOrder = 0;
     for (const [categoria, entries] of byCategory) {
-      const sizes = chunkSizes(entries.length);
+      // Máximo 5 entradas por lección: con 6 salían lecciones de 16 ejercicios.
+      const sizes = chunkSizes(entries.length, 3, 5);
       let offset = 0;
       let partIndex = 0;
       for (const size of sizes) {
@@ -941,6 +1007,28 @@ async function main() {
   }
 
   console.log("Seed completado:", stats);
+}
+
+const MIN_CATEGORY_SIZE = 3;
+
+// Absorbe las categorías demasiado pequeñas en la anterior (o en la siguiente,
+// si es la primera). Mantiene el orden del CSV.
+export function mergeTinyCategories<T>(groups: Map<string, T[]>): Map<string, T[]> {
+  const entries = [...groups.entries()];
+  const out: [string, T[]][] = [];
+  for (const [name, items] of entries) {
+    if (items.length >= MIN_CATEGORY_SIZE || out.length === 0) {
+      out.push([name, [...items]]);
+    } else {
+      out[out.length - 1][1].push(...items);
+    }
+  }
+  // Si la primera quedó pequeña y hay una siguiente, se funde hacia adelante.
+  if (out.length > 1 && out[0][1].length < MIN_CATEGORY_SIZE) {
+    out[1][1].unshift(...out[0][1]);
+    out.shift();
+  }
+  return new Map(out);
 }
 
 function groupBy<T>(items: T[], key: (item: T) => string): Map<string, T[]> {
