@@ -1,0 +1,65 @@
+# Módulo A2-3 — Historias de vida: los aoristos irregulares (curso es→el, nivel A2)
+#
+# Gramática que ancla: AÓRISTOS IRREGULARES de alta frecuencia.
+#
+# Por qué van en su propio módulo: en los manuales de referencia los
+# irregulares se enseñan en DOS tandas, no de golpe (unidades 12 y 13 de
+# Ελληνικά Α΄). Son los verbos más usados del idioma, así que no se pueden
+# posponer, pero tampoco caben todos en una lección.
+#
+# NO HAY REGLA. El tema cambia por completo: βλέπω → είδα, τρώω → έφαγα.
+# Esto es exactamente igual que en español (voy → fui, digo → dije), y ese es
+# el puente: no es una rareza griega, es que los verbos más usados de cualquier
+# idioma son los más irregulares, porque el uso constante los conserva.
+#
+# Se aprenden por repetición espaciada, uno a uno, no por patrón.
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i · μπ→b · ντ→d
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
+είδα,,βλέπω,ída,vi,irregular-vista,verbo,👀,"IRREGULAR total: de βλέπω no queda nada. Como 'voy → fui' en español."
+είπα,,λέω,ípa,dije,irregular-habla,verbo,💬,"IRREGULAR. Compáralo con el español: 'digo → dije' también cambia."
+έφαγα,,τρώω,éfaga,comí,irregular-comida,verbo,🍽️,IRREGULAR. El tema pasa a φαγ-.
+ήπια,,πίνω,ípia,bebí,irregular-comida,verbo,🥤,IRREGULAR con aumento ή-. Solo unos pocos verbos lo llevan.
+πήγα,,πάω,píga,fui,irregular-movimiento,verbo,🚶,"IRREGULAR. Igual que en español, 'ir' es de los más irregulares."
+ήρθα,,έρχομαι,írtha,vine,irregular-movimiento,verbo,🚪,"IRREGULAR con aumento ή-. Además έρχομαι es DEPONENTE: no existe ✗έρχω."
+έφυγα,,φεύγω,éfiga,me fui / salí,irregular-movimiento,verbo,🏃,IRREGULAR. El grupo ευ del presente desaparece.
+μπήκα,,μπαίνω,bíka,entré,irregular-movimiento,verbo,🚪,IRREGULAR. El grupo μπ suena /b/.
+βγήκα,,βγαίνω,vyíka,salí,irregular-movimiento,verbo,🚪,IRREGULAR. Pareja de μπήκα.
+ανέβηκα,,ανεβαίνω,anévika,subí,irregular-movimiento,verbo,⬆️,IRREGULAR. El aumento va DENTRO: αν-έ-βηκα.
+κατέβηκα,,κατεβαίνω,katévika,bajé,irregular-movimiento,verbo,⬇️,IRREGULAR con aumento interno. Pareja de ανέβηκα.
+πήρα,,παίρνω,píra,tomé / cogí,irregular-mano,verbo,✋,IRREGULAR.
+έδωσα,,δίνω,édosa,di,irregular-mano,verbo,🎁,IRREGULAR. De aquí viene 'dosis'.
+έφερα,,φέρνω,éfera,traje,irregular-mano,verbo,📦,IRREGULAR.
+έστειλα,,στέλνω,éstila,envié,irregular-mano,verbo,✉️,IRREGULAR. El grupo ει suena /i/.
+έβαλα,,βάζω,évala,puse,irregular-mano,verbo,📥,IRREGULAR. La β es /v/.
+έβγαλα,,βγάζω,évgala,saqué / quité,irregular-mano,verbo,📤,IRREGULAR. Pareja de έβαλα.
+βρήκα,,βρίσκω,vríka,encontré,irregular-mano,verbo,🔎,IRREGULAR.
+έμαθα,,μαθαίνω,ématha,aprendí,irregular-mente,verbo,🎓,IRREGULAR. De aquí viene 'matemáticas' (lo que se aprende).
+κατάλαβα,,καταλαβαίνω,katálava,entendí,irregular-mente,verbo,💡,IRREGULAR. El aumento cae en la α: κατάλαβα.
+θέλησα,,θέλω,thélisa,quise,irregular-mente,verbo,🎯,"Regular en la forma, pero θέλω no tiene aoristo en el uso corriente: se usa ήθελα."
+έγινα,,γίνομαι,éyina,me hice / ocurrió,irregular-cambio,verbo,🔄,"DEPONENTE con aoristo de terminación ACTIVA: έγινα, no ✗γίνηθηκα."
+έμεινα,,μένω,émina,me quedé,irregular-cambio,verbo,🏠,IRREGULAR. El grupo ει suena /i/.
+έπεσα,,πέφτω,épesa,me caí,irregular-cambio,verbo,🍂,IRREGULAR.
+έπαθα,,παθαίνω,épatha,me pasó (algo malo),irregular-cambio,verbo,😰,IRREGULAR. De aquí viene 'patología'.
+πέθανα,,πεθαίνω,péthana,morí,irregular-cambio,verbo,🕯️,IRREGULAR.
+έκανα,,κάνω,ékana,hice,irregular-cambio,verbo,🔨,"Casi regular, pero de uso altísimo: conviene memorizarlo aparte."
+κάθισα,,κάθομαι,káthisa,me senté,irregular-cambio,verbo,🪑,"DEPONENTE con aoristo ACTIVO: κάθισα, no ✗καθήθηκα."
+σκέφτηκα,,σκέφτομαι,skéftika,pensé,deponente,verbo,💭,"DEPONENTE regular en -θηκα. No existe ✗σκέφτω: en español 'pensar' no es reflexivo, pero aquí sí."
+κοιμήθηκα,,κοιμάμαι,kimíthika,dormí,deponente,verbo,😴,"DEPONENTE en -άμαι → aoristo -ήθηκα. En español 'dormirse' es reflexivo, aquí siempre lo es."
+θυμήθηκα,,θυμάμαι,thimíthika,me acordé,deponente,verbo,💭,DEPONENTE en -άμαι → -ήθηκα. 'Acordarse' también es reflexivo en español.
+φοβήθηκα,,φοβάμαι,fovíthika,tuve miedo,deponente,verbo,😨,"DEPONENTE en -άμαι → -ήθηκα. TRAMPA: 'temer' NO es reflexivo en español."
+σηκώθηκα,,σηκώνομαι,sikóthika,me levanté,deponente,verbo,🛏️,DEPONENTE en -ώνομαι → -ώθηκα.
+ετοιμάστηκα,,ετοιμάζομαι,etimástika,me preparé,deponente,verbo,🎒,DEPONENTE en -άζομαι → -άστηκα.
+ήμουν,,είμαι,ímun,era / estaba,sin-aoristo,verbo,🪞,"είμαι NO tiene aoristo: solo este imperfecto. Aumento ή-."
+είχα,,έχω,íja,tenía,sin-aoristo,verbo,🎒,"έχω tampoco tiene aoristo: solo este imperfecto."
+ήξερα,,ξέρω,íksera,sabía,sin-aoristo,verbo,🧠,ξέρω tampoco tiene aoristo. Aumento ή-.
+ήθελα,,θέλω,íthela,quería,sin-aoristo,verbo,🎯,"Imperfecto de θέλω. Es la forma que se usa de verdad para el pasado."
+χθες,,,jthes,ayer,tiempo-pasado,adverbio,⏪,"También se escribe χτες, más coloquial. Ambas correctas."
+προχθές,,,projthés,anteayer,tiempo-pasado,adverbio,⏪,También προχτές.
+πέρσι,,,pérsi,el año pasado,tiempo-pasado,adverbio,📅,
+παλιά,,,paliá,antes / antiguamente,tiempo-pasado,adverbio,🕰️,Para hábitos del pasado se usa con imperfecto.
+γεννήθηκα,,γεννιέμαι,yeníthika,nací,vida,verbo,👶,DEPONENTE. Se usa casi solo en aoristo: Γεννήθηκα στην Αθήνα.
+μεγάλωσα,,μεγαλώνω,megálosa,crecí,vida,verbo,🌱,Patrón -ώνω → -ωσα. De μεγάλος (grande).
+παντρεύτηκα,,παντρεύομαι,pandréftika,me casé,vida,verbo,💍,DEPONENTE en -εύομαι → -εύτηκα.
+σπούδασα,,σπουδάζω,spúdasa,estudié (una carrera),vida,verbo,🎓,Patrón -άζω → -ασα. No confundir con διάβασα (estudiar para un examen).
+δούλεψα,,δουλεύω,dúlepsa,trabajé,vida,verbo,💼,Tema en ευ → ψ. Ya visto en el módulo anterior.

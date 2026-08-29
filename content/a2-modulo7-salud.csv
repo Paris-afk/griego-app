@@ -1,0 +1,61 @@
+# Módulo A2-7 — Salud y condicionales (curso es→el, nivel A2)
+#
+# Gramática que ancla: CONDICIONALES con αν + comparativos de adverbios.
+#
+# El condicional es de lo que MEJOR transfiere del español: «si… entonces»
+# funciona igual. αν + subjuntivo → futuro, exactamente como «si te duele más,
+# tomarás estas pastillas».
+#
+# Lo que sí es nuevo: los comparativos monoléxicos (-ότερος), que conviven con
+# los perifrásticos (πιο + adjetivo). El español solo tiene la forma con 'más',
+# salvo cuatro irregulares (mejor, peor, mayor, menor) — que son justo los que
+# también son irregulares en griego. Buen sitio para señalar el paralelo.
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i · μπ→b · ντ→d
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
+αν,,,an,si (condicional),condicional,partícula,🔀,"Funciona igual que el 'si' español: αν + subjuntivo → futuro."
+αν πονέσεις,,,an ponésis,si te duele,condicional,expresión,🤕,"αν + subjuntivo. Compara con 'si te duele', que en español también cambia de modo."
+θα πάρεις,,,tha páris,tomarás,condicional,expresión,💊,La consecuencia va en futuro. Misma estructura que en español.
+αν μπορείς,,,an borís,si puedes,condicional,expresión,💪,
+αν θέλεις,,,an thélis,si quieres,condicional,expresión,🎯,Fórmula muy usada para suavizar una petición.
+γιατρός,ο,,yatrós,médico,salud,sustantivo,🩺,"MASCULINO en -ός, vale para ambos géneros: ο/η γιατρός."
+νοσοκομείο,το,,nosokomío,hospital,salud,sustantivo,🏥,NEUTRO en -ο.
+φαρμακείο,το,,farmakío,farmacia,salud,sustantivo,💊,NEUTRO. De φάρμακο.
+φάρμακο,το,,fármako,medicamento,salud,sustantivo,💊,NEUTRO en -ο. De aquí viene 'farmacia'.
+χάπι,το,,jápi,pastilla,salud,sustantivo,💊,NEUTRO en -ι. La χ es la j de 'jamón'.
+πυρετός,ο,,piretós,fiebre,salud,sustantivo,🌡️,MASCULINO en -ός. Genitivo: του πυρετού.
+πονοκέφαλος,ο,,ponokéfalos,dolor de cabeza,salud,sustantivo,🤕,De πόνος (dolor) + κεφάλι (cabeza).
+γρίπη,η,,grípi,gripe,salud,sustantivo,🤧,
+κρυολόγημα,το,,kriolóyima,resfriado,salud,sustantivo,🤧,NEUTRO en -μα. Genitivo: του κρυολογήματος.
+βήχας,ο,,víjas,tos,salud,sustantivo,😷,MASCULINO en -ας.
+πόνος,ο,,pónos,dolor,salud,sustantivo,😣,MASCULINO en -ος. Genitivo: του πόνου.
+υγεία,η,,iyía,salud,salud,sustantivo,💚,"De aquí viene 'higiene'. Υγεία! se dice al brindar."
+σώμα,το,,sóma,cuerpo,cuerpo,sustantivo,🧍,NEUTRO en -μα. Genitivo: του σώματος.
+κεφάλι,το,,kefáli,cabeza,cuerpo,sustantivo,🗣️,NEUTRO en -ι.
+μάτι,το,,máti,ojo,cuerpo,sustantivo,👁️,NEUTRO en -ι. Plural: τα μάτια.
+αυτί,το,,aftí,oreja,cuerpo,sustantivo,👂,NEUTRO. El grupo αυ suena /af/ ante sorda.
+μύτη,η,,míti,nariz,cuerpo,sustantivo,👃,
+στόμα,το,,stóma,boca,cuerpo,sustantivo,👄,NEUTRO en -μα. De aquí viene 'estómago'.
+δόντι,το,,dódi,diente,cuerpo,sustantivo,🦷,NEUTRO. El grupo ντ suena /d/.
+λαιμός,ο,,lemós,garganta / cuello,cuerpo,sustantivo,🧣,El grupo αι suena /e/.
+χέρι,το,,jéri,mano / brazo,cuerpo,sustantivo,✋,NEUTRO en -ι. Vale para mano y brazo.
+πόδι,το,,pódi,pie / pierna,cuerpo,sustantivo,🦵,NEUTRO en -ι. Vale para pie y pierna.
+στομάχι,το,,stomáji,estómago,cuerpo,sustantivo,🫃,NEUTRO en -ι.
+καρδιά,η,,kardiá,corazón,cuerpo,sustantivo,❤️,De aquí viene 'cardiología'.
+πονάω,,,ponáo,doler,salud,verbo,😣,"Tipo Β1 con aoristo irregular: πόνεσα, no ✗πόνησα."
+αισθάνομαι,,,esthánome,sentirse,salud,verbo,🫀,DEPONENTE. De aquí viene 'estética'.
+νιώθω,,,niótho,sentir,salud,verbo,🫀,Aoristo: ένιωσα. Más coloquial que αισθάνομαι.
+αρρωσταίνω,,,arrosténo,enfermar,salud,verbo,🤒,Aoristo: αρρώστησα.
+γίνομαι καλά,,,yínome kalá,ponerse bien,salud,expresión,💚,Literalmente 'volverse bien'.
+περαστικά,,,perastiká,que te mejores,salud,expresión,🍀,"Fórmula fija. Literalmente 'pasajeras', que se te pase."
+καλύτερος,,,kalíteros,mejor,comparativo,adjetivo,⬆️,"IRREGULAR, como en español: no se dice ✗πιο καλός sino καλύτερος."
+χειρότερος,,,jiróteros,peor,comparativo,adjetivo,⬇️,"IRREGULAR, igual que 'peor'."
+μεγαλύτερος,,,megalíteros,mayor / más grande,comparativo,adjetivo,📈,"IRREGULAR, como 'mayor'."
+μικρότερος,,,mikróteros,menor / más pequeño,comparativo,adjetivo,📉,"IRREGULAR, como 'menor'."
+περισσότερος,,,perisóteros,más (cantidad),comparativo,adjetivo,➕,Comparativo irregular de πολύς.
+λιγότερος,,,ligóteros,menos,comparativo,adjetivo,➖,Comparativo irregular de λίγος.
+πιο,,,pio,más,comparativo,partícula,➕,"Forma perifrástica: πιο μεγάλος. Es la equivalente directa del 'más' español."
+από,,,apó,que (en comparación),comparativo,partícula,⚖️,"El segundo término va con από + acusativo: πιο ψηλός από τον Γιώργο."
+καλύτερα,,,kalítera,mejor (adverbio),comparativo,adverbio,⬆️,"Comparativo de καλά. Ojo: καλύτερος es adjetivo, καλύτερα es adverbio."
+χειρότερα,,,jirótera,peor (adverbio),comparativo,adverbio,⬇️,Comparativo de άσχημα.
+πολύ,,,polí,muy / mucho,comparativo,adverbio,🔝,"Con adjetivo forma el superlativo absoluto: πολύ μεγάλος."

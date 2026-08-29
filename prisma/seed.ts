@@ -33,7 +33,12 @@ const CONTENT_DIR = path.join(
 
 // Solo caracteres griegos (+ espacios y signos de puntuación griegos).
 // \p{Script=Greek} cubre las letras griegas incluidas ς (sigma final).
-const GREEK_ONLY = /^[\p{Script=Greek}\s;\u037E]+$/u;
+//
+// Se admite también el APÓSTROFO de elisión (' y '), que es ortografía griega
+// correcta y frecuente: πάρ' το, μ' αρέσει, σ' ευχαριστώ, απ' το σπίτι.
+// Rechazarlo obligaba a escribir formas menos naturales solo para pasar la
+// validación, que es la validación mandando sobre el contenido y no al revés.
+const GREEK_ONLY = /^[\p{Script=Greek}\s;\u037E'\u2019]+$/u;
 
 const PART_OF_SPEECH = [
   "sustantivo",
@@ -186,6 +191,12 @@ const SEED_MODULES = [
   // ── A2 ── verificado contra Ελληνικά Α΄ (Πατάκης) unidades 11-20 y ΚΛΙΚ Α2.
   // Ver CURRICULUM.md §6. Se añaden de uno en uno, verificando cada módulo.
   { file: "a2-modulo1-casa.csv", number: 10, title: "La casa y el barrio", level: "A2" },
+  { file: "a2-modulo2-aoristo.csv", number: 11, title: "Contar lo que pasó", level: "A2" },
+  { file: "a2-modulo3-irregulares.csv", number: 12, title: "Historias de vida", level: "A2" },
+  { file: "a2-modulo4-futuro.csv", number: 13, title: "Planes y taberna", level: "A2" },
+  { file: "a2-modulo5-subjuntivo.csv", number: 14, title: "Salir y proponer", level: "A2" },
+  { file: "a2-modulo6-imperativo.csv", number: 15, title: "Trabajo e instrucciones", level: "A2" },
+  { file: "a2-modulo7-salud.csv", number: 16, title: "Salud y condicionales", level: "A2" },
 ] as const;
 
 // El alfabeto se parte en 3 lecciones de 8 (orden de la letra en el CSV), por
@@ -321,15 +332,36 @@ function buildLessonExercises(
         type: "FILL_BLANK",
         schemaJson: makeFillBlankArticle(entry.articulo, entry.griego),
       });
-    } else if (!single) {
+    } else if (!single && i % 2 === 0) {
       // FRASES: nunca se piden enteras. Escribir «Πώς σε λένε;» con teclado en
-      // pantalla en la primera lección son 11 pulsaciones sin haber
-      // interiorizado el alfabeto — se completa UNA palabra en su lugar.
+      // pantalla son 11 pulsaciones sin haber interiorizado el alfabeto — se
+      // completa UNA palabra en su lugar.
       items.push({
         word: entry.griego,
         type: "PHRASE_BLANK",
         schemaJson: makePhraseBlank(entry.griego, entry.espanol, wordPool),
       });
+    } else if (!single) {
+      // La otra mitad de las frases va de escucha. Sin esto, en los módulos de
+      // futuro y subjuntivo —donde casi toda entrada es una frase—
+      // `phrase_blank` acaparaba dos tercios de la lección.
+      const otras = entries
+        .filter((e) => e.griego !== entry.griego)
+        .map((e) => e.griego)
+        .slice(0, 3);
+      if (otras.length >= 2) {
+        items.push({
+          word: entry.griego,
+          type: "LISTEN_CHOOSE",
+          schemaJson: makeListenChoose(entry.griego, otras, entry.espanol),
+        });
+      } else {
+        items.push({
+          word: entry.griego,
+          type: "PHRASE_BLANK",
+          schemaJson: makePhraseBlank(entry.griego, entry.espanol, wordPool),
+        });
+      }
     } else {
       items.push({
         word: entry.griego,
@@ -883,10 +915,31 @@ async function main() {
     // lección de una sola palabra (p. ej. `verbo-a`, con `έχω`) no es una
     // lección, y quedaba con dos ejercicios y dos tipos.
     const byCategory = mergeTinyCategories(groupBy(rows, (r) => r.categoria));
+
+    // Pre-pase: calcular los ids de lección que ESTE módulo va a tener, y
+    // retirar los que ya no. Hay que hacerlo ANTES de crear, no al final: si
+    // cambia el tamaño de los trozos, las lecciones se renombran → cambian de
+    // id, y las viejas seguirían ocupando su (moduleId, order), que es único.
+    const expectedLessonIds = new Set<string>();
+    for (const [categoria, entries] of byCategory) {
+      const sizes = chunkSizes(entries.length, 4, 5);
+      sizes.forEach((_, i) => {
+        const title = lessonTitle(titleCase(categoria), i, sizes.length);
+        expectedLessonIds.add(stableId("les", mod.number, title));
+      });
+    }
+    await prisma.lesson.deleteMany({
+      where: { moduleId: prismaModule.id, id: { notIn: [...expectedLessonIds] } },
+    });
+    await prisma.lesson.updateMany({
+      where: { moduleId: prismaModule.id },
+      data: { order: { increment: 10000 } },
+    });
+
     let lessonOrder = 0;
     for (const [categoria, entries] of byCategory) {
       // Máximo 5 entradas por lección: con 6 salían lecciones de 16 ejercicios.
-      const sizes = chunkSizes(entries.length, 3, 5);
+      const sizes = chunkSizes(entries.length, 4, 5);
       let offset = 0;
       let partIndex = 0;
       for (const size of sizes) {
@@ -914,6 +967,23 @@ async function main() {
         // repetirla en cada parte sería ruido.
         const conceptRow = partIndex === 1 ? concepts.get(categoria) : undefined;
         const items = buildLessonExercises(chunk, `${categoria}-${offset}`, conceptRow);
+        // Igual que con las lecciones: si el contenido de un ejercicio cambia,
+        // cambia su id, y el viejo seguiría ocupando su (lessonId, order).
+        const expectedExIds = items.map((ex) =>
+          stableId("ex", lesson.id, ex.type, ex.schemaJson),
+        );
+        await prisma.exercise.deleteMany({
+          where: { lessonId: lesson.id, id: { notIn: expectedExIds } },
+        });
+        // Y aparte, apartar los que SOBREVIVEN a un rango temporal. Si el orden
+        // cambia (un ejercicio pasa de la posición 3 a la 1), el que ya ocupa
+        // la 1 bloquearía el upsert: (lessonId, order) es único. Reordenar en
+        // sitio exige dos fases.
+        await prisma.exercise.updateMany({
+          where: { lessonId: lesson.id },
+          data: { order: { increment: 10000 } },
+        });
+
         let exerciseOrder = 0;
         for (const ex of items) {
           const exId = stableId("ex", lesson.id, ex.type, ex.schemaJson);
@@ -1076,6 +1146,17 @@ async function main() {
           ),
         });
       }
+
+      const expectedExIds = items.map((ex) =>
+        stableId("ex", lesson.id, ex.type, ex.schemaJson),
+      );
+      await prisma.exercise.deleteMany({
+        where: { lessonId: lesson.id, id: { notIn: expectedExIds } },
+      });
+      await prisma.exercise.updateMany({
+        where: { lessonId: lesson.id },
+        data: { order: { increment: 10000 } },
+      });
 
       let exerciseOrder = 0;
       for (const ex of items) {

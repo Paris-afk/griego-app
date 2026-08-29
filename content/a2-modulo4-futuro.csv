@@ -1,0 +1,60 @@
+# Módulo A2-4 — Planes y taberna: el futuro (curso es→el, nivel A2)
+#
+# Gramática que ancla: FUTURO con θα.
+#
+# Es el módulo MÁS FÁCIL del A2, y conviene decirlo: el futuro griego no
+# tiene conjugación propia. Se antepone θα al verbo y ya está. Lo que decide
+# es cuál de las dos formas usar:
+#   θα + tema de AORISTO  → futuro puntual   (θα γράψω = escribiré, una vez)
+#   θα + PRESENTE         → futuro continuo  (θα γράφω = estaré escribiendo)
+#
+# Puente con el español: es MÁS simple que en español, donde el futuro sí
+# tiene terminaciones propias (escribir-é, escribir-ás). Aquí θα es invariable.
+# Y la distinción puntual/continuo ya la tienes: 'lo escribiré' vs 'lo estaré
+# escribiendo'.
+#
+# ORTOGRAFÍA CRÍTICA: la 3ª persona del singular va en -ει (θα γράψει), nunca
+# en -η. Es el error nº1 incluso entre nativos.
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i · μπ→b · ντ→d
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
+θα,,,tha,partícula de futuro,futuro,partícula,⏩,"Invariable: no se conjuga. Más simple que el español, donde el futuro lleva terminaciones."
+θα γράψω,,γράφω,tha grápso,escribiré,futuro-puntual,expresión,✍️,θα + tema de aoristo = acción puntual. SIN aumento: nunca ✗θα έγραψω.
+θα διαβάσω,,διαβάζω,tha diaváso,leeré,futuro-puntual,expresión,📖,θα + tema de aoristo.
+θα αγοράσω,,αγοράζω,tha agoráso,compraré,futuro-puntual,expresión,🛒,θα + tema de aoristo.
+θα μιλήσω,,μιλάω,tha milíso,hablaré,futuro-puntual,expresión,💬,Tipo Β1: el tema de aoristo es μιλησ-.
+θα μπορέσω,,μπορώ,tha boréso,podré,futuro-puntual,expresión,💪,Tipo Β2 en -εσα: el tema es μπορεσ-.
+θα πάω,,πάω,tha páo,iré,futuro-irregular,expresión,🚶,Irregular: el tema de subjuntivo es πα-.
+θα δω,,βλέπω,tha do,veré,futuro-irregular,expresión,👀,"Irregular: de βλέπω a δω no queda nada, igual que en el aoristo."
+θα πω,,λέω,tha po,diré,futuro-irregular,expresión,💬,Irregular.
+θα φάω,,τρώω,tha fáo,comeré,futuro-irregular,expresión,🍽️,Irregular.
+θα πιω,,πίνω,tha pio,beberé,futuro-irregular,expresión,🥤,Irregular.
+θα έρθω,,έρχομαι,tha értho,vendré,futuro-irregular,expresión,🚪,Irregular y deponente.
+θα βρω,,βρίσκω,tha vro,encontraré,futuro-irregular,expresión,🔎,Irregular.
+θα πάρω,,παίρνω,tha páro,tomaré,futuro-irregular,expresión,✋,Irregular.
+θα δώσω,,δίνω,tha dóso,daré,futuro-irregular,expresión,🎁,Irregular.
+θα γράφω,,γράφω,tha gráfo,estaré escribiendo,futuro-continuo,expresión,🔁,"θα + PRESENTE = acción continua o habitual. Compara con θα γράψω, que es una sola vez."
+αύριο,,,ávrio,mañana,tiempo-futuro,adverbio,⏩,El grupo αυ suena /av/ ante sonora.
+μεθαύριο,,,methávrio,pasado mañana,tiempo-futuro,adverbio,⏩,
+απόψε,,,apópse,esta noche,tiempo-futuro,adverbio,🌙,
+σύντομα,,,síndoma,pronto,tiempo-futuro,adverbio,⏱️,El grupo ντ suena /nd/.
+αργότερα,,,aryótera,más tarde,tiempo-futuro,adverbio,🕐,Comparativo de αργά.
+του χρόνου,,,tu jrónu,el año que viene,tiempo-futuro,expresión,📅,"Genitivo con valor temporal: literalmente 'del año'."
+ταβέρνα,η,,tavérna,taberna,taberna,sustantivo,🍽️,
+εστιατόριο,το,,estiatório,restaurante,taberna,sustantivo,🍴,NEUTRO. Ya visto en el A1.
+μενού,το,,menú,menú,taberna,sustantivo,📋,NEUTRO e invariable: préstamo del francés.
+λογαριασμός,ο,,logariasmós,cuenta,taberna,sustantivo,🧾,MASCULINO en -ός. Genitivo: του λογαριασμού.
+σερβιτόρος,ο,,servitóros,camarero,taberna,sustantivo,🧑‍🍳,MASCULINO en -ος. Genitivo: του σερβιτόρου.
+πιάτο,το,,piáto,plato,taberna,sustantivo,🍽️,NEUTRO en -ο.
+ποτήρι,το,,potíri,vaso,taberna,sustantivo,🥛,NEUTRO en -ι.
+πιρούνι,το,,pirúni,tenedor,taberna,sustantivo,🍴,NEUTRO en -ι.
+κουτάλι,το,,kutáli,cuchara,taberna,sustantivo,🥄,NEUTRO en -ι.
+μαχαίρι,το,,majéri,cuchillo,taberna,sustantivo,🔪,NEUTRO en -ι. El grupo αι suena /e/.
+μεζές,ο,,mezés,tapa / entrante,taberna,sustantivo,🫒,MASCULINO. Plural: οι μεζέδες.
+παραγγέλνω,,,parangélno,pedir (en un local),taberna,verbo,📝,El grupo γγ suena /ng/. Aoristo: παρήγγειλα.
+πληρώνω,,,plíróno,pagar,taberna,verbo,💳,Aoristo: πλήρωσα.
+κρατάω,,,kratáo,reservar,plan-futuro,verbo,📅,Tipo Β1. Aoristo: κράτησα.
+σχεδιάζω,,,sjediázo,planear,plan-futuro,verbo,🗺️,Aoristo: σχεδίασα.
+αποφασίζω,,,apofasízo,decidir,plan-futuro,verbo,✅,Patrón -ίζω → -ισα: αποφάσισα.
+ελπίζω,,,elpízo,esperar (tener esperanza),plan-futuro,verbo,🤞,Patrón -ίζω → -ισα: έλπισα.
+υπόσχομαι,,,ipósjome,prometer,plan-futuro,verbo,🤝,DEPONENTE: no existe ✗υπόσχω.

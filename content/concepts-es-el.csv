@@ -35,4 +35,22 @@ casa,La casa y el genitivo,"Aquí aparece el genitivo, el caso que dice de quié
 mueble,Los muebles y el acento que se mueve,"Al declinar, el acento griego cambia de sílaba: το πάπλωμα pero του παπλώματος. Es lo más ajeno de todo el nivel, porque en español el acento nunca se mueve así.",acento_movil
 lugar,Decir dónde está algo,"Los adverbios de lugar se combinan con preposiciones: κοντά στο σπίτι (cerca de casa), μακριά από την πόλη (lejos de la ciudad). Fíjate en cuál lleva cada uno.",
 verbo-amai,Verbos que solo existen en forma media,"θυμάμαι, φοβάμαι y λυπάμαι no tienen forma activa: no existe ✗θυμώ. En español algunos coinciden ('acordarse' también es reflexivo) y otros no ('temer' no lo es).",deponentes
+aoristo-psi,El aoristo: los verbos en π β φ ευ,"Todos los aoristos llevan las mismas terminaciones (-α -ες -ε -αμε -ατε -αν). Lo único que cambia es el tema. Aquí, las consonantes π β φ y el grupo ευ se convierten en ψ: γράφω → έγραψα.",aspecto_verbal
+aoristo-ksi,El aoristo: los verbos en κ γ χ,"Segundo grupo: κ γ χ y χν se convierten en ξ. ανοίγω → άνοιξα, ψάχνω → έψαξα.",
+aoristo-sigma,El aoristo: los verbos en ζ σ τ δ,"Tercer grupo: se convierten en σ. Los patrones más rentables son -ίζω → -ισα y -άζω → -ασα.",
+aoristo-b1,El aoristo de los verbos tipo B1,"Los verbos en -άω hacen el aoristo en -ησα: μιλάω → μίλησα. Hay excepciones que hacen -ασα (πέρασα, ξέχασα) y hay que memorizarlas.",
+aoristo-b2,El aoristo de los verbos tipo B2,"Los verbos en -ώ se reparten entre -ησα (οδήγησα) y -εσα (μπόρεσα) SIN regla que lo prediga. Es memoria pura: trátalos de uno en uno.",
+irregular-vista,Los verbos más usados son los más irregulares,"βλέπω → είδα, λέω → είπα. No queda nada del presente. Pasa igual en español: voy → fui, digo → dije. Los verbos más frecuentes conservan formas antiguas porque el uso constante las protege.",aspecto_verbal
+irregular-movimiento,Ir y venir: los irregulares del movimiento,"πάω → πήγα, έρχομαι → ήρθα, μπαίνω → μπήκα. En ανέβηκα y κατέβηκα el aumento va DENTRO de la palabra, no delante.",
+deponente,Verbos que solo existen en forma media,"σκέφτομαι, κοιμάμαι, θυμάμαι no tienen forma activa: no existe ✗σκέφτω. Algunos coinciden con el español ('acordarse' también es reflexivo) y otros no ('pensar' no lo es).",deponentes
+sin-aoristo,Los verbos que no tienen pasado puntual,"είμαι, έχω y ξέρω no tienen aoristo: solo imperfecto (ήμουν, είχα, ήξερα). Tiene sentido: ser, tener y saber describen estados, no acciones puntuales.",
+futuro-puntual,El futuro es solo una palabra más,"Antepones θα y ya está: θα γράψω. Es MÁS simple que en español, donde el futuro lleva terminaciones propias (escribir-é). Ojo con la 3ª persona: va en -ει, nunca en -η.",
+futuro-continuo,Dos futuros según lo que dure,"θα γράψω (lo escribiré, una vez) frente a θα γράφω (estaré escribiendo). Ya haces esa distinción en español sin pensarlo.",aspecto_verbal
+subjuntivo,El griego no tiene infinitivo,"Donde el español dice 'quiero leer', el griego obliga a θέλω να διαβάσω, literalmente 'quiero que lea'. Suena raro hasta que caes en que ya lo haces al decir 'quiero que leas'.",sin_infinitivo
+imperativo-regular,Dar instrucciones,"El imperativo se forma del tema de aoristo: γράψε (singular), γράψτε (plural). Los del tipo B hacen el plural en -ήστε: μιλήστε.",
+imperativo-irregular,Los imperativos que hay que memorizar,"πες, δες, φάε, πιες, έλα. Son los más usados y no siguen patrón — como 'di', 'ven', 'haz' en español, que tampoco lo siguen.",
+imperativo-negativo,Para prohibir no se usa el imperativo,"No existe imperativo negativo: se dice μην + subjuntivo (μην πας). El español hace lo mismo: 've' pero 'no vayas', que ya es subjuntivo.",
+imperativo-pronombre,El pronombre cambia de lado,"Normalmente va antes del verbo (τον είδα), pero con imperativo va detrás y pegado: πες μου. Idéntico al español: 'me lo dices' pero 'dímelo'.",
+condicional,Si… entonces,"αν + subjuntivo → futuro. Transfiere directo del español: 'si te duele más, tomarás estas pastillas'. Es de lo que menos cuesta del nivel.",
+comparativo,Comparar de dos maneras,"El griego tiene la forma con πιο (πιο μεγάλος, como el 'más' español) y otra de una sola palabra (μεγαλύτερος). Los irregulares son los mismos que en español: mejor, peor, mayor, menor.",
 

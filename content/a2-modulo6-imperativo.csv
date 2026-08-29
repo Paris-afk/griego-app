@@ -1,0 +1,56 @@
+# Módulo A2-6 — Trabajo e instrucciones: el imperativo (curso es→el, nivel A2)
+#
+# Gramática que ancla: IMPERATIVO + posición del pronombre.
+#
+# Dos cosas que este módulo enseña y que el español ilumina bien:
+#
+# 1. NO EXISTE IMPERATIVO NEGATIVO en griego. Para prohibir se usa
+#    μην + subjuntivo: μην πας (no vayas). El español hace exactamente lo mismo
+#    —«ve» pero «no vayas», que es subjuntivo—, así que el patrón ya lo tienes.
+#
+# 2. EL PRONOMBRE CAMBIA DE LADO. Normalmente va ANTES del verbo (τον είδα),
+#    pero con imperativo va DETRÁS y pegado: πες μου, δώσε το.
+#    Es idéntico al español: «me lo dices» pero «dímelo».
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i · μπ→b · ντ→d
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
+γράψε,,γράφω,grápse,escribe,imperativo-regular,verbo,✍️,"Imperativo singular del tipo A: tema de aoristo + -ε. Plural: γράψτε."
+διάβασε,,διαβάζω,diávase,lee,imperativo-regular,verbo,📖,Singular en -ε. Plural: διαβάστε.
+άνοιξε,,ανοίγω,ánikse,abre,imperativo-regular,verbo,🚪,Singular en -ε. Plural: ανοίξτε.
+ετοίμασε,,ετοιμάζω,etímase,prepara,imperativo-regular,verbo,🎒,Singular en -ε. Plural: ετοιμάστε.
+κλείσε,,κλείνω,klíse,cierra,imperativo-regular,verbo,🚪,Singular en -ε. Plural: κλείστε.
+μίλησε,,μιλάω,mílise,habla,imperativo-b,verbo,💬,"Tipo Β1: el plural va en -ήστε, no en -τε. Plural: μιλήστε."
+ρώτησε,,ρωτάω,rótise,pregunta,imperativo-b,verbo,❓,Tipo Β1. Plural: ρωτήστε.
+οδήγησε,,οδηγώ,odíyise,conduce,imperativo-b,verbo,🚗,Tipo Β2. Plural: οδηγήστε.
+πες,,λέω,pes,di,imperativo-irregular,verbo,💬,IRREGULAR. Plural: πείτε.
+δες,,βλέπω,des,mira,imperativo-irregular,verbo,👀,IRREGULAR. Plural: δείτε.
+φάε,,τρώω,fáe,come,imperativo-irregular,verbo,🍽️,IRREGULAR. Plural: φάτε.
+πιες,,πίνω,pies,bebe,imperativo-irregular,verbo,🥤,IRREGULAR. Plural: πιείτε.
+έλα,,έρχομαι,éla,ven,imperativo-irregular,verbo,🚪,"IRREGULAR. Plural: ελάτε. Es de las palabras más usadas del griego."
+πάρε,,παίρνω,páre,toma,imperativo-irregular,verbo,✋,IRREGULAR. Plural: πάρτε.
+δώσε,,δίνω,dóse,da,imperativo-irregular,verbo,🎁,IRREGULAR. Plural: δώστε.
+βάλε,,βάζω,vále,pon,imperativo-irregular,verbo,📥,IRREGULAR. Plural: βάλτε.
+φέρε,,φέρνω,fére,trae,imperativo-irregular,verbo,📦,IRREGULAR. Plural: φέρτε.
+πήγαινε,,πάω,píyene,ve,imperativo-irregular,verbo,🚶,IRREGULAR. Plural: πηγαίνετε.
+κάτσε,,κάθομαι,kátse,siéntate,imperativo-irregular,verbo,🪑,IRREGULAR. Plural: καθίστε.
+πρόσεχε,,προσέχω,prósejе,ten cuidado,imperativo-irregular,verbo,⚠️,Imperativo CONTINUO: se forma del presente porque el cuidado es constante.
+μην πας,,,min pas,no vayas,imperativo-negativo,expresión,🚫,"NO HAY imperativo negativo: se usa μην + subjuntivo. Igual que el español 'no vayas', que también es subjuntivo."
+μην το πεις,,,min to pis,no lo digas,imperativo-negativo,expresión,🤐,"Con negación el pronombre vuelve DELANTE: μην ΤΟ πεις."
+πες μου,,,pes mu,dime,imperativo-pronombre,expresión,💬,"El pronombre va DETRÁS del imperativo, como en español 'dime'."
+δώσε μου,,,dóse mu,dame,imperativo-pronombre,expresión,🎁,Pronombre detrás. Compara: μου έδωσες = me diste (delante).
+πάρ' το,,,pár to,tómalo,imperativo-pronombre,expresión,✋,Pronombre detrás. El apóstrofo marca la vocal que se pierde.
+δώσε μού το,,,dóse mú to,dámelo,imperativo-pronombre,expresión,🎁,"Dos pronombres: genitivo antes que acusativo, como en español 'dámelo'."
+αγγελία,η,,angelía,anuncio (de empleo),trabajo,sustantivo,📰,El grupo γγ suena /ng/. De aquí viene 'ángel' (mensajero).
+βιογραφικό,το,,viografikó,currículum,trabajo,sustantivo,📄,NEUTRO. Literalmente 'lo biográfico'.
+συνέντευξη,η,,sinéndefksi,entrevista,trabajo,sustantivo,🎙️,FEMENINO en -ξη: plural οι συνεντεύξεις.
+εμπειρία,η,,embiría,experiencia,trabajo,sustantivo,⭐,El grupo μπ suena /b/. De aquí viene 'empírico'.
+θέση,η,,thési,puesto,trabajo,sustantivo,💼,FEMENINO en -ση: plural οι θέσεις. De aquí viene 'tesis'.
+μισθός,ο,,misthós,sueldo,trabajo,sustantivo,💶,MASCULINO en -ός. Genitivo: του μισθού.
+ωράριο,το,,orário,horario,trabajo,sustantivo,🕐,NEUTRO en -ο.
+άδεια,η,,ádia,permiso / vacaciones,trabajo,sustantivo,🏖️,Sirve para el permiso laboral y para las vacaciones pagadas.
+συνάδελφος,ο,,sinádelfos,compañero de trabajo,trabajo,sustantivo,🧑‍🤝‍🧑,"Vale para los dos géneros: ο/η συνάδελφος."
+διευθυντής,ο,,diefthindís,director,trabajo,sustantivo,🧑‍💼,MASCULINO en -ής. Femenino: η διευθύντρια.
+γραφείο,το,,grafío,oficina / escritorio,trabajo,sustantivo,🏢,NEUTRO. Sirve para el lugar y para el mueble.
+εταιρεία,η,,etería,empresa,trabajo,sustantivo,🏢,
+προσλαμβάνω,,,proslamváno,contratar,trabajo,verbo,✍️,Aoristo: προσέλαβα (aumento interno).
+απολύω,,,apolío,despedir,trabajo,verbo,📤,Aoristo: απέλυσα.

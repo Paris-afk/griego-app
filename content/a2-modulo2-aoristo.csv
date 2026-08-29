@@ -1,0 +1,75 @@
+# Módulo A2-2 — Contar lo que pasó: el aoristo regular (curso es→el, nivel A2)
+#
+# Gramática que ancla: AÓRISTO REGULAR de los tres tipos de verbo.
+# En los manuales de referencia el aoristo ocupa DOS unidades enteras (12 y 13
+# de Ελληνικά Α΄) y sus irregulares se enseñan en dos tandas. Aquí van los
+# regulares; los irregulares son el módulo A2-3.
+#
+# LAS TERMINACIONES SON LAS MISMAS PARA TODOS: -α -ες -ε -αμε -ατε -αν.
+# Lo único que cambia es el TEMA. Por eso el módulo se organiza por cómo se
+# forma el tema, no por temática:
+#   π β φ πτ φτ ευ αυ  →  ψ   (γράφω → έγραψα)
+#   κ γ χ γγ χν σκ     →  ξ   (ανοίγω → άνοιξα)
+#   τ δ θ ζ σ          →  σ   (αγοράζω → αγόρασα)
+#   tipo Β1 (-άω)      →  -ησα (μιλάω → μίλησα), con excepciones en -ασα
+#   tipo Β2 (-ώ)       →  -ησα o -εσα, SIN regla que lo prediga: es memoria
+#
+# El AUMENTO έ- aparece solo cuando hace falta una tercera sílaba para acentuar
+# en la antepenúltima, y por eso DESAPARECE en 1ª y 2ª del plural:
+#   έγραψα, έγραψες, έγραψε — pero γράψαμε, γράψατε.
+#
+# Puente con el español: el aóristo es el pretérito indefinido («escribí») y ya
+# lo distingues del imperfecto sin pensarlo. Lo nuevo no es el aspecto: es que
+# el TEMA del verbo cambia.
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i · μπ→b · ντ→d
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
+έγραψα,,γράφω,égrapsa,escribí,aoristo-psi,verbo,✍️,"Tema en φ → ψ. Aumento έ- porque γράψ- es corto; en plural desaparece: γράψαμε."
+έκοψα,,κόβω,ékopsa,corté,aoristo-psi,verbo,✂️,Tema en β → ψ. La β es /v/ en presente pero el aoristo la vuelve ψ.
+δούλεψα,,δουλεύω,dúlepsa,trabajé,aoristo-psi,verbo,💼,"Tema en ευ → ψ. Sin aumento: δούλεψα ya tiene tres sílabas."
+χόρεψα,,χορεύω,jórepsa,bailé,aoristo-psi,verbo,💃,Tema en ευ → ψ. La χ es la j de 'jamón'.
+ταξίδεψα,,ταξιδεύω,taksídepsa,viajé,aoristo-psi,verbo,🧳,Tema en ευ → ψ. Sin aumento: ya es larga.
+μαγείρεψα,,μαγειρεύω,mayírepsa,cociné,aoristo-psi,verbo,👨‍🍳,Tema en ευ → ψ.
+άναψα,,ανάβω,ánapsa,encendí,aoristo-psi,verbo,💡,Tema en β → ψ. El aumento cae en la α inicial: άναψα.
+έκρυψα,,κρύβω,ékripsa,escondí,aoristo-psi,verbo,🙈,Tema en β → ψ.
+άνοιξα,,ανοίγω,ániksa,abrí,aoristo-ksi,verbo,🚪,Tema en γ → ξ. El grupo οι suena /i/.
+έτρεξα,,τρέχω,étreksa,corrí,aoristo-ksi,verbo,🏃,Tema en χ → ξ.
+έδειξα,,δείχνω,édiksa,mostré,aoristo-ksi,verbo,👉,Tema en χν → ξ.
+έψαξα,,ψάχνω,épsaksa,busqué,aoristo-ksi,verbo,🔍,Tema en χν → ξ.
+έριξα,,ρίχνω,ériksa,eché / tiré,aoristo-ksi,verbo,🫗,Tema en χν → ξ.
+έφτιαξα,,φτιάχνω,éftiaksa,hice / preparé,aoristo-ksi,verbo,🔧,Tema en χν → ξ. Muy usado en cocina.
+αγόρασα,,αγοράζω,agórasa,compré,aoristo-sigma,verbo,🛒,Tema en ζ → σ. Patrón -άζω → -ασα.
+διάβασα,,διαβάζω,diávasa,leí / estudié,aoristo-sigma,verbo,📖,Tema en ζ → σ. Patrón -άζω → -ασα.
+ετοίμασα,,ετοιμάζω,etímasa,preparé,aoristo-sigma,verbo,🎒,Patrón -άζω → -ασα.
+δοκίμασα,,δοκιμάζω,dokímasa,probé,aoristo-sigma,verbo,🥄,Patrón -άζω → -ασα.
+γνώρισα,,γνωρίζω,gnórisa,conocí,aoristo-sigma,verbo,🤝,Patrón -ίζω → -ισα.
+άρχισα,,αρχίζω,árjisa,empecé,aoristo-sigma,verbo,▶️,Patrón -ίζω → -ισα.
+καθάρισα,,καθαρίζω,katharisa,limpié,aoristo-sigma,verbo,🧽,Patrón -ίζω → -ισα.
+νόμισα,,νομίζω,nómisa,creí / pensé,aoristo-sigma,verbo,💭,Patrón -ίζω → -ισα.
+τελείωσα,,τελειώνω,telíosa,terminé,aoristo-sigma,verbo,🏁,Patrón -ώνω → -ωσα.
+πλήρωσα,,πληρώνω,plírosa,pagué,aoristo-sigma,verbo,💳,Patrón -ώνω → -ωσα.
+σήκωσα,,σηκώνω,síkosa,levanté,aoristo-sigma,verbo,🏋️,Patrón -ώνω → -ωσα.
+άκουσα,,ακούω,ákusa,escuché,aoristo-sigma,verbo,👂,Tema en υ → σ.
+έκλεισα,,κλείνω,éklisa,cerré,aoristo-sigma,verbo,🚪,Tema en ν → σ. El grupo ει suena /i/.
+μίλησα,,μιλάω,mílisa,hablé,aoristo-b1,verbo,💬,Tipo Β1 → -ησα. Es el patrón dominante del tipo.
+αγάπησα,,αγαπάω,agápisa,amé / quise,aoristo-b1,verbo,❤️,Tipo Β1 → -ησα.
+ρώτησα,,ρωτάω,rótisa,pregunté,aoristo-b1,verbo,❓,Tipo Β1 → -ησα.
+απάντησα,,απαντάω,apándisa,respondí,aoristo-b1,verbo,💬,Tipo Β1 → -ησα.
+ξύπνησα,,ξυπνάω,ksípnisa,me desperté,aoristo-b1,verbo,⏰,Tipo Β1 → -ησα.
+σταμάτησα,,σταματάω,stamátisa,paré,aoristo-b1,verbo,🛑,Tipo Β1 → -ησα.
+ζήτησα,,ζητάω,zítisa,pedí,aoristo-b1,verbo,🙋,Tipo Β1 → -ησα.
+πέρασα,,περνάω,pérasa,pasé,aoristo-b1,verbo,🚶,"EXCEPCIÓN del Β1: hace -ασα, no -ησα."
+ξέχασα,,ξεχνάω,kséjasa,olvidé,aoristo-b1,verbo,🤔,"EXCEPCIÓN del Β1: -ασα. La χ es la j de 'jamón'."
+γέλασα,,γελάω,yélasa,reí,aoristo-b1,verbo,😄,EXCEPCIÓN del Β1: -ασα.
+πείνασα,,πεινάω,pínasa,tuve hambre,aoristo-b1,verbo,🍽️,EXCEPCIÓN del Β1: -ασα.
+δίψασα,,διψάω,dípsasa,tuve sed,aoristo-b1,verbo,🥤,EXCEPCIÓN del Β1: -ασα.
+πέταξα,,πετάω,pétaksa,tiré / volé,aoristo-b1,verbo,🪁,"EXCEPCIÓN del Β1: hace -ξα. Significa tirar y también volar."
+οδήγησα,,οδηγώ,odíyisa,conduje,aoristo-b2,verbo,🚗,Tipo Β2 → -ησα.
+άργησα,,αργώ,áryisa,llegué tarde,aoristo-b2,verbo,🐢,Tipo Β2 → -ησα.
+τηλεφώνησα,,τηλεφωνώ,tilefónisa,llamé por teléfono,aoristo-b2,verbo,📞,Tipo Β2 → -ησα.
+συμφώνησα,,συμφωνώ,simfónisa,estuve de acuerdo,aoristo-b2,verbo,🤝,Tipo Β2 → -ησα.
+έζησα,,ζω,ézisa,viví,aoristo-b2,verbo,🌱,Tipo Β2 → -ησα. De ζω viene 'zoología'.
+μπόρεσα,,μπορώ,bóresa,pude,aoristo-b2,verbo,💪,"Tipo Β2 → -εσα. Que sea -εσα y no -ησα NO se deduce: se memoriza."
+φόρεσα,,φορώ,fóresa,me puse (ropa),aoristo-b2,verbo,👕,Tipo Β2 → -εσα. De memoria.
+κάλεσα,,καλώ,kálesa,invité / llamé,aoristo-b2,verbo,✉️,Tipo Β2 → -εσα. De memoria.
+παρακάλεσα,,παρακαλώ,parakálesa,rogué,aoristo-b2,verbo,🙏,Tipo Β2 → -εσα. De memoria.

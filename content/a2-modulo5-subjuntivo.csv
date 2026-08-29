@@ -1,0 +1,55 @@
+# Módulo A2-5 — Salir y proponer: el subjuntivo con να (curso es→el, nivel A2)
+#
+# Gramática que ancla: SUBJUNTIVO SIMPLE con να.
+#
+# Es el módulo con el puente más fuerte de todo el A2, y hay que aprovecharlo:
+# el griego NO TIENE INFINITIVO. Donde el español dice «quiero leer», el griego
+# obliga a «θέλω να διαβάσω» = literalmente «quiero que lea».
+#
+# Suena raro hasta que caes en que YA LO HACES en español: «quiero que leas».
+# Lo que hay que reprogramar no es el modo —el subjuntivo ya lo tienes— sino la
+# REGLA DE REPARTO: el español elige infinitivo o subjuntivo según si el sujeto
+# coincide; el griego usa siempre να + verbo concordado en persona.
+#
+# Errores previsibles por calco: ✗θέλω διαβάζω · ✗μπορώ έρχομαι · ✗για μαθαίνω
+#
+# Las formas son IDÉNTICAS a las del futuro: cambia θα por να.
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i · μπ→b · ντ→d
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
+να,,,na,que (partícula de subjuntivo),subjuntivo,partícula,🔗,"No se traduce sola. Ocupa el lugar donde el español pondría un infinitivo."
+θέλω να πάω,,,thélo na páo,quiero ir,subjuntivo-querer,expresión,🎯,"Literalmente 'quiero que vaya'. En español dirías 'quiero ir', con infinitivo."
+μπορώ να έρθω,,,boró na értho,puedo venir,subjuntivo-poder,expresión,💪,Nunca ✗μπορώ έρχομαι.
+πρέπει να φύγω,,,prépi na fígo,tengo que irme,subjuntivo-deber,expresión,🚪,πρέπει es impersonal: solo existe en 3ª persona.
+ξέρω να μαγειρεύω,,,kséro na mayirévo,sé cocinar,subjuntivo-saber,expresión,👨‍🍳,"Aquí va el PRESENTE tras να: es una habilidad continua, no un acto puntual."
+μου αρέσει να διαβάζω,,,mu arési na diavázo,me gusta leer,subjuntivo-gustar,expresión,📖,"μου αρέσει calca 'me gusta': lo que gusta es el sujeto. El griego usa genitivo (μου) donde el español usa dativo (me)."
+για να μάθω,,,ya na mátho,para aprender,subjuntivo-finalidad,expresión,🎓,για να = 'para'. Nunca ✗για μαθαίνω.
+πριν φύγω,,,prin fígo,antes de irme,subjuntivo-tiempo,expresión,⏪,πριν pide subjuntivo directamente. Nunca ✗πριν φεύγω.
+ας πάμε,,,as páme,vamos / vayamos,subjuntivo-propuesta,expresión,🚶,ας + subjuntivo = propuesta suave. Como el 'vamos a...' español.
+μην πας,,,min pas,no vayas,subjuntivo-negativo,expresión,🚫,"La negación del subjuntivo es μην, no δεν."
+πάμε,,,páme,vamos,salir,verbo,🚶,1ª plural de πάω. Se usa suelto como invitación.
+βγαίνω,,,vyéno,salir (de fiesta),salir,verbo,🌃,"Distinto de φεύγω (irse). Aoristo irregular: βγήκα."
+συναντάω,,,sinandáo,quedar con / encontrarse,salir,verbo,🤝,Tipo Β1. Aoristo: συνάντησα.
+προτείνω,,,protíno,proponer,salir,verbo,💡,Aoristo: πρότεινα.
+δέχομαι,,,déjome,aceptar,salir,verbo,✅,DEPONENTE: no existe ✗δέχω.
+αρνούμαι,,,arnúme,rechazar,salir,verbo,❌,DEPONENTE.
+συμφωνώ,,,simfonó,estar de acuerdo,salir,verbo,👍,Tipo Β2. De aquí viene 'sinfonía'.
+διαφωνώ,,,diafonó,estar en desacuerdo,salir,verbo,👎,Tipo Β2. Opuesto de συμφωνώ.
+προτιμώ,,,protimó,preferir,salir,verbo,⭐,Tipo Β2.
+ταινία,η,,tenía,película,ocio,sustantivo,🎬,El grupo αι suena /e/.
+θέατρο,το,,théatro,teatro,ocio,sustantivo,🎭,NEUTRO en -ο.
+παράσταση,η,,parástasi,función / espectáculo,ocio,sustantivo,🎭,"FEMENINO en -ση: plural οι παραστάσεις, genitivo plural των παραστάσεων."
+συναυλία,η,,sinavlía,concierto,ocio,sustantivo,🎵,El grupo αυ suena /av/.
+εισιτήριο,το,,isitírio,entrada / billete,ocio,sustantivo,🎫,NEUTRO. Ya visto en el A1 para viajes.
+διακοπές,οι,,diakopés,vacaciones,ocio,sustantivo,🏖️,Solo existe en PLURAL. Como 'vacaciones' en español.
+γλέντι,το,,glédi,fiesta (a la griega),ocio,sustantivo,🎉,NEUTRO en -ι. El grupo ντ suena /d/.
+παρέα,η,,paréa,pandilla / compañía,ocio,sustantivo,👥,"Palabra muy griega: el grupo de amigos con el que sales."
+βόλτα,η,,vólta,paseo,ocio,sustantivo,🚶,Πάμε μια βόλτα; = ¿damos una vuelta?
+ιδέα,η,,idéa,idea,ocio,sustantivo,💡,Ωραία ιδέα! = ¡Buena idea!
+ελεύθερος,,,eléftheros,libre,ocio,adjetivo,🕊️,Femenino ελεύθερη. El grupo ευ suena /ef/ ante θ.
+απασχολημένος,,,apasjoliménos,ocupado,ocio,adjetivo,📅,Femenino απασχολημένη.
+δυστυχώς,,,distijós,desgraciadamente,ocio,adverbio,😕,Para rechazar con cortesía: Δυστυχώς δεν μπορώ.
+ευχαρίστως,,,efjarístos,con mucho gusto,ocio,adverbio,😊,Para aceptar. De la misma raíz que ευχαριστώ.
+βέβαια,,,vévea,claro / por supuesto,ocio,adverbio,✅,
+ίσως,,,ísos,quizá,ocio,adverbio,🤔,Se combina con subjuntivo o indicativo.
+μακάρι,,,makári,ojalá,ocio,expresión,🤞,"Como 'ojalá': siempre con να. Μακάρι να έρθεις."

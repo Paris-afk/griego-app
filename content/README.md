@@ -42,7 +42,7 @@ griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,
 | `nota` | no | Alimenta el feedback del profesor IA. Etimologías, trampas, variantes ortográficas |
 
 **Validación que el seed debe aplicar** (falla ruidosamente, ARCHITECTURE.md §7 punto 1):
-- `griego` sin caracteres latinos
+- `griego` sin caracteres latinos (se admite el apóstrofo de elisión: `πάρ' το`, `μ' αρέσει`)
 - `articulo` ∈ {`ο`,`η`,`το`,`οι`,`τα`,vacío}
 - todo `tipo_palabra: sustantivo` tiene `articulo`
 - `tipo_palabra` dentro del conjunto permitido
