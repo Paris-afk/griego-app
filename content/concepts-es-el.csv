@@ -31,3 +31,8 @@ tiempo,"Ayer, hoy y mañana","Para hablar del futuro basta anteponer θα al ver
 aoristo,Contar lo que pasó,"El aóristo es el pasado puntual. Ya distingues 'leí' de 'leía' en español sin pensarlo: eso es aspecto, y el griego usa la misma idea. Los verbos frecuentes son irregulares y van de memoria.",aspecto_verbal
 verbo-a,Verbos de tipo A,"La primera familia de conjugación: el acento cae en la raíz, como en γράφω o δουλεύω. Es la más numerosa y la que conviene dominar primero.",
 verbo-b1,Verbos de tipo B1,"La segunda familia: el acento cae en la terminación, como en μιλάω o αγαπάω. Muchos admiten dos formas escritas —μιλάω y μιλώ— y las dos son correctas.",
+casa,La casa y el genitivo,"Aquí aparece el genitivo, el caso que dice de quién es algo. El griego no necesita la palabra 'de': la propia palabra cambia. το σπίτι του πατέρα = la casa del padre.",genitivo
+mueble,Los muebles y el acento que se mueve,"Al declinar, el acento griego cambia de sílaba: το πάπλωμα pero του παπλώματος. Es lo más ajeno de todo el nivel, porque en español el acento nunca se mueve así.",acento_movil
+lugar,Decir dónde está algo,"Los adverbios de lugar se combinan con preposiciones: κοντά στο σπίτι (cerca de casa), μακριά από την πόλη (lejos de la ciudad). Fíjate en cuál lleva cada uno.",
+verbo-amai,Verbos que solo existen en forma media,"θυμάμαι, φοβάμαι y λυπάμαι no tienen forma activa: no existe ✗θυμώ. En español algunos coinciden ('acordarse' también es reflexivo) y otros no ('temer' no lo es).",deponentes
+

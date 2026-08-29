@@ -1,0 +1,64 @@
+# Módulo A2-1 — La casa y el barrio (curso es→el, nivel A2)
+#
+# Gramática que ancla: GENITIVO. Es el primer módulo del A2 en los manuales de
+# referencia (unidad 11 de Ελληνικά Α΄, Πατάκης) y no por casualidad: cierra el
+# sistema de casos que el A1 dejó a medias con el acusativo, antes de tocar
+# ningún tiempo verbal nuevo.
+#
+# Dos dificultades del par es→el que este módulo entrena:
+#  1. El español NO declina sustantivos. El genitivo posesivo pospuesto
+#     (το σπίτι του πατέρα μου) coincide en ORDEN con "la casa de mi padre",
+#     así que el coste está solo en la forma — se aprovecha ese andamiaje.
+#  2. El acento SE MUEVE al declinar: ο άνθρωπος → του ανθρώπου. El español
+#     nunca lo hace en la flexión nominal. La columna `nota` lo señala palabra
+#     por palabra donde ocurre.
+#
+# Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i · μπ→b · ντ→d
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
+σπίτι,το,,spíti,casa,casa,sustantivo,🏠,NEUTRO en -ι. Genitivo: του σπιτιού (el acento se va al final).
+διαμέρισμα,το,,diamérisma,apartamento,casa,sustantivo,🏢,NEUTRO en -μα. Genitivo: του διαμερίσματος — el acento baja una sílaba.
+πολυκατοικία,η,,polikatikía,edificio de pisos,casa,sustantivo,🏢,"De πολύ (mucho) + κατοικία (vivienda): 'muchas viviendas'."
+μονοκατοικία,η,,monokatikía,casa unifamiliar,casa,sustantivo,🏡,De μόνο + κατοικία. El grupo οι suena /i/.
+δυάρι,το,,diári,piso de dos ambientes,casa,sustantivo,🚪,NEUTRO. De δύο. Un τριάρι tiene tres.
+όροφος,ο,,órofos,piso (planta),casa,sustantivo,🛗,MASCULINO en -ος. Genitivo: του ορόφου — OJO al acento.
+ασανσέρ,το,,asansér,ascensor,casa,sustantivo,🛗,NEUTRO e invariable: préstamo del francés que no declina.
+σαλόνι,το,,salóni,salón,casa,sustantivo,🛋️,NEUTRO en -ι.
+κουζίνα,η,,kuzína,cocina,casa,sustantivo,🍳,Sirve para la habitación y para el aparato.
+υπνοδωμάτιο,το,,ipnodomátio,dormitorio,casa,sustantivo,🛏️,NEUTRO. De ύπνος (sueño) — de ahí 'hipnosis'.
+μπάνιο,το,,bánio,baño,casa,sustantivo,🛁,NEUTRO. El grupo μπ suena /b/.
+αποθήκη,η,,apothíki,trastero,casa,sustantivo,📦,De aquí viene 'bodega' y 'botica'.
+μπαλκόνι,το,,balkóni,balcón,casa,sustantivo,🪟,NEUTRO en -ι.
+αυλή,η,,avlí,patio,casa,sustantivo,🌳,El grupo αυ suena /av/ ante sonora.
+γειτονιά,η,,yitoniá,barrio,casa,sustantivo,🏘️,El grupo γει suena /yi/.
+γείτονας,ο,,yítonas,vecino,casa,sustantivo,🧑,MASCULINO en -ας. Genitivo: του γείτονα.
+ενοίκιο,το,,eníkio,alquiler,casa,sustantivo,💶,NEUTRO. El grupo οι suena /i/.
+κρεβάτι,το,,kreváti,cama,mueble,sustantivo,🛏️,NEUTRO en -ι. La β es /v/.
+τραπέζι,το,,trapézi,mesa,mueble,sustantivo,🍽️,NEUTRO en -ι.
+καρέκλα,η,,karékla,silla,mueble,sustantivo,🪑,
+καναπές,ο,,kanapés,sofá,mueble,sustantivo,🛋️,MASCULINO. Genitivo irregular corto: του καναπέ.
+ντουλάπα,η,,dulápa,armario,mueble,sustantivo,🚪,El grupo ντ suena /d/.
+ψυγείο,το,,psiyío,nevera,mueble,sustantivo,🧊,NEUTRO. De ψύχος (frío) — 'psicrómetro'.
+κουρτίνα,η,,kurtína,cortina,mueble,sustantivo,🪟,
+χαλί,το,,jalí,alfombra,mueble,sustantivo,🧶,NEUTRO en -ι. La χ es la j de 'jamón'.
+μαξιλάρι,το,,maksilári,almohada,mueble,sustantivo,🛏️,NEUTRO en -ι. La ξ es la x de 'taxi'.
+πάπλωμα,το,,páploma,edredón,mueble,sustantivo,🛏️,NEUTRO en -μα. Genitivo: του παπλώματος.
+καθρέφτης,ο,,kathréftis,espejo,mueble,sustantivo,🪞,MASCULINO en -ης. Genitivo: του καθρέφτη.
+κοντά,,,kondá,cerca,lugar,adverbio,📍,Se usa con σε: κοντά στο σπίτι.
+μακριά,,,makriá,lejos,lugar,adverbio,🛣️,Se usa con από: μακριά από την πόλη.
+μέσα,,,mésa,dentro,lugar,adverbio,📥,
+έξω,,,ékso,fuera,lugar,adverbio,📤,La ξ es la x de 'taxi'.
+δεξιά,,,deksiá,a la derecha,lugar,adverbio,➡️,
+αριστερά,,,aristerá,a la izquierda,lugar,adverbio,⬅️,
+απέναντι,,,apénandi,enfrente,lugar,adverbio,↔️,El grupo ντ suena /nd/.
+δίπλα,,,dípla,al lado,lugar,adverbio,👉,
+ανάμεσα,,,anámesa,entre,lugar,adverbio,↔️,
+μπροστά,,,brostá,delante,lugar,adverbio,⬆️,El grupo μπ suena /b/.
+πίσω,,,píso,detrás,lugar,adverbio,⬇️,
+πάνω,,,páno,arriba / encima,lugar,adverbio,🔼,
+κάτω,,,káto,abajo / debajo,lugar,adverbio,🔽,
+ενοικιάζω,,,enikiázo,alquilar,verbo-a,verbo,🔑,Tipo A. Su aoristo es ενοικίασα.
+μετακομίζω,,,metakomízo,mudarse,verbo-a,verbo,📦,Tipo A. Su aoristo es μετακόμισα.
+ψάχνω,,,psájno,buscar,verbo-a,verbo,🔍,Tipo A. Aoristo IRREGULAR: έψαξα (los verbos en -χνω hacen -ξα).
+θυμάμαι,,,thimáme,acordarse,verbo-amai,verbo,💭,"Verbo en -άμαι: θυμάμαι, θυμάσαι, θυμάται. En español 'acordarse' también es reflexivo."
+φοβάμαι,,,fováme,tener miedo,verbo-amai,verbo,😨,"Verbo en -άμαι. TRAMPA: en español 'temer' no es reflexivo, pero en griego solo existe φοβάμαι."
+λυπάμαι,,,lipáme,lamentar / sentirlo,verbo-amai,verbo,😔,Verbo en -άμαι. Λυπάμαι πολύ = lo siento mucho.

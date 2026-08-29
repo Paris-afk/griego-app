@@ -167,19 +167,25 @@ function splitCsvLine(line: string): string[] {
 // ─────────────────────────────────────────────────────────────────────────────
 
 const COURSE_TITLE = "Griego A1";
-const LEVEL_NAME = "A1";
+const LEVELS = [
+  { name: "A1", order: 1 },
+  { name: "A2", order: 2 },
+] as const;
 
 // Módulos sembrados en esta fase, con su número (orden) y título.
 // El A1 completo. Los 7 módulos siguen el orden verificado contra 5 manuales
 // reales de griego (CURRICULUM.md §3 y §5) — no es arbitrario.
 const SEED_MODULES = [
-  { file: "a1-modulo0-alfabeto.csv", number: 0, title: "Alfabeto y sonidos" },
-  { file: "a1-modulo1-saludos.csv", number: 1, title: "Saludos y presentarse" },
-  { file: "a1-modulo2-familia.csv", number: 2, title: "Familia" },
-  { file: "a1-modulo3-rutina-comida.csv", number: 3, title: "Rutina y comida" },
-  { file: "a1-modulo4-numeros-compras.csv", number: 4, title: "Números, fechas y compras" },
-  { file: "a1-modulo5-viajes-planes.csv", number: 5, title: "Viajes y planes" },
-  { file: "a1-modulo6-pasado-futuro.csv", number: 6, title: "Del pasado al futuro" },
+  { file: "a1-modulo0-alfabeto.csv", number: 0, title: "Alfabeto y sonidos", level: "A1" },
+  { file: "a1-modulo1-saludos.csv", number: 1, title: "Saludos y presentarse", level: "A1" },
+  { file: "a1-modulo2-familia.csv", number: 2, title: "Familia", level: "A1" },
+  { file: "a1-modulo3-rutina-comida.csv", number: 3, title: "Rutina y comida", level: "A1" },
+  { file: "a1-modulo4-numeros-compras.csv", number: 4, title: "Números, fechas y compras", level: "A1" },
+  { file: "a1-modulo5-viajes-planes.csv", number: 5, title: "Viajes y planes", level: "A1" },
+  { file: "a1-modulo6-pasado-futuro.csv", number: 6, title: "Del pasado al futuro", level: "A1" },
+  // ── A2 ── verificado contra Ελληνικά Α΄ (Πατάκης) unidades 11-20 y ΚΛΙΚ Α2.
+  // Ver CURRICULUM.md §6. Se añaden de uno en uno, verificando cada módulo.
+  { file: "a2-modulo1-casa.csv", number: 10, title: "La casa y el barrio", level: "A2" },
 ] as const;
 
 // El alfabeto se parte en 3 lecciones de 8 (orden de la letra en el CSV), por
@@ -805,11 +811,16 @@ async function main() {
     },
   });
 
-  const level = await prisma.level.upsert({
-    where: { courseId_order: { courseId: course.id, order: 1 } },
-    update: {},
-    create: { courseId: course.id, name: LEVEL_NAME, order: 1 },
-  });
+  const levels = new Map<string, string>();
+  for (const lvl of LEVELS) {
+    const row = await prisma.level.upsert({
+      where: { courseId_order: { courseId: course.id, order: lvl.order } },
+      update: { name: lvl.name },
+      create: { courseId: course.id, name: lvl.name, order: lvl.order },
+    });
+    levels.set(lvl.name, row.id);
+  }
+
 
   const stats = { modules: 0, lessons: 0, exercises: 0, vocabulary: 0, letters: 0, notes: 0 };
 
@@ -818,11 +829,13 @@ async function main() {
     if (mod.number === 0) continue;
 
     const rows = parseCsv(mod.file).map((r) => VocabRow.parse(r));
+    const levelId = levels.get(mod.level);
+    if (!levelId) throw new Error(`Nivel desconocido en SEED_MODULES: ${mod.level}`);
     const moduleId = stableId("mod", mod.number);
     const prismaModule = await prisma.module.upsert({
       where: { id: moduleId },
       update: { title: mod.title, order: mod.number },
-      create: { id: moduleId, levelId: level.id, title: mod.title, order: mod.number },
+      create: { id: moduleId, levelId: levelId, title: mod.title, order: mod.number },
     });
     stats.modules++;
 
@@ -928,11 +941,13 @@ async function main() {
     if (mod.number !== 0) continue;
 
     const rows = parseCsv(mod.file).map((r) => AlphabetRow.parse(r));
+    const levelId = levels.get(mod.level);
+    if (!levelId) throw new Error(`Nivel desconocido en SEED_MODULES: ${mod.level}`);
     const moduleId = stableId("mod", mod.number);
     const prismaModule = await prisma.module.upsert({
       where: { id: moduleId },
       update: { title: mod.title, order: mod.number },
-      create: { id: moduleId, levelId: level.id, title: mod.title, order: mod.number },
+      create: { id: moduleId, levelId: levelId, title: mod.title, order: mod.number },
     });
     stats.modules++;
 
