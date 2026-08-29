@@ -154,6 +154,62 @@ El **Módulo 0 sigue siendo intocable primero** (los cinco manuales y nuestro pr
 
 ---
 
+---
+
+## 6. Currículo A2 — verificado contra manuales reales
+
+### De dónde sale
+
+Igual que el A1, la secuencia no se inventa: se contrasta con manuales publicados. Aquí, con dos:
+
+- **Ελληνικά Α΄** (Σιμόπουλος et al., Εκδόσεις Πατάκη — Universidad de Atenas). Cubre A1+A2 en 20 unidades; las **11-20 son la mitad A2**. Índice leído de las páginas de «Περιεχόμενα» del propio libro.
+- **ΚΛΙΚ στα ελληνικά Α2** (Κέντρο Ελληνικής Γλώσσας), el manual oficial de preparación para el certificado de ελληνομάθεια: 6 unidades.
+
+> **Salvedad honesta:** el manual de Πατάκης **no declara** dónde acaba A1 y empieza A2 — solo dice "επίπεδα Α1 + Α2". Que el corte esté en la unidad 10 (la de repaso, a mitad del libro) es una **inferencia razonable**, no un dato del libro.
+
+### La progresión gramatical del A2 (unidades 11-20 de Πατάκης)
+
+Es la columna vertebral: cada módulo A2 se ancla en un punto gramatical, igual que en A1.
+
+| Unidad | Tema | Gramática que ancla |
+|---|---|---|
+| 11 | Buscar piso · orientación | **Genitivo** (y con fechas), interrogativo `τίνος`, adverbios de lugar, verbos en `-άμαι`, **comparativos** |
+| 12 | Excursiones y viajes (narrar) | **Aóristo regular** tipos Α/Β1/Β2 + **irregulares (1ª parte)**, adverbios de tiempo, pronombre personal en acusativo |
+| 13 | Historias de vida | **Aóristo (2ª parte)** incluidos `έρχομαι`, `παντρεύομαι`, `γεννιέμαι`; preguntas indirectas |
+| 14 | En la taberna · planes | **Futuro simple** de regulares e irregulares (Α/Β1/Β2) |
+| 16 | Ocio y vacaciones | **Subjuntivo simple** de regulares e irregulares |
+| 17 | Trabajo | **Imperativo simple** + pronombre con imperativo (`πείτε του` / `μην του πείτε`) |
+| 18 | En el médico | `πολύς-πολλή-πολύ`, comparativos de **adverbios**, **oraciones condicionales** |
+| 19 | Servicios públicos | Ampliación de futuro/subjuntivo/aóristo, femeninos en **`-ση, -ξη, -ψη`**, oraciones completivas |
+
+*(Las unidades 15 y 20 son de repaso.)*
+
+### Lo que esto confirma sobre el orden
+
+Tres cosas que el A1 ya insinuaba y aquí se cierran:
+
+1. **El aóristo ocupa dos unidades enteras** (12 y 13). No es un tema más: es *el* tema del A2, y los irregulares se enseñan en dos tandas, no de golpe.
+2. **El orden es aóristo → futuro → subjuntivo → imperativo.** El pasado va primero porque es lo que permite *narrar*, que es la competencia que define el A2 frente al A1.
+3. **El genitivo abre el nivel** (unidad 11), antes que cualquier tiempo verbal nuevo. Completa el sistema de casos que el A1 dejó a medias con el acusativo.
+
+### Módulos A2 propuestos
+
+Siguiendo el mismo patrón que el A1 (tema + gramática que ancla + puente contrastivo):
+
+| Módulo | Tema | Gramática | Puente con el español |
+|---|---|---|---|
+| **A2-1** | La casa y el barrio | Genitivo, adverbios de lugar | El español no declina: es lo genuinamente nuevo |
+| **A2-2** | Contar lo que pasó | Aóristo regular (Α/Β1/Β2) | Ya distingues *leí* de *leía*: es aspecto, y ya lo tienes |
+| **A2-3** | Historias de vida | Aóristo irregular, `έρχομαι`/`γεννιέμαι` | Los irregulares también existen en español (*fui*, *dije*) |
+| **A2-4** | Planes y taberna | Futuro con `θα` | Más simple que en español: `θα` + verbo, sin conjugación nueva |
+| **A2-5** | Salir y viajar | Subjuntivo con `να` | Ya lo haces: *quiero que vengas* |
+| **A2-6** | Trabajo e instrucciones | Imperativo + pronombres | El orden del pronombre cambia con el imperativo, como en español (*dímelo*) |
+| **A2-7** | Salud y condicionales | `πολύς`, comparativos, condicionales con `αν` | *Si… entonces* transfiere directo |
+
+**Pendiente antes de escribir el contenido:** las formas exactas (terminaciones del aóristo por clase, tabla de declinación por género, lista de irregulares de alta frecuencia). No se escribe ni una entrada de vocabulario griego sin esa verificación.
+
+---
+
 ## Anexo: descriptores MCER completos (las 5 destrezas, A1-B1)
 
 <details>
@@ -170,3 +226,6 @@ El **Módulo 0 sigue siendo intocable primero** (los cinco manuales y nuestro pr
 ---
 
 *Documento vivo — se actualiza si cambia el par de idiomas (§4) o si se agregan niveles superiores.*
+
+
+---
