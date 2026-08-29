@@ -3,7 +3,7 @@
 import { Check } from "lucide-react";
 
 import { cn } from "@/shared/lib/utils";
-import { AudioButton } from "@/shared/ui";
+import { AudioButton, VocabImage } from "@/shared/ui";
 import { audioPathForText } from "@/shared/lib/audio";
 import type { ExerciseRendererProps } from "../module";
 import { optionsForDifficulty } from "./schema";
@@ -28,6 +28,12 @@ export function MultipleChoiceRenderer({
     <div className="flex flex-col gap-5">
       {exercise.prompt.text && (
         <div className="flex flex-col items-center gap-3">
+          <VocabImage
+            imageUrl={exercise.prompt.image}
+            emoji={exercise.prompt.emoji}
+            alt={exercise.prompt.text}
+            size="lg"
+          />
           <div className="text-center font-greek text-[46px] font-medium leading-[1.15] tracking-[-0.5px] text-[var(--color-text)]">
             {exercise.prompt.text}
           </div>

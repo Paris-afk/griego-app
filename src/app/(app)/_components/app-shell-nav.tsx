@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BookOpen, CircleUserRound, House, Repeat, LogOut } from "lucide-react";
+import { BookOpen, CircleUserRound, House, Layers, Repeat, LogOut } from "lucide-react";
 
 import { signOut } from "@/features/auth/actions";
 import { cn } from "@/shared/lib/utils";
@@ -10,12 +10,14 @@ import { cn } from "@/shared/lib/utils";
 const NAV_ITEMS = [
   { href: "/today", label: "Hoy", Icon: House },
   { href: "/course", label: "Curso", Icon: BookOpen },
+  { href: "/vocabulary", label: "Palabras", Icon: Layers },
   { href: "/review", label: "Repaso", Icon: Repeat },
   { href: "/profile", label: "Perfil", Icon: CircleUserRound },
 ] as const;
 
 function isActive(pathname: string, href: string): boolean {
   if (href === "/course") return pathname.startsWith("/course");
+  if (href === "/vocabulary") return pathname.startsWith("/vocabulary");
   return pathname === href;
 }
 
@@ -58,7 +60,7 @@ export function AppShellNav() {
   return (
     <>
       {/* Móvil */}
-      <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-4 border-t border-[var(--color-border-soft)] bg-[var(--color-surface)] md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-20 grid grid-cols-5 border-t border-[var(--color-border-soft)] bg-[var(--color-surface)] md:hidden">
         <NavLinks />
       </nav>
 

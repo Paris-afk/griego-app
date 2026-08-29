@@ -65,6 +65,7 @@ const VocabRow = z.object({
   espanol: z.string().trim().min(1),
   categoria: z.string().trim().min(1),
   tipo_palabra: z.enum(PART_OF_SPEECH),
+  emoji: z.string().optional(),
   nota: z.string().optional(),
 }).superRefine((row, ctx) => {
   if (!ARTICULOS.includes(row.articulo as (typeof ARTICULOS)[number])) {
@@ -744,6 +745,20 @@ async function main() {
     ]);
   }
 
+  // Igual para el vocabulario y las letras: al dejar de borrarlos, las filas
+  // con id aleatorio se duplicaban en cada corrida (se llegaron a 1272 entradas
+  // donde debía haber 212). Se retiran una vez las que no tienen id estable.
+  const legacyVocab = await prisma.vocabularyEntry.count({
+    where: { id: { not: { startsWith: "voc_" } } },
+  });
+  if (legacyVocab > 0) {
+    console.log(`Retirando ${legacyVocab} entradas de vocabulario duplicadas (ids antiguos).`);
+    await prisma.$transaction([
+      prisma.vocabularyEntry.deleteMany({ where: { id: { not: { startsWith: "voc_" } } } }),
+      prisma.alphabetLetter.deleteMany({ where: { id: { not: { startsWith: "ltr_" } } } }),
+    ]);
+  }
+
   const keptExerciseIds = new Set<string>();
   const keptLessonIds = new Set<string>();
 
@@ -814,14 +829,26 @@ async function main() {
     // VocabularyEntry + MediaAsset una vez por entrada (independiente de la
     // partición en lecciones).
     for (const entry of rows) {
-      await prisma.vocabularyEntry.create({
-        data: {
+      const vocabId = stableId("voc", el.id, entry.griego);
+      await prisma.vocabularyEntry.upsert({
+        where: { id: vocabId },
+        update: {
+          translation: entry.espanol,
+          transliteration: entry.transliteracion,
+          partOfSpeech: entry.tipo_palabra,
+          tags: entry.categoria,
+          emoji: entry.emoji || null,
+          audioUrl: audioPathForText(entry.griego),
+        },
+        create: {
+          id: vocabId,
           languageId: el.id,
           term: entry.griego,
           translation: entry.espanol,
           transliteration: entry.transliteracion,
           partOfSpeech: entry.tipo_palabra,
           tags: entry.categoria,
+          emoji: entry.emoji || null,
           audioUrl: audioPathForText(entry.griego),
         },
       });
@@ -911,8 +938,12 @@ async function main() {
 
     // Letra de referencia una vez por letra (pantalla del alfabeto, Fase 4).
     for (const letter of rows) {
-      await prisma.alphabetLetter.create({
-        data: {
+      const letterId = stableId("ltr", letter.orden);
+      await prisma.alphabetLetter.upsert({
+        where: { id: letterId },
+        update: {},
+        create: {
+          id: letterId,
           languageId: el.id,
           order: letter.orden,
           uppercase: letter.mayuscula,

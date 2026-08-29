@@ -8,33 +8,33 @@
 # Vacío en palabras que no son sustantivos.
 #
 # Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i
-griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,nota
-οικογένεια,η,,ikoyénia,familia,familia,sustantivo,De aquí viene 'ecología' y 'economía': οίκος es 'casa'.
-μητέρα,η,,mitéra,madre,familia,sustantivo,"Reconocible: 'matriarca', 'maternal'."
-πατέρας,ο,,patéras,padre,familia,sustantivo,"Reconocible: 'patriarca', 'paterno'."
-γονείς,οι,,gonís,padres,familia,sustantivo,"Solo se usa en plural, como 'padres' en español."
-αδερφός,ο,,aderfós,hermano,familia,sustantivo,"También se escribe αδελφός, forma más culta. Ambas correctas."
-αδερφή,η,,aderfí,hermana,familia,sustantivo,También αδελφή.
-γιος,ο,,yos,hijo,familia,sustantivo,El grupo γι suena como la y de 'yo'.
-κόρη,η,,kóri,hija,familia,sustantivo,
-παιδί,το,,pedí,niño / hijo,familia,sustantivo,NEUTRO. De aquí viene 'pediatra'. Sirve para niño y niña indistintamente.
-παιδιά,τα,,pediá,niños / hijos,familia,sustantivo,Plural de παιδί. Los neutros en -ί hacen el plural en -ιά.
-παππούς,ο,,papús,abuelo,familia,sustantivo,
-γιαγιά,η,,yayá,abuela,familia,sustantivo,Se pronuncia 'ya-YÁ'.
-θείος,ο,,thíos,tío,familia,sustantivo,
-θεία,η,,thía,tía,familia,sustantivo,
-ξάδερφος,ο,,ksáderfos,primo,familia,sustantivo,La ξ es la x de 'taxi'.
-ξαδέρφη,η,,ksadérfi,prima,familia,sustantivo,
-άντρας,ο,,ándras,hombre / marido,familia,sustantivo,También se escribe άνδρας. Significa las dos cosas según el contexto.
-γυναίκα,η,,yinéka,mujer / esposa,familia,sustantivo,De aquí viene 'ginecología'. Significa las dos cosas según el contexto.
-εγγονός,ο,,engonós,nieto,familia,sustantivo,El grupo γγ suena /ng/.
-εγγονή,η,,engoní,nieta,familia,sustantivo,
-όνομα,το,,ónoma,nombre,familia,sustantivo,NEUTRO en -μα. Su plural es ονόματα. De aquí viene 'onomástico'.
-μεγάλος,,,megálos,grande / mayor,familia,adjetivo,"'Megáfono', 'megalómano'. Femenino μεγάλη, neutro μεγάλο."
-μικρός,,,mikrós,pequeño / menor,familia,adjetivo,"'Micrófono', 'microscopio'. Femenino μικρή, neutro μικρό."
-μιλάω,,,miláo,hablar,verbo-b1,verbo,Verbo tipo B1: el acento cae en la terminación. También se escribe μιλώ.
-αγαπάω,,,agapáo,amar / querer,verbo-b1,verbo,Tipo B1. También αγαπώ.
-ρωτάω,,,rotáo,preguntar,verbo-b1,verbo,Tipo B1. También ρωτώ.
-απαντάω,,,apandáo,responder,verbo-b1,verbo,Tipo B1. El grupo ντ suena /nd/.
-ζω,,,zo,vivir,verbo-b1,verbo,Tipo B1 corto. De aquí viene 'zoología'.
-έχω,,,éjo,tener,verbo-a,verbo,"Verbo tipo A, muy frecuente. La χ es la j de 'jamón'."
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
+οικογένεια,η,,ikoyénia,familia,familia,sustantivo,👨‍👩‍👧‍👦,De aquí viene 'ecología' y 'economía': οίκος es 'casa'.
+μητέρα,η,,mitéra,madre,familia,sustantivo,👩,"Reconocible: 'matriarca', 'maternal'."
+πατέρας,ο,,patéras,padre,familia,sustantivo,👨,"Reconocible: 'patriarca', 'paterno'."
+γονείς,οι,,gonís,padres,familia,sustantivo,👨‍👩‍👦,"Solo se usa en plural, como 'padres' en español."
+αδερφός,ο,,aderfós,hermano,familia,sustantivo,👦,"También se escribe αδελφός, forma más culta. Ambas correctas."
+αδερφή,η,,aderfí,hermana,familia,sustantivo,👧,También αδελφή.
+γιος,ο,,yos,hijo,familia,sustantivo,👦,El grupo γι suena como la y de 'yo'.
+κόρη,η,,kóri,hija,familia,sustantivo,👧,
+παιδί,το,,pedí,niño / hijo,familia,sustantivo,🧒,NEUTRO. De aquí viene 'pediatra'. Sirve para niño y niña indistintamente.
+παιδιά,τα,,pediá,niños / hijos,familia,sustantivo,🧒,Plural de παιδί. Los neutros en -ί hacen el plural en -ιά.
+παππούς,ο,,papús,abuelo,familia,sustantivo,👴,
+γιαγιά,η,,yayá,abuela,familia,sustantivo,👵,Se pronuncia 'ya-YÁ'.
+θείος,ο,,thíos,tío,familia,sustantivo,👨,
+θεία,η,,thía,tía,familia,sustantivo,👩,
+ξάδερφος,ο,,ksáderfos,primo,familia,sustantivo,👦,La ξ es la x de 'taxi'.
+ξαδέρφη,η,,ksadérfi,prima,familia,sustantivo,👧,
+άντρας,ο,,ándras,hombre / marido,familia,sustantivo,👨,También se escribe άνδρας. Significa las dos cosas según el contexto.
+γυναίκα,η,,yinéka,mujer / esposa,familia,sustantivo,👩,De aquí viene 'ginecología'. Significa las dos cosas según el contexto.
+εγγονός,ο,,engonós,nieto,familia,sustantivo,👶,El grupo γγ suena /ng/.
+εγγονή,η,,engoní,nieta,familia,sustantivo,👶,
+όνομα,το,,ónoma,nombre,familia,sustantivo,📛,NEUTRO en -μα. Su plural es ονόματα. De aquí viene 'onomástico'.
+μεγάλος,,,megálos,grande / mayor,familia,adjetivo,,"'Megáfono', 'megalómano'. Femenino μεγάλη, neutro μεγάλο."
+μικρός,,,mikrós,pequeño / menor,familia,adjetivo,,"'Micrófono', 'microscopio'. Femenino μικρή, neutro μικρό."
+μιλάω,,,miláo,hablar,verbo-b1,verbo,,Verbo tipo B1: el acento cae en la terminación. También se escribe μιλώ.
+αγαπάω,,,agapáo,amar / querer,verbo-b1,verbo,,Tipo B1. También αγαπώ.
+ρωτάω,,,rotáo,preguntar,verbo-b1,verbo,,Tipo B1. También ρωτώ.
+απαντάω,,,apandáo,responder,verbo-b1,verbo,,Tipo B1. El grupo ντ suena /nd/.
+ζω,,,zo,vivir,verbo-b1,verbo,,Tipo B1 corto. De aquí viene 'zoología'.
+έχω,,,éjo,tener,verbo-a,verbo,,"Verbo tipo A, muy frecuente. La χ es la j de 'jamón'."

@@ -11,34 +11,34 @@
 # transformación presente→aóristo. Vacío si la entrada no es una forma verbal conjugada.
 #
 # Transliteración escrita para hispanohablante: χ→j · δ→d(cada) · θ→th · β→v · γ→g · οι/ει/η/υ→i
-griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,nota
-χτες,,,jtes,ayer,tiempo,adverbio,"También se escribe χθες, forma más culta."
-σήμερα,,,símera,hoy,tiempo,adverbio,"De aquí viene 'efímero' (que dura un día)."
-αύριο,,,ávrio,mañana (el día siguiente),tiempo,adverbio,"El grupo αυ suena /av/. No confundir con πρωί (la mañana como parte del día)."
-τώρα,,,tóra,ahora,tiempo,adverbio,
-μετά,,,metá,después,tiempo,adverbio,"De aquí viene 'metáfora', 'método'."
-πριν,,,prin,antes,tiempo,adverbio,
-πάντα,,,pánda,siempre,tiempo,adverbio,"De aquí viene 'pandemia' (todo el pueblo)."
-ποτέ,,,poté,nunca,tiempo,adverbio,"Con negación: δεν πάω ποτέ = nunca voy."
-πέρσι,,,pérsi,el año pasado,tiempo,adverbio,
-θα,,,tha,partícula de futuro,tiempo,partícula,"Se pone delante del verbo: θα πάω = iré. No tiene traducción suelta."
-πήγα,,πάω,píga,fui,aoristo,verbo,"Aóristo IRREGULAR de πάω (ir). De memoria."
-είπα,,λέω,ípa,dije,aoristo,verbo,"Aóristo IRREGULAR de λέω (decir). De memoria."
-είδα,,βλέπω,ída,vi,aoristo,verbo,"Aóristo IRREGULAR de βλέπω (ver). De memoria."
-έφαγα,,τρώω,éfaga,comí,aoristo,verbo,"Aóristo IRREGULAR de τρώω (comer). De memoria."
-ήπια,,πίνω,ípia,bebí,aoristo,verbo,"Aóristo IRREGULAR de πίνω (beber). De memoria."
-ήρθα,,έρχομαι,írtha,vine,aoristo,verbo,"Aóristo IRREGULAR de έρχομαι (venir). De memoria."
-βρήκα,,βρίσκω,vríka,encontré,aoristo,verbo,"Aóristo IRREGULAR de βρίσκω (encontrar). De memoria."
-πήρα,,παίρνω,píra,tomé / cogí,aoristo,verbo,"Aóristo IRREGULAR de παίρνω (tomar). De memoria."
-έδωσα,,δίνω,édosa,di,aoristo,verbo,"Aóristo IRREGULAR de δίνω (dar). De memoria."
-ήμουν,,είμαι,ímun,era / estaba,aoristo,verbo,"Pasado de είμαι (ser/estar). El griego no distingue ser de estar."
-είχα,,έχω,íja,tenía,aoristo,verbo,"Pasado de έχω (tener)."
-διάβασα,,διαβάζω,diávasa,leí / estudié,aoristo,verbo,"Aóristo REGULAR: los verbos en -ζω hacen el aóristo en -σα."
-αγόρασα,,αγοράζω,agórasa,compré,aoristo,verbo,"Aóristo REGULAR en -σα."
-δούλεψα,,δουλεύω,dúlepsa,trabajé,aoristo,verbo,"Aóristo REGULAR: los verbos en -εύω hacen el aóristo en -ψα."
-έγραψα,,γράφω,égrapsa,escribí,aoristo,verbo,"Aóristo REGULAR: los verbos en -φω hacen el aóristo en -ψα."
-μίλησα,,μιλάω,mílisa,hablé,aoristo,verbo,"Aóristo REGULAR de un verbo tipo B1: terminan en -ησα."
-ρώτησα,,ρωτάω,rótisa,pregunté,aoristo,verbo,"Aóristo REGULAR de tipo B1, en -ησα."
-χθεσινός,,,jthesinós,de ayer,tiempo,adjetivo,"Femenino χθεσινή, neutro χθεσινό."
-περασμένος,,,perasménos,pasado,tiempo,adjetivo,"Την περασμένη εβδομάδα = la semana pasada."
-επόμενος,,,epómenos,próximo / siguiente,tiempo,adjetivo,"Τον επόμενο μήνα = el próximo mes."
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
+χτες,,,jtes,ayer,tiempo,adverbio,⏪,"También se escribe χθες, forma más culta."
+σήμερα,,,símera,hoy,tiempo,adverbio,📅,De aquí viene 'efímero' (que dura un día).
+αύριο,,,ávrio,mañana (el día siguiente),tiempo,adverbio,⏩,El grupo αυ suena /av/. No confundir con πρωί (la mañana como parte del día).
+τώρα,,,tóra,ahora,tiempo,adverbio,⏱️,
+μετά,,,metá,después,tiempo,adverbio,,"De aquí viene 'metáfora', 'método'."
+πριν,,,prin,antes,tiempo,adverbio,,
+πάντα,,,pánda,siempre,tiempo,adverbio,♾️,De aquí viene 'pandemia' (todo el pueblo).
+ποτέ,,,poté,nunca,tiempo,adverbio,🚫,Con negación: δεν πάω ποτέ = nunca voy.
+πέρσι,,,pérsi,el año pasado,tiempo,adverbio,,
+θα,,,tha,partícula de futuro,tiempo,partícula,,Se pone delante del verbo: θα πάω = iré. No tiene traducción suelta.
+πήγα,,πάω,píga,fui,aoristo,verbo,,Aóristo IRREGULAR de πάω (ir). De memoria.
+είπα,,λέω,ípa,dije,aoristo,verbo,,Aóristo IRREGULAR de λέω (decir). De memoria.
+είδα,,βλέπω,ída,vi,aoristo,verbo,,Aóristo IRREGULAR de βλέπω (ver). De memoria.
+έφαγα,,τρώω,éfaga,comí,aoristo,verbo,,Aóristo IRREGULAR de τρώω (comer). De memoria.
+ήπια,,πίνω,ípia,bebí,aoristo,verbo,,Aóristo IRREGULAR de πίνω (beber). De memoria.
+ήρθα,,έρχομαι,írtha,vine,aoristo,verbo,,Aóristo IRREGULAR de έρχομαι (venir). De memoria.
+βρήκα,,βρίσκω,vríka,encontré,aoristo,verbo,,Aóristo IRREGULAR de βρίσκω (encontrar). De memoria.
+πήρα,,παίρνω,píra,tomé / cogí,aoristo,verbo,,Aóristo IRREGULAR de παίρνω (tomar). De memoria.
+έδωσα,,δίνω,édosa,di,aoristo,verbo,,Aóristo IRREGULAR de δίνω (dar). De memoria.
+ήμουν,,είμαι,ímun,era / estaba,aoristo,verbo,,Pasado de είμαι (ser/estar). El griego no distingue ser de estar.
+είχα,,έχω,íja,tenía,aoristo,verbo,,Pasado de έχω (tener).
+διάβασα,,διαβάζω,diávasa,leí / estudié,aoristo,verbo,,Aóristo REGULAR: los verbos en -ζω hacen el aóristo en -σα.
+αγόρασα,,αγοράζω,agórasa,compré,aoristo,verbo,,Aóristo REGULAR en -σα.
+δούλεψα,,δουλεύω,dúlepsa,trabajé,aoristo,verbo,,Aóristo REGULAR: los verbos en -εύω hacen el aóristo en -ψα.
+έγραψα,,γράφω,égrapsa,escribí,aoristo,verbo,,Aóristo REGULAR: los verbos en -φω hacen el aóristo en -ψα.
+μίλησα,,μιλάω,mílisa,hablé,aoristo,verbo,,Aóristo REGULAR de un verbo tipo B1: terminan en -ησα.
+ρώτησα,,ρωτάω,rótisa,pregunté,aoristo,verbo,,"Aóristo REGULAR de tipo B1, en -ησα."
+χθεσινός,,,jthesinós,de ayer,tiempo,adjetivo,,"Femenino χθεσινή, neutro χθεσινό."
+περασμένος,,,perasménos,pasado,tiempo,adjetivo,,Την περασμένη εβδομάδα = la semana pasada.
+επόμενος,,,epómenos,próximo / siguiente,tiempo,adjetivo,,Τον επόμενο μήνα = el próximo mes.

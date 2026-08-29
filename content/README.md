@@ -26,7 +26,7 @@ Editar el contenido = editar estos archivos y volver a sembrar. Nunca editar la 
 ## Esquema de vocabulario (módulos 1-6, todos idénticos)
 
 ```
-griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,nota
+griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,emoji,nota
 ```
 
 | Columna | Obligatoria | Descripción |
@@ -38,6 +38,7 @@ griego,articulo,forma_base,transliteracion,espanol,categoria,tipo_palabra,nota
 | `espanol` | sí | Traducción |
 | `categoria` | sí | Agrupación temática dentro del módulo |
 | `tipo_palabra` | sí | `sustantivo` · `verbo` · `adjetivo` · `adverbio` · `numeral` · `expresión` · `partícula` |
+| `emoji` | no | Ilustración **offline**. Es la que siempre funciona: sin red, sin licencia, instantánea. Vacío cuando un emoji no aporta (verbos abstractos, números, días) — uno genérico sería ruido |
 | `nota` | no | Alimenta el feedback del profesor IA. Etimologías, trampas, variantes ortográficas |
 
 **Validación que el seed debe aplicar** (falla ruidosamente, ARCHITECTURE.md §7 punto 1):

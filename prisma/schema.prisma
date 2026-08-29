@@ -181,7 +181,8 @@ model VocabularyEntry {
   term            String // griego, ej. "δέντρο"
   translation     String // español, ej. "árbol"
   transliteration String? // ej. "déntro" — es del PAR, no del idioma (CURRICULUM.md §4); hoy vive aquí por simplicidad de un solo curso activo
-  imageUrl        String?
+  imageUrl        String? // imagen web opcional (Commons CC) — mejora, no requisito
+  emoji           String? // representación offline; es la que SIEMPRE funciona
   audioUrl        String?
   partOfSpeech    String?
   tags            String // CSV simple ("comida,básico"); migrar a tabla de tags si hace falta filtrar en serio
